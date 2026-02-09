@@ -1,0 +1,7 @@
+/* Importação de Variáveis Globais e Reset (opcional) */
+/* @import 'variables.css'; */
+
+/* Módulos Específicos */
+@import 'modules/loja.css';
+/* @import 'modules/modal.css'; */
+/* @import 'modules/dashboard.css'; */
