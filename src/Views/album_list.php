@@ -171,24 +171,12 @@
         </div>
         
         <nav class="mt-5">
-            <ul class="pagination justify-content-center">
-                <?php if($paginaAtual > 1): ?>
-                    <li class="page-item">
-                        <a class="page-link" href="?page=<?= $paginaAtual - 1 ?>">Anterior</a>
-                    </li>
-                <?php endif; ?>
-
-                <?php for($i = $pagInicio; $i <= $pagFim; $i++): ?>
-                    <li class="page-item <?= $i == $paginaAtual ? 'active' : '' ?>">
-                        <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+            <ul class="pagination pagination-sm justify-content-center">
+                <?php for ($i = $pagInicio; $i <= $pagFim; $i++): ?>
+                    <li class="page-item <?= ($i == $paginaAtual) ? 'active' : '' ?>">
+                        <a class="page-link" href="<?= $urlBase ?>page=<?= $i ?>"><?= $i ?></a>
                     </li>
                 <?php endfor; ?>
-
-                <?php if($paginaAtual < $totalPaginas): ?>
-                    <li class="page-item">
-                        <a class="page-link" href="?page=<?= $paginaAtual + 1 ?>">Próxima</a>
-                    </li>
-                <?php endif; ?>
             </ul>
         </nav>
     </div>

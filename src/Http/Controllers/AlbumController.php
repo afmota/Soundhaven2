@@ -32,8 +32,9 @@ class AlbumController {
         $pagInicio = max(1, $paginaAtual - $range);
         $pagFim = min($totalPaginas, $paginaAtual + $range);
 
-        $queryParams = http_build_query(array_filter($filtros));
-        $urlBase = "?" . ($queryParams ? $queryParams . "&" : "");
+        $queryParams = $_GET;
+        unset($queryParams['page']); // Removemos a página para não duplicar
+        $urlBase = "?" . http_build_query($queryParams) . "&";
 
         require_once __DIR__ . '/../../Views/album_list.php';
     }
