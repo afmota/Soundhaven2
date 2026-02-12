@@ -11,6 +11,7 @@ class MySqlAlbumRepository
 
     public function findWithFilters(array $filters, int $userId, int $limit, int $offset): array
     {
+        // A consulta já traz a.*, garantindo que 'criado_em' esteja no dataset
         $sql = "SELECT a.*, art.nome as artista_nome, t.descricao as tipo_nome
                 FROM tb_albuns a
                 INNER JOIN tb_artistas art ON a.artista_id = art.id
@@ -24,7 +25,6 @@ class MySqlAlbumRepository
             $params[':titulo'] = "%" . $filters['titulo'] . "%";
         }
 
-        // CORREÇÃO: Filtro por ID do artista (vindo do select)
         if (!empty($filters['artista'])) {
             $sql .= " AND a.artista_id = :artista_id";
             $params[':artista_id'] = (int)$filters['artista'];
@@ -55,6 +55,7 @@ class MySqlAlbumRepository
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
 
+        // MAPEAMENTO CORRIGIDO: Incluindo o 8º parâmetro (criado_em)
         return array_map(fn($row) => new Album(
             $row['titulo'],
             $row['capa_url'],
@@ -62,7 +63,8 @@ class MySqlAlbumRepository
             $row['data_lancamento'],
             (int)$row['tipo_id'],
             (int)$row['situacao'],
-            $row['artista_nome']
+            $row['artista_nome'],
+            $row['criado_em'] // Adicionado conforme nova definição da Entidade
         ), $stmt->fetchAll(PDO::FETCH_ASSOC));
     }
 
@@ -81,7 +83,6 @@ class MySqlAlbumRepository
             $params[':titulo'] = "%" . $filters['titulo'] . "%";
         }
 
-        // CORREÇÃO: Filtro por ID do artista também na contagem
         if (!empty($filters['artista'])) {
             $sql .= " AND a.artista_id = :artista_id";
             $params[':artista_id'] = (int)$filters['artista'];
@@ -110,7 +111,6 @@ class MySqlAlbumRepository
 
     public function buscarArtistasPorUsuario(int $userId): array
     {
-        // Garante que pegamos apenas artistas que esse usuário possui no catálogo
         $sql = "SELECT DISTINCT art.id, art.nome 
                 FROM tb_artistas art
                 INNER JOIN tb_albuns a ON art.id = a.artista_id

@@ -1,0 +1,84 @@
+/* Estilos extraídos da Vitrine Dark */
+body {
+    background: radial-gradient(circle at top, #1e2124 0%, #121212 100%);
+    background-attachment: fixed;
+    color: #e0e0e0;
+    min-height: 100vh;
+}
+
+.vitrine-container {
+    max-width: 60%;
+    margin: 0 auto;
+}
+
+.album-card {
+    background-color: #1a1a1a;
+    border-radius: 15px; 
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+}
+
+.album-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6) !important;
+    border-color: #1db954;
+    z-index: 10;
+}
+
+.album-img-container {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.album-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.album-card:hover img {
+    transform: scale(1.1);
+}
+
+.text-primary {
+    color: #1db954 !important;
+}
+
+@media (min-width: 992px) {
+    .col-custom-5 { flex: 0 0 auto; width: 20%; }
+}
+
+.filter-panel {
+    position: fixed;
+    top: 50px;
+    right: 2%;
+    width: 15%;
+    background: rgba(30, 30, 30, 0.95);
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px solid #333;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.filter-panel label {
+    font-size: 0.8rem;
+    color: #1db954;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.filter-panel input, .filter-panel select {
+    background: #121212;
+    border: 1px solid #444;
+    color: white;
+    margin-bottom: 15px;
+}
