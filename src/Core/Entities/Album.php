@@ -10,6 +10,7 @@ use DateTime;
  */
 class Album {
     public function __construct(
+        private int $id,
         private string $titulo,
         private ?string $capa_url,
         private int $artista_id,
@@ -17,10 +18,14 @@ class Album {
         private int $tipo_id,
         private int $situacao,
         private string $artistaNome,
-        private string $data_criacao // Data de inclusão no banco de dados
+        private string $data_criacao
     ) {}
 
     // --- Getters de Identificação ---
+
+    public function getId(): int {
+        return $this->id;
+    }
 
     public function getArtistaId(): int {
         return $this->artista_id;
@@ -41,6 +46,10 @@ class Album {
     }
 
     // --- Getters de Data ---
+
+    public function getDataLancamento(): string {
+        return $this->data_lancamento;
+    }
 
     public function getAnoLancamento(): string {
         $date = new DateTime($this->data_lancamento);
@@ -64,6 +73,6 @@ class Album {
     // --- Métodos de Apresentação ---
 
     public function getBadgeSituacao(): string {
-        return "<span class='badge bg-dark border border-secondary text-muted'>ID: {$this->artista_id}</span>";
+        return "<span class='badge bg-dark border border-secondary text-muted'>ID: {$this->id}</span>";
     }
 }

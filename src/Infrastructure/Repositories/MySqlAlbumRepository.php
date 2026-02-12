@@ -11,8 +11,8 @@ class MySqlAlbumRepository
 
     public function findWithFilters(array $filters, int $userId, int $limit, int $offset): array
     {
-        // A consulta já traz a.*, garantindo que 'criado_em' esteja no dataset
-        $sql = "SELECT a.*, art.nome as artista_nome, t.descricao as tipo_nome
+        $sql = "SELECT a.id, a.titulo, a.capa_url, a.artista_id, a.data_lancamento, a.tipo_id, a.situacao, a.criado_em,
+                       art.nome as artista_nome, t.descricao as tipo_nome
                 FROM tb_albuns a
                 INNER JOIN tb_artistas art ON a.artista_id = art.id
                 INNER JOIN tb_tipos t ON a.tipo_id = t.id
@@ -55,8 +55,8 @@ class MySqlAlbumRepository
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
 
-        // MAPEAMENTO CORRIGIDO: Incluindo o 8º parâmetro (criado_em)
         return array_map(fn($row) => new Album(
+            (int)$row['id'],
             $row['titulo'],
             $row['capa_url'],
             (int)$row['artista_id'],
@@ -64,7 +64,7 @@ class MySqlAlbumRepository
             (int)$row['tipo_id'],
             (int)$row['situacao'],
             $row['artista_nome'],
-            $row['criado_em'] // Adicionado conforme nova definição da Entidade
+            $row['criado_em']
         ), $stmt->fetchAll(PDO::FETCH_ASSOC));
     }
 

@@ -59,13 +59,16 @@
             <?php foreach ($albuns as $album): ?>
                 <?php 
                     $dadosJson = json_encode([
-                        'titulo'   => $album->getTitulo(),
-                        'artista'  => $album->getArtistaNome(),
-                        'capa'     => $album->getCapaUrl(),
-                        'ano'      => $album->getAnoLancamento(),
-                        'tipo'     => $album->getTipo(),
-                        'situacao' => $album->getSituacao(),
-                        'inclusao' => date('d/m/Y', strtotime($album->getDataCriacao()))
+                        'id'          => $album->getId(),
+                        'titulo'      => $album->getTitulo(),
+                        'artista'     => $album->getArtistaNome(),
+                        'artista_id'  => $album->getArtistaId(),
+                        'capa'        => $album->getCapaUrl(),
+                        'data'        => $album->getDataLancamento(), // Adicionada data completa
+                        'ano'         => $album->getAnoLancamento(),
+                        'tipo'        => $album->getTipo(),
+                        'situacao'    => $album->getSituacao(),
+                        'inclusao'    => date('d/m/Y', strtotime($album->getDataCriacao()))
                     ]);
                 ?>
                 <div class="col-6 col-md-4 col-custom-5">
@@ -106,6 +109,7 @@
     </div>
 
     <?php include __DIR__ . '/partials/modal_detalhes.php'; ?>
+    <?php include __DIR__ . '/partials/modal_edicao.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/album-actions.js"></script>
