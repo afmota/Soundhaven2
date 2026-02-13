@@ -2,33 +2,56 @@
 
 namespace App\Core\Services;
 
+use App\Core\Entities\Album;
 use App\Infrastructure\Repositories\MySqlAlbumRepository;
+use Exception;
 
-class AlbumService
-{
+class AlbumService {
     public function __construct(private MySqlAlbumRepository $repository) {}
 
     /**
-     * Repassa a busca da lista de artistas para o Repositório
+     * Retorna a contagem total de álbuns baseada nos filtros.
      */
-    public function listarArtistasDoUsuario(int $userId): array
-    {
+    public function contarComFiltros(array $filtros, int $userId): int {
+        return $this->repository->countWithFilters($filtros, $userId);
+    }
+
+    /**
+     * Retorna a lista de álbuns para a vitrine.
+     */
+    public function listarParaVitrine(array $filtros, int $userId, int $limit, int $offset): array {
+        return $this->repository->findWithFilters($filtros, $userId, $limit, $offset);
+    }
+
+    /**
+     * Retorna a lista de artistas para popular dropdowns.
+     */
+    public function listarArtistasDoUsuario(int $userId): array {
         return $this->repository->buscarArtistasPorUsuario($userId);
     }
 
     /**
-     * Repassa a contagem total com filtros para o Repositório
+     * Executa a atualização de um álbum.
+     * Centraliza a lógica de transformação de dados para a Entidade.
      */
-    public function contarComFiltros(array $filters, int $userId): int
-    {
-        return $this->repository->countWithFilters($filters, $userId);
-    }
+    public function atualizarAlbum(array $dados, int $userId): bool {
+        if (empty($dados['id']) || empty($dados['titulo'])) {
+            throw new Exception("Dados obrigatórios para atualização estão ausentes.");
+        }
 
-    /**
-     * Repassa a listagem da vitrine para o Repositório
-     */
-    public function listarParaVitrine(array $filters, int $userId, int $limit, int $offset): array
-    {
-        return $this->repository->findWithFilters($filters, $userId, $limit, $offset);
+        // Criamos a entidade para garantir a integridade dos dados antes de enviar ao repositório
+        $album = new Album(
+            (int)$dados['id'],
+            $dados['titulo'],
+            $dados['capa_url'] ?? null,
+            (int)$dados['artista_id'],
+            $dados['data_lancamento'],
+            (int)$dados['tipo_id'],
+            (int)$dados['situacao'],
+            '', // artistaNome (não necessário para persistência)
+            ''  // data_criacao (não necessário para persistência)
+        );
+
+        return $this->repository->update($album, $userId);
     }
 }

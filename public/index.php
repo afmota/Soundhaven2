@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Front Controller
+ * Ponto de entrada único da aplicação.
+ */
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Infrastructure\Database\Connection;
@@ -7,19 +12,24 @@ use App\Infrastructure\Repositories\MySqlAlbumRepository;
 use App\Core\Services\AlbumService;
 use App\Http\Controllers\AlbumController;
 
-try {
-    // 1. Obtém a conexão correta da sua classe Singleton
-    $pdo = Connection::getInstance();
+// 1. Inicialização das Dependências (Ajuste conforme sua Connection)
+$db = Connection::getInstance();
+$repository = new MySqlAlbumRepository($db);
+$service = new AlbumService($repository);
+$controller = new AlbumController($service);
 
-    // 2. Injeção de Dependências correta
-    $repository = new MySqlAlbumRepository($pdo);
-    $service    = new AlbumService($repository);
-    $controller = new AlbumController($service);
+// 2. Roteamento Simples
+// Captura a ação vinda do GET (ex: ?action=editar)
+$action = filter_input(INPUT_GET, 'action', FILTER_SANITIZE_SPECIAL_CHARS);
 
-    // 3. Roteamento
-    $controller->index();
+switch ($action) {
+    case 'editar':
+        // Rota de processamento do formulário (AJAX)
+        $controller->editar();
+        break;
 
-} catch (\Exception $e) {
-    // Erro amigável para o usuário, log detalhado no servidor
-    die("Desculpe, ocorreu um erro ao carregar a página. Verifique os logs do sistema.");
+    default:
+        // Rota padrão: Exibição da Vitrine
+        $controller->index();
+        break;
 }

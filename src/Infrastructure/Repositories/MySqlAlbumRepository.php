@@ -4,10 +4,47 @@ namespace App\Infrastructure\Repositories;
 
 use App\Core\Entities\Album;
 use PDO;
+use Exception;
 
 class MySqlAlbumRepository
 {
     public function __construct(private PDO $db) {}
+
+    /**
+     * Atualiza um álbum existente no banco de dados.
+     * @param Album $album Objeto contendo os novos dados.
+     * @param int $userId ID do proprietário para garantir segurança.
+     * @return bool
+     */
+    public function update(Album $album, int $userId): bool
+    {
+        $sql = "UPDATE tb_albuns SET 
+                    titulo = :titulo,
+                    capa_url = :capa,
+                    artista_id = :artista_id,
+                    data_lancamento = :data_lancamento,
+                    tipo_id = :tipo_id,
+                    situacao = :situacao
+                WHERE id = :id AND user_id = :user_id AND deletado = 0";
+
+        try {
+            $stmt = $this->db->prepare($sql);
+            
+            $stmt->bindValue(':titulo', $album->getTitulo(), PDO::PARAM_STR);
+            $stmt->bindValue(':capa', $album->getCapaUrl(), PDO::PARAM_STR);
+            $stmt->bindValue(':artista_id', $album->getArtistaId(), PDO::PARAM_INT);
+            $stmt->bindValue(':data_lancamento', $album->getDataLancamento(), PDO::PARAM_STR);
+            $stmt->bindValue(':tipo_id', $album->getTipo(), PDO::PARAM_INT);
+            $stmt->bindValue(':situacao', $album->getSituacao(), PDO::PARAM_INT);
+            $stmt->bindValue(':id', $album->getId(), PDO::PARAM_INT);
+            $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+
+            return $stmt->execute();
+        } catch (Exception $e) {
+            // Log do erro poderia ser implementado aqui
+            return false;
+        }
+    }
 
     public function findWithFilters(array $filters, int $userId, int $limit, int $offset): array
     {
