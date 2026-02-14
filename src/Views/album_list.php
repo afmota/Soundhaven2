@@ -11,9 +11,13 @@
     <aside class="filter-panel">
         <h6 class="text-white mb-3 text-center border-bottom pb-2" style="border-color: #1db954 !important;">LOJA FILTROS</h6>
         
-        <div class="px-2 mb-4">
-            <button type="button" class="btn btn-success btn-sm w-100 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalInclusao">
+        <div class="px-2 mb-4 d-grid gap-2">
+            <button type="button" class="btn btn-success btn-sm fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalInclusao">
                 <i class="bi bi-plus-circle me-2"></i>NOVO ÁLBUM
+            </button>
+            
+            <button type="button" class="btn btn-outline-success btn-sm fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalImportarCSV">
+                <i class="bi bi-file-earmark-arrow-up me-2"></i>IMPORTAR CSV
             </button>
         </div>
 
@@ -118,6 +122,7 @@
     <?php include __DIR__ . '/partials/modal_detalhes.php'; ?>
     <?php include __DIR__ . '/partials/modal_edicao.php'; ?>
     <?php include __DIR__ . '/partials/modal_inclusao.php'; ?>
+    <?php include __DIR__ . '/partials/modal_importacao.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/album-actions.js"></script>

@@ -1,11 +1,12 @@
 /**
  * Gerenciamento de ações da vitrine de álbuns 2.0
- * Controla os modais de Detalhes, Edição, Descarte e Inclusão
+ * Controla os modais de Detalhes, Edição, Descarte, Inclusão e Importação CSV
  */
 
 let albumModalInstance;
 let edicaoModalInstance;
 let inclusaoModalInstance;
+let importacaoModalInstance; // Nova instância
 
 const MAPA_TIPOS = { 1: "Estúdio", 2: "EP", 3: "Ao Vivo", 4: "Compilação", 5: "Trilha Sonora" };
 const MAPA_SITUACOES = { 1: "Disponível", 2: "Selecionado", 3: "Baixado", 4: "Adquirido", 5: "Descartado" };
@@ -15,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalDetalhes = document.getElementById('albumModal');
     if (modalDetalhes) albumModalInstance = new bootstrap.Modal(modalDetalhes);
 
-    // 2. Modal de Edição (Mantendo sua lógica original)
+    // 2. Modal de Edição
     const modalEdicaoElement = document.getElementById('modalEdicao');
     if (modalEdicaoElement) {
         edicaoModalInstance = new bootstrap.Modal(modalEdicaoElement);
@@ -38,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // 3. Modal de Inclusão (Nova Funcionalidade)
+    // 3. Modal de Inclusão
     const modalInclusaoElement = document.getElementById('modalInclusao');
     if (modalInclusaoElement) {
         inclusaoModalInstance = new bootstrap.Modal(modalInclusaoElement);
@@ -60,7 +61,77 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     }
+
+    // 4. Modal de Importação CSV (NOVA INTEGRAÇÃO)
+    const modalImportarElement = document.getElementById('modalImportarCSV');
+    if (modalImportarElement) {
+        importacaoModalInstance = new bootstrap.Modal(modalImportarElement);
+
+        const formImportar = document.getElementById('formImportarCSV');
+        if (formImportar) {
+            formImportar.addEventListener('submit', function(e) {
+                e.preventDefault();
+                processarImportacaoCSV(this);
+            });
+        }
+    }
 });
+
+/**
+ * Envia o arquivo CSV para processamento em lote
+ */
+async function processarImportacaoCSV(form) {
+    const btnSubmit = document.getElementById('btnProcessarCSV');
+    const logContainer = document.getElementById('import-log');
+    let originalText = "";
+
+    if (btnSubmit) {
+        originalText = btnSubmit.innerHTML;
+        btnSubmit.disabled = true;
+        btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processando...';
+    }
+
+    logContainer.classList.remove('d-none');
+    logContainer.innerHTML = '<div class="text-info">Iniciando leitura e upload...</div>';
+
+    const formData = new FormData(form);
+
+    try {
+        const response = await fetch('index.php?action=importar', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            logContainer.innerHTML += `<div class="text-success mt-2">✅ ${result.message}</div>`;
+            
+            if (result.errors && result.errors.length > 0) {
+                result.errors.forEach(err => {
+                    logContainer.innerHTML += `<div class="text-warning" style="font-size: 0.75rem;">⚠️ ${err}</div>`;
+                });
+            }
+
+            // Aguarda 2 segundos para o usuário ler o log antes de recarregar
+            setTimeout(() => {
+                if (importacaoModalInstance) importacaoModalInstance.hide();
+                window.location.reload();
+            }, 2500);
+
+        } else {
+            logContainer.innerHTML += `<div class="text-danger mt-2">❌ Erro: ${result.message}</div>`;
+        }
+    } catch (error) {
+        console.error('Erro na importação:', error);
+        logContainer.innerHTML += '<div class="text-danger mt-2">❌ Erro de comunicação com o servidor.</div>';
+    } finally {
+        if (btnSubmit) {
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = originalText;
+        }
+    }
+}
 
 /**
  * Envia os dados de inclusão para o servidor

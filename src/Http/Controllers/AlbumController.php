@@ -8,9 +8,6 @@ use Exception;
 class AlbumController {
     public function __construct(private AlbumService $service) {}
 
-    /**
-     * Renderiza a vitrine de álbuns
-     */
     public function index() {
         $userId = 2; 
         $paginaAtual = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
@@ -42,43 +39,24 @@ class AlbumController {
         require_once __DIR__ . '/../../Views/album_list.php';
     }
 
-    /**
-     * Processa a edição de um álbum via AJAX
-     */
     public function editar() {
         ob_start();
         header('Content-Type: application/json');
-
         try {
-            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-                throw new Exception("Método de requisição inválido.");
-            }
-
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') throw new Exception("Método inválido.");
             $userId = 2; 
-
             $dados = [
-                'id'               => filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT),
-                'titulo'           => filter_input(INPUT_POST, 'titulo', FILTER_SANITIZE_SPECIAL_CHARS),
-                'capa_url'         => filter_input(INPUT_POST, 'capa_url', FILTER_SANITIZE_URL),
-                'artista_id'       => filter_input(INPUT_POST, 'artista_id', FILTER_VALIDATE_INT),
-                'data_lancamento'  => $_POST['data_lancamento'] ?? '',
-                'tipo_id'          => filter_input(INPUT_POST, 'tipo_id', FILTER_VALIDATE_INT),
-                'situacao'         => filter_input(INPUT_POST, 'situacao', FILTER_VALIDATE_INT)
+                'id' => filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT),
+                'titulo' => filter_input(INPUT_POST, 'titulo', FILTER_SANITIZE_SPECIAL_CHARS),
+                'capa_url' => filter_input(INPUT_POST, 'capa_url', FILTER_SANITIZE_URL),
+                'artista_id' => filter_input(INPUT_POST, 'artista_id', FILTER_VALIDATE_INT),
+                'data_lancamento' => $_POST['data_lancamento'] ?? '',
+                'tipo_id' => filter_input(INPUT_POST, 'tipo_id', FILTER_VALIDATE_INT),
+                'situacao' => filter_input(INPUT_POST, 'situacao', FILTER_VALIDATE_INT)
             ];
-
-            if (!$dados['id']) {
-                throw new Exception("ID do álbum não fornecido.");
-            }
-
             $sucesso = $this->service->atualizarAlbum($dados, $userId);
-
-            if ($sucesso) {
-                ob_clean();
-                echo json_encode(['success' => true, 'message' => 'Álbum atualizado com sucesso!']);
-            } else {
-                throw new Exception("Erro ao persistir no banco de dados.");
-            }
-
+            ob_clean();
+            echo json_encode(['success' => true, 'message' => 'Álbum atualizado!']);
         } catch (Exception $e) {
             ob_clean();
             echo json_encode(['success' => false, 'message' => $e->getMessage()]);
@@ -86,34 +64,38 @@ class AlbumController {
         exit;
     }
 
-    /**
-     * Processa a exclusão lógica de um álbum via AJAX
-     */
     public function excluir() {
         ob_start();
         header('Content-Type: application/json');
-
         try {
-            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-                throw new Exception("Método de requisição inválido.");
-            }
-
             $userId = 2;
             $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
-
-            if (!$id) {
-                throw new Exception("ID do álbum inválido para exclusão.");
-            }
-
             $sucesso = $this->service->excluirAlbum($id, $userId);
+            ob_clean();
+            echo json_encode(['success' => true, 'message' => 'Álbum descartado!']);
+        } catch (Exception $e) {
+            ob_clean();
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        }
+        exit;
+    }
 
-            if ($sucesso) {
-                ob_clean();
-                echo json_encode(['success' => true, 'message' => 'Álbum descartado com sucesso!']);
-            } else {
-                throw new Exception("Não foi possível descartar o álbum.");
-            }
-
+    public function cadastrar() {
+        ob_start();
+        header('Content-Type: application/json');
+        try {
+            $userId = 2;
+            $dados = [
+                'titulo' => filter_input(INPUT_POST, 'titulo', FILTER_SANITIZE_SPECIAL_CHARS),
+                'capa_url' => filter_input(INPUT_POST, 'capa_url', FILTER_SANITIZE_URL),
+                'artista_id' => filter_input(INPUT_POST, 'artista_id', FILTER_VALIDATE_INT),
+                'data_lancamento' => $_POST['data_lancamento'] ?? '',
+                'tipo_id' => filter_input(INPUT_POST, 'tipo_id', FILTER_VALIDATE_INT),
+                'situacao' => filter_input(INPUT_POST, 'situacao', FILTER_VALIDATE_INT)
+            ];
+            $this->service->salvarNovoAlbum($dados, $userId);
+            ob_clean();
+            echo json_encode(['success' => true, 'message' => 'Álbum cadastrado!']);
         } catch (Exception $e) {
             ob_clean();
             echo json_encode(['success' => false, 'message' => $e->getMessage()]);
@@ -122,40 +104,70 @@ class AlbumController {
     }
 
     /**
-     * Processa o cadastro de um novo álbum via AJAX
+     * Processa a importação do arquivo CSV com conversão automática de data
      */
-    public function cadastrar() {
+    public function importar() {
         ob_start();
         header('Content-Type: application/json');
 
         try {
-            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-                throw new Exception("Método de requisição inválido.");
+            if (!isset($_FILES['csv_file']) || $_FILES['csv_file']['error'] !== UPLOAD_ERR_OK) {
+                throw new Exception("Arquivo não enviado ou erro no upload.");
             }
 
             $userId = 2;
+            $file = $_FILES['csv_file']['tmp_name'];
+            $handle = fopen($file, "r");
+            
+            // Lê e ignora o cabeçalho
+            fgetcsv($handle, 1000, ";");
 
-            $dados = [
-                'titulo'           => filter_input(INPUT_POST, 'titulo', FILTER_SANITIZE_SPECIAL_CHARS),
-                'capa_url'         => filter_input(INPUT_POST, 'capa_url', FILTER_SANITIZE_URL),
-                'artista_id'       => filter_input(INPUT_POST, 'artista_id', FILTER_VALIDATE_INT),
-                'data_lancamento'  => $_POST['data_lancamento'] ?? '',
-                'tipo_id'          => filter_input(INPUT_POST, 'tipo_id', FILTER_VALIDATE_INT),
-                'situacao'         => filter_input(INPUT_POST, 'situacao', FILTER_VALIDATE_INT)
-            ];
+            $sucessos = 0;
+            $erros = [];
+            $linhaNum = 1;
 
-            if (empty($dados['titulo']) || !$dados['artista_id']) {
-                throw new Exception("Título e Artista são campos obrigatórios.");
+            while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
+                $linhaNum++;
+                
+                if (count($data) < 6) {
+                    $erros[] = "Linha {$linhaNum}: Colunas insuficientes.";
+                    continue;
+                }
+
+                // --- Lógica de Conversão de Data ---
+                $dataOriginal = trim($data[3]);
+                $dataProcessada = $dataOriginal;
+
+                // Se a data estiver no formato dd/mm/aaaa, converte para yyyy-mm-dd
+                if (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $dataOriginal)) {
+                    $partes = explode('/', $dataOriginal);
+                    $dataProcessada = "{$partes[2]}-{$partes[1]}-{$partes[0]}";
+                }
+
+                $dados = [
+                    'titulo'          => htmlspecialchars($data[0]),
+                    'capa_url'        => $data[1],
+                    'artista_id'      => (int)$data[2],
+                    'data_lancamento' => $dataProcessada,
+                    'tipo_id'         => (int)$data[4],
+                    'situacao'        => (int)$data[5]
+                ];
+
+                try {
+                    $this->service->salvarNovoAlbum($dados, $userId);
+                    $sucessos++;
+                } catch (Exception $e) {
+                    $erros[] = "Linha {$linhaNum}: " . $e->getMessage();
+                }
             }
+            fclose($handle);
 
-            $novoId = $this->service->salvarNovoAlbum($dados, $userId);
-
-            if ($novoId > 0) {
-                ob_clean();
-                echo json_encode(['success' => true, 'message' => 'Álbum cadastrado com sucesso!']);
-            } else {
-                throw new Exception("Erro ao cadastrar álbum no banco de dados.");
-            }
+            ob_clean();
+            echo json_encode([
+                'success' => true, 
+                'message' => "Processamento concluído: {$sucessos} álbuns importados.",
+                'errors'  => $erros
+            ]);
 
         } catch (Exception $e) {
             ob_clean();
