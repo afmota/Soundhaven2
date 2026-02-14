@@ -9,37 +9,23 @@ use Exception;
 class AlbumService {
     public function __construct(private MySqlAlbumRepository $repository) {}
 
-    /**
-     * Retorna a contagem total de álbuns baseada nos filtros.
-     */
     public function contarComFiltros(array $filtros, int $userId): int {
         return $this->repository->countWithFilters($filtros, $userId);
     }
 
-    /**
-     * Retorna a lista de álbuns para a vitrine.
-     */
     public function listarParaVitrine(array $filtros, int $userId, int $limit, int $offset): array {
         return $this->repository->findWithFilters($filtros, $userId, $limit, $offset);
     }
 
-    /**
-     * Retorna a lista de artistas para popular dropdowns.
-     */
     public function listarArtistasDoUsuario(int $userId): array {
         return $this->repository->buscarArtistasPorUsuario($userId);
     }
 
-    /**
-     * Executa a atualização de um álbum.
-     * Centraliza a lógica de transformação de dados para a Entidade.
-     */
     public function atualizarAlbum(array $dados, int $userId): bool {
         if (empty($dados['id']) || empty($dados['titulo'])) {
             throw new Exception("Dados obrigatórios para atualização estão ausentes.");
         }
 
-        // Criamos a entidade para garantir a integridade dos dados antes de enviar ao repositório
         $album = new Album(
             (int)$dados['id'],
             $dados['titulo'],
@@ -48,10 +34,44 @@ class AlbumService {
             $dados['data_lancamento'],
             (int)$dados['tipo_id'],
             (int)$dados['situacao'],
-            '', // artistaNome (não necessário para persistência)
-            ''  // data_criacao (não necessário para persistência)
+            '', 
+            ''  
         );
 
         return $this->repository->update($album, $userId);
+    }
+
+    /**
+     * Lógica de serviço para exclusão lógica
+     */
+    public function excluirAlbum(int $id, int $userId): bool {
+        if ($id <= 0) {
+            throw new Exception("Identificador de álbum inválido.");
+        }
+        return $this->repository->softDelete($id, $userId);
+    }
+
+    /**
+     * NOVO MÉTODO: Lógica de serviço para salvar novo álbum
+     * Mantém o padrão de criação de entidade Album antes de enviar ao repository
+     */
+    public function salvarNovoAlbum(array $dados, int $userId): int {
+        if (empty($dados['titulo']) || empty($dados['artista_id'])) {
+            throw new Exception("Título e Artista são obrigatórios.");
+        }
+
+        $album = new Album(
+            0, // ID 0 pois será gerado pelo banco
+            $dados['titulo'],
+            $dados['capa_url'] ?? 'https://placehold.co/300x300?text=Sem+Capa',
+            (int)$dados['artista_id'],
+            $dados['data_lancamento'],
+            (int)$dados['tipo_id'],
+            (int)$dados['situacao'],
+            '', 
+            ''  
+        );
+
+        return $this->repository->create($album, $userId);
     }
 }

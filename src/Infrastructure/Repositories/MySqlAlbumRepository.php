@@ -11,10 +11,25 @@ class MySqlAlbumRepository
     public function __construct(private PDO $db) {}
 
     /**
+     * Realiza a exclusão lógica do álbum (Soft Delete)
+     */
+    public function softDelete(int $id, int $userId): bool
+    {
+        $sql = "UPDATE tb_albuns SET deletado = 1 WHERE id = :id AND user_id = :user_id";
+
+        try {
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+            $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+
+            return $stmt->execute();
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    /**
      * Atualiza um álbum existente no banco de dados.
-     * @param Album $album Objeto contendo os novos dados.
-     * @param int $userId ID do proprietário para garantir segurança.
-     * @return bool
      */
     public function update(Album $album, int $userId): bool
     {
@@ -41,8 +56,35 @@ class MySqlAlbumRepository
 
             return $stmt->execute();
         } catch (Exception $e) {
-            // Log do erro poderia ser implementado aqui
             return false;
+        }
+    }
+
+    /**
+     * Insere um novo álbum no banco de dados.
+     */
+    public function create(Album $album, int $userId): int
+    {
+        $sql = "INSERT INTO tb_albuns (titulo, capa_url, artista_id, user_id, data_lancamento, tipo_id, situacao, deletado, criado_em) 
+                VALUES (:titulo, :capa, :artista_id, :user_id, :data_lancamento, :tipo_id, :situacao, 0, NOW())";
+
+        try {
+            $stmt = $this->db->prepare($sql);
+            
+            $stmt->bindValue(':titulo', $album->getTitulo(), PDO::PARAM_STR);
+            $stmt->bindValue(':capa', $album->getCapaUrl(), PDO::PARAM_STR);
+            $stmt->bindValue(':artista_id', $album->getArtistaId(), PDO::PARAM_INT);
+            $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->bindValue(':data_lancamento', $album->getDataLancamento(), PDO::PARAM_STR);
+            $stmt->bindValue(':tipo_id', $album->getTipo(), PDO::PARAM_INT);
+            $stmt->bindValue(':situacao', $album->getSituacao(), PDO::PARAM_INT);
+
+            if ($stmt->execute()) {
+                return (int)$this->db->lastInsertId();
+            }
+            return 0;
+        } catch (Exception $e) {
+            return 0;
         }
     }
 
@@ -146,13 +188,16 @@ class MySqlAlbumRepository
         return (int) $stmt->fetchColumn();
     }
 
+    /**
+     * CORREÇÃO: Busca todos os artistas do usuário, mesmo sem álbuns vinculados.
+     */
     public function buscarArtistasPorUsuario(int $userId): array
     {
-        $sql = "SELECT DISTINCT art.id, art.nome 
-                FROM tb_artistas art
-                INNER JOIN tb_albuns a ON art.id = a.artista_id
-                WHERE a.user_id = :user_id AND a.deletado = 0
-                ORDER BY art.nome ASC";
+        // Alterado para buscar diretamente de tb_artistas sem o JOIN restritivo
+        $sql = "SELECT id, nome 
+                FROM tb_artistas 
+                WHERE user_id = :user_id 
+                ORDER BY nome ASC";
 
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);

@@ -41,8 +41,8 @@
                             <button id="btn-abrir-edicao" class="btn btn-outline-light btn-sm px-3" data-bs-target="#modalEdicao" data-bs-toggle="modal">
                                 <i class="bi bi-pencil-square me-1"></i> Editar
                             </button>
-                            <button class="btn btn-outline-danger btn-sm px-3">
-                                <i class="bi bi-trash me-1"></i> Descartar
+                            <button type="button" id="btn-descartar-album" class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-trash me-1"></i>Descartar Álbum
                             </button>
                             <button class="btn btn-success btn-sm px-3 fw-bold">
                                 <i class="bi bi-cart-plus me-1"></i> Adquirir

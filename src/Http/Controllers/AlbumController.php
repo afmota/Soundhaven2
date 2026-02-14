@@ -46,9 +46,7 @@ class AlbumController {
      * Processa a edição de um álbum via AJAX
      */
     public function editar() {
-        // Iniciamos um buffer de saída para capturar qualquer aviso indevido do PHP
         ob_start();
-        
         header('Content-Type: application/json');
 
         try {
@@ -63,7 +61,7 @@ class AlbumController {
                 'titulo'           => filter_input(INPUT_POST, 'titulo', FILTER_SANITIZE_SPECIAL_CHARS),
                 'capa_url'         => filter_input(INPUT_POST, 'capa_url', FILTER_SANITIZE_URL),
                 'artista_id'       => filter_input(INPUT_POST, 'artista_id', FILTER_VALIDATE_INT),
-                'data_lancamento'  => $_POST['data_lancamento'] ?? '', // Simplificado para evitar sanitize string obsoleto
+                'data_lancamento'  => $_POST['data_lancamento'] ?? '',
                 'tipo_id'          => filter_input(INPUT_POST, 'tipo_id', FILTER_VALIDATE_INT),
                 'situacao'         => filter_input(INPUT_POST, 'situacao', FILTER_VALIDATE_INT)
             ];
@@ -75,7 +73,6 @@ class AlbumController {
             $sucesso = $this->service->atualizarAlbum($dados, $userId);
 
             if ($sucesso) {
-                // Limpamos qualquer aviso (Warnings) que tenha caído no buffer antes de enviar o JSON
                 ob_clean();
                 echo json_encode(['success' => true, 'message' => 'Álbum atualizado com sucesso!']);
             } else {
@@ -86,8 +83,84 @@ class AlbumController {
             ob_clean();
             echo json_encode(['success' => false, 'message' => $e->getMessage()]);
         }
-        
-        // Garante que nada mais seja impresso após o JSON
+        exit;
+    }
+
+    /**
+     * Processa a exclusão lógica de um álbum via AJAX
+     */
+    public function excluir() {
+        ob_start();
+        header('Content-Type: application/json');
+
+        try {
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                throw new Exception("Método de requisição inválido.");
+            }
+
+            $userId = 2;
+            $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
+
+            if (!$id) {
+                throw new Exception("ID do álbum inválido para exclusão.");
+            }
+
+            $sucesso = $this->service->excluirAlbum($id, $userId);
+
+            if ($sucesso) {
+                ob_clean();
+                echo json_encode(['success' => true, 'message' => 'Álbum descartado com sucesso!']);
+            } else {
+                throw new Exception("Não foi possível descartar o álbum.");
+            }
+
+        } catch (Exception $e) {
+            ob_clean();
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        }
+        exit;
+    }
+
+    /**
+     * Processa o cadastro de um novo álbum via AJAX
+     */
+    public function cadastrar() {
+        ob_start();
+        header('Content-Type: application/json');
+
+        try {
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                throw new Exception("Método de requisição inválido.");
+            }
+
+            $userId = 2;
+
+            $dados = [
+                'titulo'           => filter_input(INPUT_POST, 'titulo', FILTER_SANITIZE_SPECIAL_CHARS),
+                'capa_url'         => filter_input(INPUT_POST, 'capa_url', FILTER_SANITIZE_URL),
+                'artista_id'       => filter_input(INPUT_POST, 'artista_id', FILTER_VALIDATE_INT),
+                'data_lancamento'  => $_POST['data_lancamento'] ?? '',
+                'tipo_id'          => filter_input(INPUT_POST, 'tipo_id', FILTER_VALIDATE_INT),
+                'situacao'         => filter_input(INPUT_POST, 'situacao', FILTER_VALIDATE_INT)
+            ];
+
+            if (empty($dados['titulo']) || !$dados['artista_id']) {
+                throw new Exception("Título e Artista são campos obrigatórios.");
+            }
+
+            $novoId = $this->service->salvarNovoAlbum($dados, $userId);
+
+            if ($novoId > 0) {
+                ob_clean();
+                echo json_encode(['success' => true, 'message' => 'Álbum cadastrado com sucesso!']);
+            } else {
+                throw new Exception("Erro ao cadastrar álbum no banco de dados.");
+            }
+
+        } catch (Exception $e) {
+            ob_clean();
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        }
         exit;
     }
 }
