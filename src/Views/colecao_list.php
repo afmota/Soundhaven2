@@ -39,8 +39,21 @@
                 </div>
             <?php else: ?>
                 <?php foreach ($albuns as $item): ?>
+                    <?php 
+                        $dadosJson = json_encode([
+                            'id' => $item['id'],
+                            'titulo' => $item['titulo'],
+                            'artista' => $item['artista_nome'],
+                            'capa' => $item['capa_url'],
+                            'ano' => $item['ano_lancamento'],
+                            'aquisicao' => $item['data_aquisicao'],
+                            'formato' => $item['formato_nome'],
+                            'gravadora' => $item['gravadora_nome'],
+                            'observacoes' => $item['observacoes']
+                        ]);
+                    ?>
                     <div class="col-6 col-md-4 col-colecao-5">
-                        <div class="card h-100 colecao-card">
+                        <div class="card h-100 colecao-card" onclick='abrirModalColecao(<?= htmlspecialchars($dadosJson, ENT_QUOTES, "UTF-8") ?>)'>
                             <div class="colecao-img-container">
                                 <img src="<?= htmlspecialchars($item['capa_url']) ?>" 
                                      alt="<?= htmlspecialchars($item['titulo']) ?>"
@@ -71,13 +84,11 @@
                 <li class="page-item <?= ($paginaAtual <= 1) ? 'disabled' : '' ?>">
                     <a class="page-link" href="<?= $urlBase ?>page=<?= $paginaAtual - 1 ?>">Anterior</a>
                 </li>
-
                 <?php for ($i = $pagInicio; $i <= $pagFim; $i++): ?>
                     <li class="page-item <?= ($i == $paginaAtual) ? 'active' : '' ?>">
                         <a class="page-link" href="<?= $urlBase ?>page=<?= $i ?>"><?= $i ?></a>
                     </li>
                 <?php endfor; ?>
-
                 <li class="page-item <?= ($paginaAtual >= $totalPaginas) ? 'disabled' : '' ?>">
                     <a class="page-link" href="<?= $urlBase ?>page=<?= $paginaAtual + 1 ?>">Próxima</a>
                 </li>
@@ -86,6 +97,9 @@
         <?php endif; ?>
     </div>
 
+    <?php include __DIR__ . '/partials/modal_colecao.php'; ?>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/colecao-actions.js"></script>
 </body>
 </html>

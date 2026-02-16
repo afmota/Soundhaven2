@@ -19,7 +19,7 @@ class MySqlColecaoRepository
      * Retorna os itens da coleção física (situacao = 4 no álbum).
      * @param int $limit Quantidade de registros por página.
      * @param int $offset Deslocamento inicial.
-     * @return array Lista de álbuns com capa, título, artista e ano.
+     * @return array Lista de álbuns com capa, título, artista, ano, mídia, formato e gravadora.
      */
     public function listarItensColecao(int $limit, int $offset): array
     {
@@ -28,11 +28,17 @@ class MySqlColecaoRepository
                     a.capa_url,
                     a.titulo,
                     art.nome AS artista_nome,
-                    YEAR(a.data_lancamento) AS ano_lancamento
+                    YEAR(a.data_lancamento) AS ano_lancamento,
+                    m.data_aquisicao,
+                    m.observacoes,
+                    f.descricao AS formato_nome,
+                    g.nome AS gravadora_nome
                 FROM
                     tb_albuns a
                     INNER JOIN tb_midia m ON a.id = m.album_id
                     INNER JOIN tb_artistas art ON a.artista_id = art.id
+                    LEFT JOIN tb_formatos f ON m.formato_id = f.id
+                    LEFT JOIN tb_gravadoras g ON m.gravadora_id = g.id
                 WHERE
                     a.situacao = 4
                 ORDER BY 
@@ -50,7 +56,6 @@ class MySqlColecaoRepository
 
     /**
      * Conta o total de itens na coleção física (situacao = 4 na tabela tb_albuns)
-     * Necessita do JOIN com tb_midia para garantir que apenas álbuns com mídia física sejam contados.
      */
     public function contarTotalColecao(): int
     {
