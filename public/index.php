@@ -1,43 +1,57 @@
 <?php
 
 /**
- * Front Controller - Roteamento Atualizado para Suportar Cadastro e Importação
+ * Front Controller - Roteamento Centralizado
  */
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Infrastructure\Database\Connection;
 use App\Infrastructure\Repositories\MySqlAlbumRepository;
+use App\Infrastructure\Repositories\MySqlColecaoRepository;
 use App\Core\Services\AlbumService;
+use App\Core\Services\ColecaoService;
 use App\Http\Controllers\AlbumController;
+use App\Http\Controllers\ColecaoController;
 
-// Inicialização das Dependências (Mantendo seu padrão Singleton)
+// Inicialização das Dependências
 $db = Connection::getInstance();
-$repository = new MySqlAlbumRepository($db);
-$service = new AlbumService($repository);
-$controller = new AlbumController($service);
+
+// Dependências do Módulo Loja (Álbuns)
+$albumRepository = new MySqlAlbumRepository($db);
+$albumService = new AlbumService($albumRepository);
+$albumController = new AlbumController($albumService);
+
+// Dependências do Módulo Coleção (Novo)
+$colecaoRepository = new MySqlColecaoRepository($db);
+$colecaoService = new ColecaoService($colecaoRepository);
+$colecaoController = new ColecaoController($colecaoService);
 
 // Roteamento
 $action = filter_input(INPUT_GET, 'action', FILTER_SANITIZE_SPECIAL_CHARS);
 
 switch ($action) {
+    case 'colecao':
+        $colecaoController->index();
+        break;
+
     case 'editar':
-        $controller->editar();
+        $albumController->editar();
         break;
 
     case 'descartar':
-        $controller->excluir();
+        $albumController->excluir();
         break;
 
-    case 'cadastrar': // Rota necessária para inclusão individual
-        $controller->cadastrar();
+    case 'cadastrar':
+        $albumController->cadastrar();
         break;
 
-    case 'importar': // Rota necessária para importação CSV
-        $controller->importar();
+    case 'importar':
+        $albumController->importar();
         break;
 
     default:
-        $controller->index();
+        $albumController->index();
         break;
 }

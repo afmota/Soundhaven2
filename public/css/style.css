@@ -1,5 +1,11 @@
 /* Roteador de Estilos CSS */
+
+/* 1. Base Global */
+@import url('modules/global.css');
+
+/* 2. Módulos Específicos */
 @import url('modules/loja.css');
+@import url('modules/colecao.css');
 
 /* Adicione novos módulos abaixo conforme necessário */
-/* @import url('modules/modal.css'); */
+/* @import url('modules/modal.php'); */

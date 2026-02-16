@@ -1,10 +1,4 @@
-/* Estilos extraídos da Vitrine Dark */
-body {
-    background: radial-gradient(circle at top, #1e2124 0%, #121212 100%);
-    background-attachment: fixed;
-    color: #e0e0e0;
-    min-height: 100vh;
-}
+/* Estilos específicos do Módulo Loja */
 
 .vitrine-container {
     max-width: 60%;

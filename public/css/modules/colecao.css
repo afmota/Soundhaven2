@@ -1,0 +1,57 @@
+/* Estilos específicos do Módulo Coleção (A Minha Estante) */
+
+.colecao-vitrine {
+    max-width: 60%; /* Um pouco mais larga para destacar a estante */
+    margin: 0 auto;
+}
+
+.colecao-card {
+    background-color: #161b22;
+    border-radius: 12px; 
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.colecao-card:hover {
+    transform: scale(1.05);
+    border-color: #0d6efd; /* Azul para Coleção */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.colecao-img-container {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+}
+
+.colecao-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Replicando o Grid 5x5 de forma independente */
+@media (min-width: 1200px) {
+    .col-colecao-5 { 
+        flex: 0 0 auto; 
+        width: 20%; 
+    }
+}
+
+.text-colecao-primary {
+    color: #0d6efd !important;
+}
+
+.colecao-sidebar {
+    position: fixed;
+    top: 50px;
+    right: 20px;
+    width: 200px;
+    background: rgba(22, 27, 34, 0.9);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #30363d;
+    backdrop-filter: blur(5px);
+}
