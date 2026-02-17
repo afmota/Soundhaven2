@@ -11,6 +11,7 @@ class AlbumController {
     public function index() {
         $userId = 2; 
         $paginaAtual = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
+        $action = $_GET['action'] ?? 'list';
 
         $filtros = [
             'titulo'   => $_GET['titulo'] ?? '',
@@ -19,15 +20,30 @@ class AlbumController {
             'situacao' => $_GET['situacao'] ?? ''
         ];
 
+        /**
+         * AJUSTE ARQUITETURAL:
+         * Se a ação for 'colecao', forçamos o filtro de situação 4.
+         * Isso garante que a contagem no MySqlAlbumRepository inclua a "página 12".
+         */
+        if ($action === 'colecao') {
+            $filtros['situacao'] = 4;
+        }
+
         $listaArtistas = $this->service->listarArtistasDoUsuario($userId);
 
         $itensPorPagina = 25;
-        $totalAlbuns = $this->service->contarComFiltros($filtros, $userId);
+        $totalAlbuns = (int) $this->service->contarComFiltros($filtros, $userId);
         $totalPaginas = (int) ceil($totalAlbuns / $itensPorPagina);
+        
+        // Proteção de limites de página
+        if ($paginaAtual > $totalPaginas && $totalPaginas > 0) $paginaAtual = $totalPaginas;
+        if ($paginaAtual < 1) $paginaAtual = 1;
+
         $offset = ($paginaAtual - 1) * $itensPorPagina;
 
         $albuns = $this->service->listarParaVitrine($filtros, $userId, $itensPorPagina, $offset);
 
+        // Lógica de Range de Paginação
         $range = 2;
         $pagInicio = max(1, $paginaAtual - $range);
         $pagFim = min($totalPaginas, $paginaAtual + $range);
@@ -36,7 +52,12 @@ class AlbumController {
         unset($queryParams['page']); 
         $urlBase = "?" . http_build_query($queryParams) . "&";
 
-        require_once __DIR__ . '/../../Views/album_list.php';
+        // Direcionamento integral para a View correta
+        if ($action === 'colecao') {
+            require_once __DIR__ . '/../../Views/colecao_list.php';
+        } else {
+            require_once __DIR__ . '/../../Views/album_list.php';
+        }
     }
 
     public function editar() {
@@ -103,9 +124,6 @@ class AlbumController {
         exit;
     }
 
-    /**
-     * Processa a importação do arquivo CSV com conversão automática de data
-     */
     public function importar() {
         ob_start();
         header('Content-Type: application/json');
@@ -119,7 +137,6 @@ class AlbumController {
             $file = $_FILES['csv_file']['tmp_name'];
             $handle = fopen($file, "r");
             
-            // Lê e ignora o cabeçalho
             fgetcsv($handle, 1000, ";");
 
             $sucessos = 0;
@@ -134,11 +151,9 @@ class AlbumController {
                     continue;
                 }
 
-                // --- Lógica de Conversão de Data ---
                 $dataOriginal = trim($data[3]);
                 $dataProcessada = $dataOriginal;
 
-                // Se a data estiver no formato dd/mm/aaaa, converte para yyyy-mm-dd
                 if (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $dataOriginal)) {
                     $partes = explode('/', $dataOriginal);
                     $dataProcessada = "{$partes[2]}-{$partes[1]}-{$partes[0]}";
