@@ -41,13 +41,18 @@
             <?php else: ?>
                 <?php foreach ($albuns as $item): ?>
                     <?php 
-                        // Acesso via Array conforme o padrão do seu Repository
+                        // Inclusão dos campos para o modal de detalhes
                         $dadosJson = json_encode([
                             'id' => $item['id'],
                             'titulo' => $item['titulo'],
                             'artista' => $item['artista_nome'],
                             'capa' => $item['capa_url'],
                             'ano' => $item['ano_lancamento'] ?? '',
+                            'formato' => $item['formato_nome'] ?? '',
+                            'gravadora' => $item['gravadora_nome'] ?? '',
+                            'aquisicao' => $item['data_aquisicao'] ?? '',
+                            'generos' => $item['generos'] ?? '',
+                            'estilos' => $item['estilos'] ?? '',
                             'faixas' => $item['faixas'] ?? '' 
                         ]);
                     ?>
@@ -80,11 +85,9 @@
         <?php if ($totalPaginas > 1): ?>
         <nav class="mt-5">
             <ul class="pagination pagination-sm justify-content-center">
-                
                 <li class="page-item <?= ($paginaAtual <= 1) ? 'disabled' : '' ?>">
                     <a class="page-link" href="<?= $urlBase ?>page=<?= max(1, $paginaAtual - 1) ?>">Anterior</a>
                 </li>
-                
                 <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
                     <?php if ($i == 1 || $i == $totalPaginas || ($i >= $paginaAtual - 2 && $i <= $paginaAtual + 2)): ?>
                         <li class="page-item <?= ($i == $paginaAtual) ? 'active' : '' ?>">
@@ -94,7 +97,6 @@
                         <li class="page-item disabled"><span class="page-link">...</span></li>
                     <?php endif; ?>
                 <?php endfor; ?>
-                
                 <li class="page-item <?= ($paginaAtual >= $totalPaginas) ? 'disabled' : '' ?>">
                     <a class="page-link" href="<?= $urlBase ?>page=<?= min($totalPaginas, $paginaAtual + 1) ?>">Próxima</a>
                 </li>
