@@ -41,20 +41,25 @@
             <?php else: ?>
                 <?php foreach ($albuns as $item): ?>
                     <?php 
-                        // Mapeamento de dados para o modal - Incluindo data_lancamento para o formulário de edição
+                        // CORREÇÃO LINHA 52: Removida a chave 'situacao_id' que não existe mais no array $item
                         $dadosJson = json_encode([
                             'id' => $item['id'],
                             'titulo' => $item['titulo'],
-                            'artista' => $item['artista_nome'],
+                            'artista_id' => $item['artista_id'],
+                            'artista_nome' => $item['artista_nome'],
                             'capa' => $item['capa_url'],
-                            'ano' => $item['ano_lancamento'] ?? '',
-                            'data_lancamento' => $item['data_lancamento'] ?? '', // CAMPO ADICIONADO PARA O MODAL DE EDIÇÃO
-                            'formato' => $item['formato_nome'] ?? '',
-                            'gravadora' => $item['gravadora_nome'] ?? '',
+                            'data_lancamento' => $item['data_lancamento'] ?? '',
+                            'tipo_id' => $item['tipo_id'],
+                            'gravadora_id' => $item['gravadora_id'],
+                            'gravadora_nome' => $item['gravadora_nome'],
+                            'formato_id' => $item['formato_id'],
+                            'formato_nome' => $item['formato_nome'],
+                            'numero_catalogo' => $item['numero_catalogo'] ?? '',
                             'aquisicao' => $item['data_aquisicao'] ?? '',
                             'generos' => $item['generos'] ?? '',
                             'estilos' => $item['estilos'] ?? '',
-                            'faixas' => $item['faixas'] ?? '' 
+                            'faixas' => $item['faixas'] ?? '',
+                            'observacoes' => $item['observacoes'] ?? ''
                         ]);
                     ?>
                     <div class="col-6 col-md-4 col-colecao-5">

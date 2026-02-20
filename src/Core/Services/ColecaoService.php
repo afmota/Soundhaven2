@@ -19,7 +19,11 @@ class ColecaoService {
         return $this->repository->listarTodosTipos();
     }
 
-    public function getSituacoes(): array {
-        return $this->repository->listarTodasSituacoes();
+    public function getGravadoras(): array {
+        return $this->repository->listarTodasGravadoras();
+    }
+
+    public function getFormatos(): array {
+        return $this->repository->listarTodosFormatos();
     }
 }

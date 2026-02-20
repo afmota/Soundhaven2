@@ -20,11 +20,16 @@ class MySqlColecaoRepository
                     a.id,
                     a.capa_url,
                     a.titulo,
+                    art.id AS artista_id,
                     art.nome AS artista_nome,
+                    a.tipo_id,
                     a.data_lancamento,
                     YEAR(a.data_lancamento) AS ano_lancamento,
                     m.data_aquisicao,
                     m.observacoes,
+                    m.numero_catalogo,
+                    m.gravadora_id,
+                    m.formato_id,
                     f.descricao AS formato_nome,
                     g.nome AS gravadora_nome,
                     (SELECT GROUP_CONCAT(gen.descricao SEPARATOR '||') 
@@ -87,21 +92,21 @@ class MySqlColecaoRepository
         return (int) $stmt->fetchColumn();
     }
 
-    /**
-     * Busca todos os tipos de álbum cadastrados.
-     */
     public function listarTodosTipos(): array
     {
         $stmt = $this->db->query("SELECT id, descricao FROM tb_tipos ORDER BY descricao ASC");
         return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
 
-    /**
-     * Busca todas as situações possíveis (tabela tb_situacao).
-     */
-    public function listarTodasSituacoes(): array
+    public function listarTodasGravadoras(): array
     {
-        $stmt = $this->db->query("SELECT id, descricao FROM tb_situacao ORDER BY id ASC");
+        $stmt = $this->db->query("SELECT id, nome FROM tb_gravadoras ORDER BY nome ASC");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    }
+
+    public function listarTodosFormatos(): array
+    {
+        $stmt = $this->db->query("SELECT id, descricao FROM tb_formatos ORDER BY descricao ASC");
         return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
 }

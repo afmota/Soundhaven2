@@ -12,9 +12,9 @@ function abrirModalColecao(dados) {
     // 2. Preenchimento de Dados Básicos (Esquerda e Direita)
     document.getElementById('colecao-modal-capa').src = dados.capa || 'img/default-album.jpg';
     document.getElementById('colecao-modal-titulo').textContent = dados.titulo;
-    document.getElementById('colecao-modal-artista').textContent = dados.artista;
-    document.getElementById('colecao-modal-formato').textContent = dados.formato || 'Não informado';
-    document.getElementById('colecao-modal-gravadora').textContent = dados.gravadora || 'Independente';
+    document.getElementById('colecao-modal-artista').textContent = dados.artista_nome;
+    document.getElementById('colecao-modal-formato').textContent = dados.formato_nome || 'Não informado';
+    document.getElementById('colecao-modal-gravadora').textContent = dados.gravadora_nome || 'Independente';
     document.getElementById('colecao-modal-aquisicao').textContent = dados.aquisicao ? formatarData(dados.aquisicao) : '--/--/----';
 
     // 3. Gerenciamento da Seção Inferior (Gêneros e Estilos)
@@ -131,6 +131,10 @@ function editarItemColecao(dados) {
     const campoPreview = document.getElementById('colecao-edit-preview-capa');
     const campoData = document.getElementById('colecao-edit-data');
     const selectArtista = document.getElementById('colecao-edit-artista');
+    const selectGravadora = document.getElementById('colecao-edit-gravadora');
+    const selectFormato = document.getElementById('colecao-edit-formato');
+    const selectTipo = document.getElementById('colecao-edit-tipo');
+    const campoCatalogo = document.getElementById('colecao-edit-catalogo');
 
     if (campoId) campoId.value = dados.id;
     if (campoTitulo) campoTitulo.value = dados.titulo || '';
@@ -143,14 +147,11 @@ function editarItemColecao(dados) {
      */
     if (campoData) campoData.value = dados.data_lancamento || '';
     
-    if (selectArtista) {
-        for (let i = 0; i < selectArtista.options.length; i++) {
-            if (selectArtista.options[i].text === dados.artista) {
-                selectArtista.selectedIndex = i;
-                break;
-            }
-        }
-    }
+    if (selectArtista) selectArtista.value = dados.artista_id;
+    if (selectGravadora) selectGravadora.value = dados.gravadora_id;
+    if (selectFormato) selectFormato.value = dados.formato_id;
+    if (selectTipo) selectTipo.value = dados.tipo_id;
+    if (campoCatalogo) campoCatalogo.value = dados.numero_catalogo || '';
 
     if (campoCapaUrl && campoPreview) {
         campoCapaUrl.oninput = function() {
@@ -189,6 +190,36 @@ async function adicionarArtistaRapido() {
     } catch (error) {
         console.error("Erro na requisição:", error);
         alert("Não foi possível conectar ao servidor para salvar o artista.");
+    }
+}
+
+/**
+ * Inclusão dinâmica de gravadora sem fechar o modal
+ */
+async function adicionarGravadoraRapida() {
+    const nome = prompt("Digite o nome da nova Gravadora:");
+    
+    if (!nome || nome.trim() === "") return;
+
+    try {
+        const response = await fetch('index.php?action=cadastrar_gravadora_rapida', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `nome=${encodeURIComponent(nome)}`
+        });
+
+        const resultado = await response.json();
+
+        if (resultado.sucesso) {
+            const select = document.getElementById('colecao-edit-gravadora');
+            const novaOpcao = new Option(nome, resultado.id, true, true);
+            select.add(novaOpcao);
+        } else {
+            alert("Erro ao cadastrar: " + (resultado.mensagem || "Erro desconhecido"));
+        }
+    } catch (error) {
+        console.error("Erro na requisição:", error);
+        alert("Não foi possível conectar ao servidor para salvar a gravadora.");
     }
 }
 
