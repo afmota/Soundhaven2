@@ -41,13 +41,14 @@
             <?php else: ?>
                 <?php foreach ($albuns as $item): ?>
                     <?php 
-                        // Inclusão dos campos para o modal de detalhes
+                        // Mapeamento de dados para o modal - Incluindo data_lancamento para o formulário de edição
                         $dadosJson = json_encode([
                             'id' => $item['id'],
                             'titulo' => $item['titulo'],
                             'artista' => $item['artista_nome'],
                             'capa' => $item['capa_url'],
                             'ano' => $item['ano_lancamento'] ?? '',
+                            'data_lancamento' => $item['data_lancamento'] ?? '', // CAMPO ADICIONADO PARA O MODAL DE EDIÇÃO
                             'formato' => $item['formato_nome'] ?? '',
                             'gravadora' => $item['gravadora_nome'] ?? '',
                             'aquisicao' => $item['data_aquisicao'] ?? '',
@@ -106,6 +107,7 @@
     </div>
 
     <?php include __DIR__ . '/partials/modal_colecao.php'; ?>
+    <?php include __DIR__ . '/partials/modal_edicao_colecao.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/colecao-actions.js"></script>

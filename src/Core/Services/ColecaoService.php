@@ -14,4 +14,12 @@ class ColecaoService {
     public function getTotalItens(array $filtros = []): int {
         return $this->repository->contarTotalColecao($filtros);
     }
+
+    public function getTiposAlbum(): array {
+        return $this->repository->listarTodosTipos();
+    }
+
+    public function getSituacoes(): array {
+        return $this->repository->listarTodasSituacoes();
+    }
 }

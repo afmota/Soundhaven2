@@ -35,16 +35,21 @@
                         <div class="row g-3 mb-3">
                             <div class="col-md-7">
                                 <label for="colecao-edit-artista" class="form-label text-muted small text-uppercase" style="font-size: 0.65rem;">Artista</label>
-                                <select class="form-select form-select-sm bg-dark text-white border-secondary shadow-none" id="colecao-edit-artista" name="artista_id">
-                                    <option value="">Selecione um Artista</option>
-                                    <?php if(isset($listaArtistas)): ?>
-                                        <?php foreach ($listaArtistas as $artista): ?>
-                                            <option value="<?= $artista['id'] ?>">
-                                                <?= htmlspecialchars($artista['nome']) ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
-                                </select>
+                                <div class="input-group">
+                                    <select class="form-select form-select-sm bg-dark text-white border-secondary shadow-none" id="colecao-edit-artista" name="artista_id">
+                                        <option value="">Selecione um Artista</option>
+                                        <?php if(isset($listaArtistas)): ?>
+                                            <?php foreach ($listaArtistas as $artista): ?>
+                                                <option value="<?= $artista['id'] ?>">
+                                                    <?= htmlspecialchars($artista['nome']) ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </select>
+                                    <button class="btn btn-outline-primary btn-sm" type="button" onclick="adicionarArtistaRapido()" title="Cadastrar Novo Artista">
+                                        <i class="bi bi-plus-lg"></i>
+                                    </button>
+                                </div>
                             </div>
                             <div class="col-md-5">
                                 <label for="colecao-edit-data" class="form-label text-muted small text-uppercase" style="font-size: 0.65rem;">Data de Lançamento</label>
@@ -56,21 +61,27 @@
                             <div class="col-md-6">
                                 <label for="colecao-edit-tipo" class="form-label text-muted small text-uppercase" style="font-size: 0.65rem;">Tipo de Álbum</label>
                                 <select class="form-select form-select-sm bg-dark text-white border-secondary shadow-none" id="colecao-edit-tipo" name="tipo_id">
-                                    <option value="1">Estúdio</option>
-                                    <option value="2">EP</option>
-                                    <option value="3">Ao Vivo</option>
-                                    <option value="4">Compilação</option>
-                                    <option value="5">Trilha Sonora</option>
+                                    <option value="">Selecione o Tipo</option>
+                                    <?php if(isset($listaTipos)): ?>
+                                        <?php foreach ($listaTipos as $tipo): ?>
+                                            <option value="<?= $tipo['id'] ?>">
+                                                <?= htmlspecialchars($tipo['descricao']) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
                                 </select>
                             </div>
                             <div class="col-md-6">
                                 <label for="colecao-edit-situacao" class="form-label text-muted small text-uppercase" style="font-size: 0.65rem;">Situação na Coleção</label>
-                                <select class="form-select form-select-sm bg-dark text-white border-secondary shadow-none" id="colecao-edit-situacao" name="situacao">
-                                    <option value="1">Disponível</option>
-                                    <option value="2">Selecionado</option>
-                                    <option value="3">Baixado</option>
-                                    <option value="4">Adquirido</option>
-                                    <option value="5">Descartado</option>
+                                <select class="form-select form-select-sm bg-dark text-white border-secondary shadow-none" id="colecao-edit-situacao" name="situacao_id">
+                                    <option value="">Selecione a Situação</option>
+                                    <?php if(isset($listaSituacoes)): ?>
+                                        <?php foreach ($listaSituacoes as $situ): ?>
+                                            <option value="<?= $situ['id'] ?>">
+                                                <?= htmlspecialchars($situ['descricao']) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
                                 </select>
                             </div>
                         </div>

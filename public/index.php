@@ -22,10 +22,10 @@ $albumRepository = new MySqlAlbumRepository($db);
 $albumService = new AlbumService($albumRepository);
 $albumController = new AlbumController($albumService);
 
-// Dependências do Módulo Coleção (Novo)
+// Dependências do Módulo Coleção (Injetando AlbumService para acesso a Artistas)
 $colecaoRepository = new MySqlColecaoRepository($db);
 $colecaoService = new ColecaoService($colecaoRepository);
-$colecaoController = new ColecaoController($colecaoService);
+$colecaoController = new ColecaoController($colecaoService, $albumService);
 
 // Roteamento
 $action = filter_input(INPUT_GET, 'action', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -49,6 +49,24 @@ switch ($action) {
 
     case 'importar':
         $albumController->importar();
+        break;
+
+    case 'cadastrar_artista_rapido':
+        header('Content-Type: application/json');
+        $nome = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_SPECIAL_CHARS);
+        if ($nome) {
+            try {
+                $stmt = $db->prepare("INSERT INTO artistas (nome) VALUES (?)");
+                $stmt->execute([$nome]);
+                $novoId = $db->lastInsertId();
+                echo json_encode(['sucesso' => true, 'id' => $novoId]);
+            } catch (Exception $e) {
+                echo json_encode(['sucesso' => false, 'mensagem' => $e->getMessage()]);
+            }
+        } else {
+            echo json_encode(['sucesso' => false, 'mensagem' => 'Nome não fornecido']);
+        }
+        exit;
         break;
 
     default:

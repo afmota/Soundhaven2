@@ -17,14 +17,13 @@ function abrirModalColecao(dados) {
     document.getElementById('colecao-modal-gravadora').textContent = dados.gravadora || 'Independente';
     document.getElementById('colecao-modal-aquisicao').textContent = dados.aquisicao ? formatarData(dados.aquisicao) : '--/--/----';
 
-    // 3. Gerenciamento da Seção Inferior (Após a Linha Horizontal)
+    // 3. Gerenciamento da Seção Inferior (Gêneros e Estilos)
     const secaoAntiga = document.getElementById('secao-inferior-colecao');
     if (secaoAntiga) secaoAntiga.remove();
 
     const secaoInferior = document.createElement('div');
     secaoInferior.id = 'secao-inferior-colecao';
     
-    // Injeção da linha e estrutura de colunas para Gêneros e Estilos
     secaoInferior.innerHTML = `
         <hr class="my-4 opacity-10 border-secondary">
         <div class="row px-2">
@@ -34,10 +33,9 @@ function abrirModalColecao(dados) {
     `;
     modalBody.appendChild(secaoInferior);
 
-    // Função interna para preencher as colunas com labels e badges
     const preencherTags = (containerId, labelTexto, strDados) => {
         const container = document.getElementById(containerId);
-        if (!strDados || strDados.trim() === '') return;
+        if (!container || !strDados || strDados.trim() === '') return;
 
         const label = document.createElement('label');
         label.className = 'text-muted text-uppercase d-block mb-2';
@@ -95,10 +93,9 @@ function abrirModalColecao(dados) {
     const btnEditar = document.getElementById('btn-editar-colecao');
     const btnDescartar = document.getElementById('btn-descartar-colecao');
 
-    btnEditar.onclick = () => editarItemColecao(dados.id);
+    btnEditar.onclick = () => editarItemColecao(dados);
     btnDescartar.onclick = () => confirmarDescarte(dados.id, dados.titulo);
 
-    // 7. Exibir o Modal
     modal.show();
 }
 
@@ -112,11 +109,87 @@ function formatarData(data) {
 }
 
 /**
- * Lógica para Edição
+ * Lógica para Edição - Preenche o formulário e realiza a troca de modais
  */
-function editarItemColecao(id) {
-    console.log("Iniciando edição do item ID:", id);
-    alert("Função de Edição: Em breve abriremos o formulário para o item " + id);
+function editarItemColecao(dados) {
+    if (!dados) return;
+
+    const modalDetalhesEl = document.getElementById('modalColecao');
+    const modalEdicaoEl = document.getElementById('modalEdicaoColecao');
+    
+    if (!modalEdicaoEl) {
+        console.error("Erro: Modal de edição não encontrado no DOM.");
+        return;
+    }
+
+    const instanceDetalhes = bootstrap.Modal.getInstance(modalDetalhesEl);
+    const instanceEdicao = bootstrap.Modal.getOrCreateInstance(modalEdicaoEl);
+
+    const campoId = document.getElementById('colecao-edit-id');
+    const campoTitulo = document.getElementById('colecao-edit-titulo');
+    const campoCapaUrl = document.getElementById('colecao-edit-capa-url');
+    const campoPreview = document.getElementById('colecao-edit-preview-capa');
+    const campoData = document.getElementById('colecao-edit-data');
+    const selectArtista = document.getElementById('colecao-edit-artista');
+
+    if (campoId) campoId.value = dados.id;
+    if (campoTitulo) campoTitulo.value = dados.titulo || '';
+    if (campoCapaUrl) campoCapaUrl.value = dados.capa || '';
+    if (campoPreview) campoPreview.src = dados.capa || 'img/default-album.jpg';
+    
+    /**
+     * CORREÇÃO: Para o input type="date", precisamos da data completa (YYYY-MM-DD).
+     * Utilizamos a nova coluna 'data_lancamento' que foi adicionada à query SQL.
+     */
+    if (campoData) campoData.value = dados.data_lancamento || '';
+    
+    if (selectArtista) {
+        for (let i = 0; i < selectArtista.options.length; i++) {
+            if (selectArtista.options[i].text === dados.artista) {
+                selectArtista.selectedIndex = i;
+                break;
+            }
+        }
+    }
+
+    if (campoCapaUrl && campoPreview) {
+        campoCapaUrl.oninput = function() {
+            campoPreview.src = this.value || 'img/default-album.jpg';
+        };
+    }
+
+    if (instanceDetalhes) instanceDetalhes.hide();
+    instanceEdicao.show();
+}
+
+/**
+ * Inclusão dinâmica de artista sem fechar o modal
+ */
+async function adicionarArtistaRapido() {
+    const nome = prompt("Digite o nome do novo Artista:");
+    
+    if (!nome || nome.trim() === "") return;
+
+    try {
+        const response = await fetch('index.php?action=cadastrar_artista_rapido', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `nome=${encodeURIComponent(nome)}`
+        });
+
+        const resultado = await response.json();
+
+        if (resultado.sucesso) {
+            const select = document.getElementById('colecao-edit-artista');
+            const novaOpcao = new Option(nome, resultado.id, true, true);
+            select.add(novaOpcao);
+        } else {
+            alert("Erro ao cadastrar: " + (resultado.mensagem || "Erro desconhecido"));
+        }
+    } catch (error) {
+        console.error("Erro na requisição:", error);
+        alert("Não foi possível conectar ao servidor para salvar o artista.");
+    }
 }
 
 /**

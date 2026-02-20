@@ -13,7 +13,6 @@ class MySqlColecaoRepository
 
     /**
      * Retorna os itens da coleção física (situacao = 4).
-     * Agora suporta filtros dinâmicos.
      */
     public function listarItensColecao(int $limit, int $offset, array $filters = []): array
     {
@@ -22,6 +21,7 @@ class MySqlColecaoRepository
                     a.capa_url,
                     a.titulo,
                     art.nome AS artista_nome,
+                    a.data_lancamento,
                     YEAR(a.data_lancamento) AS ano_lancamento,
                     m.data_aquisicao,
                     m.observacoes,
@@ -68,9 +68,6 @@ class MySqlColecaoRepository
         return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
 
-    /**
-     * CORREÇÃO: Conta o total de MÍDIAS (sem DISTINCT) para que a página 12 apareça.
-     */
     public function contarTotalColecao(array $filters = []): int
     {
         $sql = "SELECT COUNT(*) 
@@ -88,5 +85,23 @@ class MySqlColecaoRepository
         $stmt->execute($params);
         
         return (int) $stmt->fetchColumn();
+    }
+
+    /**
+     * Busca todos os tipos de álbum cadastrados.
+     */
+    public function listarTodosTipos(): array
+    {
+        $stmt = $this->db->query("SELECT id, descricao FROM tb_tipos ORDER BY descricao ASC");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    }
+
+    /**
+     * Busca todas as situações possíveis (tabela tb_situacao).
+     */
+    public function listarTodasSituacoes(): array
+    {
+        $stmt = $this->db->query("SELECT id, descricao FROM tb_situacao ORDER BY id ASC");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
 }

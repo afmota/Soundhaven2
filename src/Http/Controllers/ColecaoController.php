@@ -3,12 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Core\Services\ColecaoService;
+use App\Core\Services\AlbumService;
 
 class ColecaoController {
-    public function __construct(private ColecaoService $service) {}
+    /**
+     * Construtor recebe ColecaoService para dados da coleção 
+     * e AlbumService para prover a lista de artistas existentes.
+     */
+    public function __construct(
+        private ColecaoService $service,
+        private AlbumService $albumService
+    ) {}
 
     public function index() {
-        $userId = 2; 
+        $userId = 2; // ID fixo conforme regra de negócio atual
         $paginaAtual = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
         $itensPorPagina = 25; 
         
@@ -17,8 +25,15 @@ class ColecaoController {
             'titulo' => $_GET['titulo'] ?? ''
         ];
 
+        /**
+         * POPULAÇÃO DE DADOS DINÂMICOS PARA O MODAL DE EDIÇÃO
+         * Buscamos Artistas (via AlbumService) e Tipos/Situações (via ColecaoService)
+         */
+        $listaArtistas = $this->albumService->listarArtistasDoUsuario($userId);
+        $listaTipos = $this->service->getTiposAlbum();
+        $listaSituacoes = $this->service->getSituacoes();
+
         // Obtém o total considerando os filtros para calcular as páginas corretamente
-        // Renomeado para $totalAlbuns para coincidir com a View
         $totalAlbuns = $this->service->getTotalItens($filtros); 
         
         $totalPaginas = (int) ceil($totalAlbuns / $itensPorPagina);
