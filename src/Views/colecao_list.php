@@ -41,7 +41,6 @@
             <?php else: ?>
                 <?php foreach ($albuns as $item): ?>
                     <?php 
-                        // CORREÇÃO LINHA 52: Removida a chave 'situacao_id' que não existe mais no array $item
                         $dadosJson = json_encode([
                             'id' => $item['id'],
                             'titulo' => $item['titulo'],
@@ -58,6 +57,7 @@
                             'aquisicao' => $item['data_aquisicao'] ?? '',
                             'generos' => $item['generos'] ?? '',
                             'estilos' => $item['estilos'] ?? '',
+                            'produtores' => $item['produtores'] ?? '',
                             'faixas' => $item['faixas'] ?? '',
                             'observacoes' => $item['observacoes'] ?? ''
                         ]);

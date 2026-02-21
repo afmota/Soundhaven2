@@ -20,10 +20,16 @@ class ColecaoController {
             'titulo' => $_GET['titulo'] ?? ''
         ];
 
+        // Dados para selects globais
         $listaArtistas = $this->albumService->listarArtistasDoUsuario($userId);
         $listaTipos = $this->service->getTiposAlbum();
         $listaGravadoras = $this->service->getGravadoras();
         $listaFormatos = $this->service->getFormatos();
+        
+        // Novas listas N:N
+        $listaProdutores = $this->service->getProdutores();
+        $listaGeneros = $this->service->getGeneros();
+        $listaEstilos = $this->service->getEstilos();
 
         $totalAlbuns = $this->service->getTotalItens($filtros); 
         $totalPaginas = (int) ceil($totalAlbuns / $itensPorPagina);

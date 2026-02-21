@@ -32,6 +32,10 @@ class MySqlColecaoRepository
                     m.formato_id,
                     f.descricao AS formato_nome,
                     g.nome AS gravadora_nome,
+                    (SELECT GROUP_CONCAT(p.nome SEPARATOR '||') 
+                     FROM album_produtor ap 
+                     JOIN tb_produtores p ON ap.produtor_id = p.id 
+                     WHERE ap.album_id = a.id) as produtores,
                     (SELECT GROUP_CONCAT(gen.descricao SEPARATOR '||') 
                      FROM album_genero ag 
                      JOIN tb_generos gen ON ag.genero_id = gen.id 
@@ -94,19 +98,31 @@ class MySqlColecaoRepository
 
     public function listarTodosTipos(): array
     {
-        $stmt = $this->db->query("SELECT id, descricao FROM tb_tipos ORDER BY descricao ASC");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        return $this->db->query("SELECT id, descricao FROM tb_tipos ORDER BY descricao ASC")->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
 
     public function listarTodasGravadoras(): array
     {
-        $stmt = $this->db->query("SELECT id, nome FROM tb_gravadoras ORDER BY nome ASC");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        return $this->db->query("SELECT id, nome FROM tb_gravadoras ORDER BY nome ASC")->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
 
     public function listarTodosFormatos(): array
     {
-        $stmt = $this->db->query("SELECT id, descricao FROM tb_formatos ORDER BY descricao ASC");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        return $this->db->query("SELECT id, descricao FROM tb_formatos ORDER BY descricao ASC")->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    }
+
+    public function listarTodosProdutores(): array
+    {
+        return $this->db->query("SELECT id, nome FROM tb_produtores ORDER BY nome ASC")->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    }
+
+    public function listarTodosGeneros(): array
+    {
+        return $this->db->query("SELECT id, descricao FROM tb_generos ORDER BY descricao ASC")->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    }
+
+    public function listarTodosEstilos(): array
+    {
+        return $this->db->query("SELECT id, descricao FROM tb_estilos ORDER BY descricao ASC")->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
 }

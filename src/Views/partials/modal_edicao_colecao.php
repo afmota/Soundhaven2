@@ -72,7 +72,7 @@
                         </div>
                     </div>
 
-                    <div class="row g-3">
+                    <div class="row g-3 mb-4">
                         <div class="col-md-6">
                             <label for="colecao-edit-formato" class="form-label text-muted small text-uppercase" style="font-size: 0.65rem;">Formato</label>
                             <select class="form-select form-select-sm bg-dark text-white border-secondary shadow-none" id="colecao-edit-formato" name="formato_id">
@@ -92,6 +92,44 @@
                             </select>
                         </div>
                     </div>
+
+                    <hr class="border-secondary opacity-25">
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label text-primary small text-uppercase fw-bold" style="font-size: 0.6rem;">Gêneros</label>
+                            <select class="form-select form-select-sm bg-dark text-white border-secondary mb-2" onchange="adicionarTag(this, 'tags-generos', 'generos[]')">
+                                <option value="">+ Adicionar</option>
+                                <?php if(isset($listaGeneros)): foreach($listaGeneros as $g): ?>
+                                    <option value="<?= $g['descricao'] ?>"><?= htmlspecialchars($g['descricao']) ?></option>
+                                <?php endforeach; endif; ?>
+                            </select>
+                            <div id="tags-generos" class="d-flex flex-wrap gap-1"></div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label text-primary small text-uppercase fw-bold" style="font-size: 0.6rem;">Estilos</label>
+                            <select class="form-select form-select-sm bg-dark text-white border-secondary mb-2" onchange="adicionarTag(this, 'tags-estilos', 'estilos[]')">
+                                <option value="">+ Adicionar</option>
+                                <?php if(isset($listaEstilos)): foreach($listaEstilos as $e): ?>
+                                    <option value="<?= $e['descricao'] ?>"><?= htmlspecialchars($e['descricao']) ?></option>
+                                <?php endforeach; endif; ?>
+                            </select>
+                            <div id="tags-estilos" class="d-flex flex-wrap gap-1"></div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label text-primary small text-uppercase fw-bold" style="font-size: 0.6rem;">Produtores</label>
+                            <select class="form-select form-select-sm bg-dark text-white border-secondary mb-2" onchange="adicionarTag(this, 'tags-produtores', 'produtores[]')">
+                                <option value="">+ Adicionar</option>
+                                <?php if(isset($listaProdutores)): foreach($listaProdutores as $p): ?>
+                                    <option value="<?= $p['nome'] ?>"><?= htmlspecialchars($p['nome']) ?></option>
+                                <?php endforeach; endif; ?>
+                            </select>
+                            <div id="tags-produtores" class="d-flex flex-wrap gap-1"></div>
+                        </div>
+                    </div>
+
                 </form>
             </div>
             <div class="modal-footer border-secondary">

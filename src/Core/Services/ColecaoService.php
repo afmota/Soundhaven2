@@ -26,4 +26,16 @@ class ColecaoService {
     public function getFormatos(): array {
         return $this->repository->listarTodosFormatos();
     }
+
+    public function getProdutores(): array {
+        return $this->repository->listarTodosProdutores();
+    }
+
+    public function getGeneros(): array {
+        return $this->repository->listarTodosGeneros();
+    }
+
+    public function getEstilos(): array {
+        return $this->repository->listarTodosEstilos();
+    }
 }
