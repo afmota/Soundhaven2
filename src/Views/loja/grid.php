@@ -2,6 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SoundHaven - Store</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -12,7 +13,9 @@
 
     <main class="store-grid">
         <?php foreach ($albuns as $album): ?>
-            <article class="album-card" onclick='openModal(<?= json_encode($album) ?>)'>
+            <article class="album-card" 
+                     data-album='<?= htmlspecialchars(json_encode($album), ENT_QUOTES, 'UTF-8') ?>'
+                     onclick="openModal(this)">
                 <img src="<?= htmlspecialchars($album['capa_url'] ?: 'assets/images/placeholder.jpg') ?>" alt="Capa">
                 <div class="album-info">
                     <span class="album-title"><?= htmlspecialchars($album['titulo']) ?></span>
@@ -26,31 +29,60 @@
     <div id="albumModal" class="modal">
         <div class="modal-content">
             <span class="modal-close" onclick="closeModal()">&times;</span>
-            <img id="modalImg" class="modal-img" src="" alt="Capa">
+            <div class="modal-left">
+                <img id="modalImg" class="modal-img" src="" alt="Capa">
+            </div>
             <div class="modal-details">
                 <h2 id="modalTitle"></h2>
-                <p><span class="label">Artista:</span> <span id="modalArtist"></span></p>
-                <p><span class="label">Gravadora:</span> <span id="modalLabel"></span></p>
-                <p><span class="label">Lançamento:</span> <span id="modalDate"></span></p>
-                <p><span class="label">Tipo:</span> <span id="modalType"></span></p>
-                <p><span class="label">Situação:</span> <span id="modalStatus"></span></p>
+                <p><span class="label">Artista</span> <span id="modalArtist"></span></p>
+                <p><span class="label">Gravadora</span> <span id="modalLabel"></span></p>
+                <p><span class="label">Lançamento</span> <span id="modalDate"></span></p>
+                <p><span class="label">Tipo</span> <span id="modalType"></span></p>
+                <p><span class="label">Situação</span> <span id="modalStatus"></span></p>
+                
+                <div class="modal-actions">
+                    <button class="btn btn-edit">Editar</button>
+                    <form method="POST" id="formDelete" onsubmit="return confirm('Deseja realmente remover este item da loja?')">
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="id" id="deleteId">
+                        <button type="submit" class="btn btn-delete">Descartar</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 
     <nav class="pagination">
-        </nav>
+        <?php if ($paginaAtual > 1): ?>
+            <a href="?url=loja&page=1">Primeira</a>
+        <?php endif; ?>
+        <?php for ($i = $inicioPagina; $i <= $fimPagina; $i++): ?>
+            <a href="?url=loja&page=<?= $i ?>" class="<?= $i == $paginaAtual ? 'active' : '' ?>"><?= $i ?></a>
+        <?php endfor; ?>
+        <?php if ($paginaAtual < $totalPaginas): ?>
+            <a href="?url=loja&page=<?= $totalPaginas ?>">Última</a>
+        <?php endif; ?>
+    </nav>
 </div>
 
 <script>
-function openModal(album) {
+function formatDate(dateStr) {
+    if (!dateStr || dateStr === 'N/D') return 'N/D';
+    const parts = dateStr.split('-');
+    if (parts.length !== 3) return dateStr;
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+}
+
+function openModal(element) {
+    const album = JSON.parse(element.getAttribute('data-album'));
     document.getElementById('modalTitle').innerText = album.titulo;
     document.getElementById('modalArtist').innerText = album.artista_nome;
     document.getElementById('modalLabel').innerText = album.gravadora_nome || 'N/D';
-    document.getElementById('modalDate').innerText = album.data_lancamento || 'N/D';
+    document.getElementById('modalDate').innerText = formatDate(album.data_lancamento);
     document.getElementById('modalType').innerText = album.tipo_desc || 'N/D';
     document.getElementById('modalStatus').innerText = album.situacao_desc || 'N/D';
     document.getElementById('modalImg').src = album.capa_url || 'assets/images/placeholder.jpg';
+    document.getElementById('deleteId').value = album.id;
     document.getElementById('albumModal').style.display = "block";
 }
 
@@ -62,6 +94,5 @@ window.onclick = function(event) {
     if (event.target == document.getElementById('albumModal')) closeModal();
 }
 </script>
-
 </body>
 </html>

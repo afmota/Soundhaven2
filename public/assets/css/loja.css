@@ -1,5 +1,5 @@
 .store-container {
-    width: 60vw; /* Limite de 60% da tela conforme solicitado */
+    width: 60vw;
     margin: 0 auto;
     padding: 40px 0;
 }
@@ -17,15 +17,22 @@
     padding: 10px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    height: 320px; /* Altura fixa para evitar efeito caleidoscópio */
-    overflow: hidden;
+    height: 320px;
+    cursor: pointer;
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
+}
+
+.album-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    z-index: 10;
+    border-color: var(--accent-color);
 }
 
 .album-card img {
     width: 100%;
-    aspect-ratio: 1/1; /* Garante que a capa seja sempre quadrada */
-    object-fit: cover; /* Corta a imagem sem distorcer para preencher o quadrado */
+    aspect-ratio: 1/1;
+    object-fit: cover;
     background-color: #2c2c2c;
     border-radius: 2px;
 }
@@ -63,60 +70,7 @@
     margin-top: auto;
 }
 
-.pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 40px;
-    gap: 5px;
-}
-
-.pagination a {
-    color: var(--text-primary);
-    text-decoration: none;
-    padding: 8px 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    font-size: 0.85em;
-    transition: background 0.2s;
-}
-
-.pagination a:hover {
-    background: var(--border-color);
-}
-
-.pagination a.active {
-    background: var(--accent-color);
-    color: #000;
-    border-color: var(--accent-color);
-}
-
-.pagination span.gap {
-    color: var(--text-secondary);
-    padding: 0 5px;
-}
-
-.album-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    height: 320px;
-    cursor: pointer;
-    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
-}
-
-/* Efeito de aumento solicitado */
-.album-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-    z-index: 10;
-    border-color: var(--accent-color);
-}
-
-/* Estilização do Modal */
+/* MODAL STYLES */
 .modal {
     display: none;
     position: fixed;
@@ -132,33 +86,105 @@
 .modal-content {
     background-color: var(--card-bg);
     margin: 5% auto;
-    padding: 20px;
-    border: 1px solid var(--accent-color);
-    width: 50%;
-    max-width: 700px;
+    padding: 30px;
+    border: 1px solid var(--border-color);
+    width: 80%;
+    max-width: 800px;
     border-radius: 8px;
     display: flex;
-    gap: 20px;
+    gap: 30px;
     position: relative;
     color: var(--text-primary);
+    box-shadow: 0 0 30px rgba(0,0,0,1);
 }
 
 .modal-close {
     position: absolute;
-    right: 15px;
+    right: 20px;
     top: 10px;
-    font-size: 28px;
+    font-size: 32px;
     cursor: pointer;
     color: var(--text-secondary);
 }
 
-.modal-img {
-    width: 250px;
-    height: 250px;
-    object-fit: cover;
-    border-radius: 4px;
+.modal-left {
+    flex: 0 0 300px;
 }
 
-.modal-details h2 { color: var(--accent-color); margin-top: 0; }
-.modal-details p { margin: 8px 0; border-bottom: 1px solid #333; padding-bottom: 4px; }
-.label { color: var(--text-secondary); font-size: 0.85em; text-transform: uppercase; }
+.modal-img {
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+}
+
+.modal-details {
+    flex: 1;
+}
+
+.modal-details h2 {
+    color: var(--accent-color);
+    margin: 0 0 15px 0;
+}
+
+.modal-details p {
+    margin: 12px 0;
+    border-bottom: 1px solid #2a2a2a;
+    padding-bottom: 5px;
+    font-size: 0.95em;
+}
+
+.label {
+    color: var(--text-secondary);
+    font-size: 0.75em;
+    text-transform: uppercase;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.modal-actions {
+    margin-top: 25px;
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.8em;
+    transition: opacity 0.2s;
+}
+
+.btn:hover { opacity: 0.8; }
+.btn-edit { background-color: var(--accent-color); color: #000; }
+.btn-delete { background-color: #cf6679; color: #fff; }
+
+/* PAGINATION */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px;
+    gap: 5px;
+}
+
+.pagination a {
+    color: var(--text-primary);
+    text-decoration: none;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.85em;
+}
+
+.pagination a.active {
+    background: var(--accent-color);
+    color: #000;
+    border-color: var(--accent-color);
+}

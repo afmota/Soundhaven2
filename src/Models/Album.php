@@ -43,4 +43,11 @@ class Album {
         $sql = "SELECT COUNT(*) FROM tb_albuns WHERE situacao NOT IN (4, 5) AND deletado = 0";
         return $this->db->query($sql)->fetchColumn();
     }
+
+    public function softDelete($id) {
+        $sql = "UPDATE tb_albuns SET deletado = 1, atualizado_em = CURRENT_TIMESTAMP WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':id', (int) $id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
 }
