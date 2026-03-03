@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SoundHaven - Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -41,11 +42,20 @@
                 <p><span class="label">Situação</span> <span id="modalStatus"></span></p>
                 
                 <div class="modal-actions">
-                    <button class="btn btn-edit">Editar</button>
+                    <button class="btn btn-acquire">
+                        <i class="fa-solid fa-cart-shopping"></i> Adquirir
+                    </button>
+
+                    <button class="btn btn-edit">
+                        <i class="fa-solid fa-pen-to-square"></i> Editar
+                    </button>
+
                     <form method="POST" id="formDelete" onsubmit="return confirm('Deseja realmente remover este item da loja?')">
                         <input type="hidden" name="action" value="delete">
                         <input type="hidden" name="id" id="deleteId">
-                        <button type="submit" class="btn btn-delete">Descartar</button>
+                        <button type="submit" class="btn btn-delete">
+                            <i class="fa-solid fa-trash-can"></i> Descartar
+                        </button>
                     </form>
                 </div>
             </div>

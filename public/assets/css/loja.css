@@ -147,21 +147,29 @@
 .modal-actions {
     margin-top: 25px;
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
 }
 
 .btn {
-    padding: 10px 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
     border-radius: 4px;
     border: none;
     cursor: pointer;
     font-weight: bold;
     text-transform: uppercase;
-    font-size: 0.8em;
-    transition: opacity 0.2s;
+    font-size: 0.75em;
+    transition: all 0.2s;
 }
 
-.btn:hover { opacity: 0.8; }
+.btn i { font-size: 1.1em; }
+.btn:hover { opacity: 0.8; transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+
+.btn-acquire { background-color: #03dac6; color: #000; } /* Verde Água Dark Mode */
 .btn-edit { background-color: var(--accent-color); color: #000; }
 .btn-delete { background-color: #cf6679; color: #fff; }
 
