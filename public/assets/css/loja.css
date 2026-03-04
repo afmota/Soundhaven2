@@ -143,7 +143,7 @@
 .modal-close { position: absolute; top: 15px; right: 20px; color: var(--text-secondary); font-size: 28px; font-weight: bold; cursor: pointer; }
 .modal-close:hover { color: var(--text-primary); }
 
-/* BOTÕES GLOBAIS - PADRONIZAÇÃO V2.3.3 */
+/* BOTÕES GLOBAIS - PADRONIZAÇÃO V2.3.4 */
 .btn { 
     display: inline-flex; 
     align-items: center; 

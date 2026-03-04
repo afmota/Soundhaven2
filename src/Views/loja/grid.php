@@ -139,7 +139,7 @@
 <div id="editModal" class="modal">
     <div class="modal-content">
         <span class="modal-close" onclick="closeEditModal()">&times;</span>
-        <h2 style="color:var(--accent-color); margin-top:0; margin-bottom: 20px;">Editar Álbum</h2>
+        <h2 id="editModalHeaderTitle" style="color:var(--accent-color); margin-top:0; margin-bottom: 20px;">Editar Álbum</h2>
         <div id="editModalBody">
             <div class="edit-modal-header-row">
                 <img id="editModalImg" class="edit-modal-capa" src="" alt="Capa Edição">

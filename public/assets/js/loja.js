@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputCapaUrl = document.getElementById('editModalCapaUrl');
     const imgPreview = document.getElementById('editModalImg');
     
+    // Variável de controle para o álbum atual em memória
+    let currentAlbumData = null;
+
     // --- Reatividade da Capa ---
     if (inputCapaUrl && imgPreview) {
         inputCapaUrl.addEventListener('input', (e) => {
@@ -17,16 +20,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Lógica de Abertura do Modal de Detalhes ---
     document.addEventListener('click', (e) => {
         const card = e.target.closest('.album-card');
-        if (card) openModal(card);
+        if (card) {
+            currentAlbumData = JSON.parse(card.getAttribute('data-album'));
+            openModal(currentAlbumData);
+        }
     });
 
     // --- Lógica do Botão Editar ---
     const btnOpenEdit = document.getElementById('btnOpenEdit');
     if (btnOpenEdit) {
         btnOpenEdit.addEventListener('click', () => {
-            const currentImg = document.getElementById('modalImg').src;
-            closeModal();
-            openEditModal(currentImg);
+            if (currentAlbumData) {
+                closeModal();
+                openEditModal(currentAlbumData);
+            }
         });
     }
 
@@ -51,8 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-function openModal(element) {
-    const album = JSON.parse(element.getAttribute('data-album'));
+function openModal(album) {
     document.getElementById('modalTitle').innerText = album.titulo;
     document.getElementById('modalArtist').innerText = album.artista_nome;
     document.getElementById('modalLabel').innerText = album.gravadora_nome || 'N/D';
@@ -68,9 +74,14 @@ function closeModal() {
     document.getElementById('albumModal').style.display = "none";
 }
 
-function openEditModal(imgSrc) {
-    document.getElementById('editModalImg').src = imgSrc;
-    document.getElementById('editModalCapaUrl').value = imgSrc;
+function openEditModal(album) {
+    // Atualiza o título dinamicamente conforme solicitado
+    document.getElementById('editModalHeaderTitle').innerText = `Editar ${album.titulo}`;
+    
+    // Popula campos existentes
+    document.getElementById('editModalImg').src = album.capa_url || 'assets/images/placeholder.jpg';
+    document.getElementById('editModalCapaUrl').value = album.capa_url || '';
+    
     document.getElementById('editModal').style.display = "block";
 }
 
