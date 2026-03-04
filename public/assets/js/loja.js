@@ -75,12 +75,15 @@ function closeModal() {
 }
 
 function openEditModal(album) {
-    // Atualiza o título dinamicamente conforme solicitado
+    // Atualiza o título dinamicamente (PATCH 2.3.4)
     document.getElementById('editModalHeaderTitle').innerText = `Editar ${album.titulo}`;
     
-    // Popula campos existentes
+    // Popula campos existentes (PATCH 2.3.1 e 2.3.2)
     document.getElementById('editModalImg').src = album.capa_url || 'assets/images/placeholder.jpg';
     document.getElementById('editModalCapaUrl').value = album.capa_url || '';
+    
+    // CORREÇÃO PATCH 2.3.5: Popula o campo Título
+    document.getElementById('editModalTitulo').value = album.titulo;
     
     document.getElementById('editModal').style.display = "block";
 }

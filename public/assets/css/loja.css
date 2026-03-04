@@ -60,7 +60,7 @@
     box-sizing: border-box;
 }
 
-.btn-search { width: 100%; background: var(--accent-color); color: #000; margin-bottom: 10px; }
+.btn-search { width: 100%; background: var(--action-positive); color: #000; margin-bottom: 10px; }
 .btn-clear { 
     width: 100%; 
     background: transparent; 
@@ -143,7 +143,7 @@
 .modal-close { position: absolute; top: 15px; right: 20px; color: var(--text-secondary); font-size: 28px; font-weight: bold; cursor: pointer; }
 .modal-close:hover { color: var(--text-primary); }
 
-/* BOTÕES GLOBAIS - PADRONIZAÇÃO V2.3.4 */
+/* BOTÕES GLOBAIS - PADRONIZAÇÃO V2.3.5 */
 .btn { 
     display: inline-flex; 
     align-items: center; 
@@ -165,7 +165,7 @@
 /* ESTILO ESPECÍFICO PARA O MODAL DE EDIÇÃO */
 #editModal .modal-content {
     width: 700px;
-    min-height: 450px;
+    min-height: 450px; /* Mantendo flexibilidade */
     flex-direction: column;
 }
 
@@ -174,7 +174,6 @@
     align-items: flex-end;
     gap: 20px;
     width: 100%;
-    margin-bottom: 25px;
 }
 
 .edit-modal-capa {
@@ -209,4 +208,12 @@
     color: var(--text-primary);
     border-radius: 4px;
     font-size: 0.9em;
+}
+
+/* Estilo para a Linha Horizontal */
+.edit-modal-separator {
+    border: 0;
+    border-top: 1px solid var(--border-color);
+    margin: 25px 0;
+    width: 100%;
 }

@@ -139,7 +139,7 @@
 <div id="editModal" class="modal">
     <div class="modal-content">
         <span class="modal-close" onclick="closeEditModal()">&times;</span>
-        <h2 id="editModalHeaderTitle" style="color:var(--accent-color); margin-top:0; margin-bottom: 20px;">Editar Álbum</h2>
+        <h2 id="editModalHeaderTitle" style="color:var(--accent-color); margin-top:0; margin-bottom: 20px;"></h2>
         <div id="editModalBody">
             <div class="edit-modal-header-row">
                 <img id="editModalImg" class="edit-modal-capa" src="" alt="Capa Edição">
@@ -147,6 +147,13 @@
                     <label>CAPA</label>
                     <input type="text" id="editModalCapaUrl" placeholder="https://exemplo.com/imagem.jpg">
                 </div>
+            </div>
+
+            <hr class="edit-modal-separator">
+
+            <div class="edit-field-group">
+                <label>TÍTULO</label>
+                <input type="text" id="editModalTitulo" placeholder="Ex: Master of Puppets">
             </div>
         </div>
     </div>
