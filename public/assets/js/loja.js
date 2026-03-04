@@ -1,55 +1,51 @@
 /**
- * SoundHaven - Script de Interatividade da Loja
+ * SoundHaven - Script Global de Interatividade
  */
-
 document.addEventListener('DOMContentLoaded', () => {
+    // --- Lógica do Modal de Detalhes ---
     const modal = document.getElementById('albumModal');
     
-    // 1. Delegação de Evento para abertura do Modal
     document.addEventListener('click', (e) => {
         const card = e.target.closest('.album-card');
-        if (card) {
-            openModal(card);
-        }
+        if (card) openModal(card);
     });
 
-    // 2. Fechamento do Modal (Botão X)
     const closeBtn = document.querySelector('.modal-close');
-    if (closeBtn) {
-        closeBtn.addEventListener('click', closeModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+    // --- Lógica do Dropdown do Header ---
+    const avatarTrigger = document.getElementById('avatarTrigger');
+    const dropdown = document.getElementById('myDropdown');
+
+    if (avatarTrigger) {
+        avatarTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle('show');
+        });
     }
 
-    // 3. Fechamento ao clicar fora do conteúdo
+    // Fechamento global (modais e dropdowns)
     window.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            closeModal();
+        // Fecha modal se clicar fora
+        if (e.target === modal) closeModal();
+        
+        // Fecha dropdown se clicar fora
+        if (dropdown && !dropdown.contains(e.target) && !avatarTrigger.contains(e.target)) {
+            dropdown.classList.remove('show');
         }
     });
 });
 
-/**
- * Preenche e exibe o modal
- */
+// Funções Auxiliares
 function openModal(element) {
-    const albumData = element.getAttribute('data-album');
-    if (!albumData) return;
-
-    try {
-        const album = JSON.parse(albumData);
-        
-        document.getElementById('modalTitle').innerText = album.titulo;
-        document.getElementById('modalArtist').innerText = album.artista_nome;
-        document.getElementById('modalLabel').innerText = album.gravadora_nome || 'N/D';
-        document.getElementById('modalDate').innerText = formatDate(album.data_lancamento);
-        document.getElementById('modalType').innerText = album.tipo_desc || 'N/D';
-        document.getElementById('modalStatus').innerText = album.situacao_desc || 'N/D';
-        document.getElementById('modalImg').src = album.capa_url || 'assets/images/placeholder.jpg';
-        document.getElementById('deleteId').value = album.id;
-
-        document.getElementById('albumModal').style.display = "block";
-    } catch (error) {
-        console.error("Erro ao processar dados do álbum:", error);
-    }
+    const album = JSON.parse(element.getAttribute('data-album'));
+    document.getElementById('modalTitle').innerText = album.titulo;
+    document.getElementById('modalArtist').innerText = album.artista_nome;
+    document.getElementById('modalLabel').innerText = album.gravadora_nome || 'N/D';
+    document.getElementById('modalDate').innerText = formatDate(album.data_lancamento);
+    document.getElementById('modalImg').src = album.capa_url || 'assets/images/placeholder.jpg';
+    document.getElementById('deleteId').value = album.id;
+    document.getElementById('albumModal').style.display = "block";
 }
 
 function closeModal() {

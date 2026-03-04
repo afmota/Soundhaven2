@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SoundHaven - Store</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/header.css">
     <link rel="stylesheet" href="assets/css/loja.css">
 </head>
 <body>
 
-<header>
-    <h1 style="text-align: center; color: var(--accent-color); margin: 40px 0;">SOUNDHAVEN</h1>
-</header>
+<?php include __DIR__ . '/../partials/header.php'; ?>
 
 <div class="page-wrapper">
     <div class="spacer-left"></div>
@@ -125,7 +126,7 @@
             <div class="modal-actions" style="margin-top:20px; display:flex; gap:10px;">
                 <button class="btn btn-acquire"><i class="fa-solid fa-cart-shopping"></i> Adquirir</button>
                 <button class="btn btn-edit"><i class="fa-solid fa-pen"></i> Editar</button>
-                <form method="POST" id="formDelete">
+                <form method="POST" id="formDelete" onsubmit="return confirm('Deseja realmente descartar este álbum?')">
                     <input type="hidden" name="action" value="delete">
                     <input type="hidden" name="id" id="deleteId">
                     <button type="submit" class="btn btn-delete"><i class="fa-solid fa-trash"></i> Descartar</button>
