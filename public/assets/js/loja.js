@@ -2,23 +2,29 @@
  * SoundHaven - Script Global de Interatividade
  */
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Referências de Modais ---
     const modal = document.getElementById('albumModal');
     const editModal = document.getElementById('editModal');
+    const inputCapaUrl = document.getElementById('editModalCapaUrl');
+    const imgPreview = document.getElementById('editModalImg');
     
+    // --- Reatividade da Capa ---
+    if (inputCapaUrl && imgPreview) {
+        inputCapaUrl.addEventListener('input', (e) => {
+            imgPreview.src = e.target.value || 'assets/images/placeholder.jpg';
+        });
+    }
+
     // --- Lógica de Abertura do Modal de Detalhes ---
     document.addEventListener('click', (e) => {
         const card = e.target.closest('.album-card');
         if (card) openModal(card);
     });
 
-    // --- Lógica do Botão Editar (Dentro do Modal de Detalhes) ---
+    // --- Lógica do Botão Editar ---
     const btnOpenEdit = document.getElementById('btnOpenEdit');
     if (btnOpenEdit) {
         btnOpenEdit.addEventListener('click', () => {
-            // Captura a URL da imagem atual antes de fechar o modal de detalhes
             const currentImg = document.getElementById('modalImg').src;
-            
             closeModal();
             openEditModal(currentImg);
         });
@@ -35,18 +41,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Fechamento global (modais e dropdowns)
+    // Fechamento global
     window.addEventListener('click', (e) => {
         if (e.target === modal) closeModal();
         if (e.target === editModal) closeEditModal();
-        
         if (dropdown && !dropdown.contains(e.target) && !avatarTrigger.contains(e.target)) {
             dropdown.classList.remove('show');
         }
     });
 });
 
-// Funções Auxiliares - Modal de Detalhes
 function openModal(element) {
     const album = JSON.parse(element.getAttribute('data-album'));
     document.getElementById('modalTitle').innerText = album.titulo;
@@ -64,7 +68,6 @@ function closeModal() {
     document.getElementById('albumModal').style.display = "none";
 }
 
-// Funções Auxiliares - Modal de Edição
 function openEditModal(imgSrc) {
     document.getElementById('editModalImg').src = imgSrc;
     document.getElementById('editModalCapaUrl').value = imgSrc;

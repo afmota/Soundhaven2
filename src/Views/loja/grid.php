@@ -144,7 +144,7 @@
             <div class="edit-modal-header-row">
                 <img id="editModalImg" class="edit-modal-capa" src="" alt="Capa Edição">
                 <div class="edit-field-group">
-                    <label>Link da Capa (URL)</label>
+                    <label>CAPA</label>
                     <input type="text" id="editModalCapaUrl" placeholder="https://exemplo.com/imagem.jpg">
                 </div>
             </div>
