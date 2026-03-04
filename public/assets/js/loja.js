@@ -67,6 +67,7 @@ function closeModal() {
 // Funções Auxiliares - Modal de Edição
 function openEditModal(imgSrc) {
     document.getElementById('editModalImg').src = imgSrc;
+    document.getElementById('editModalCapaUrl').value = imgSrc;
     document.getElementById('editModal').style.display = "block";
 }
 

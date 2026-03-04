@@ -139,10 +139,16 @@
 <div id="editModal" class="modal">
     <div class="modal-content">
         <span class="modal-close" onclick="closeEditModal()">&times;</span>
-        <h2 style="color:var(--accent-color); margin-top:0;">Editar Álbum</h2>
+        <h2 style="color:var(--accent-color); margin-top:0; margin-bottom: 20px;">Editar Álbum</h2>
         <div id="editModalBody">
-            <img id="editModalImg" class="edit-modal-capa" src="" alt="Capa Edição">
+            <div class="edit-modal-header-row">
+                <img id="editModalImg" class="edit-modal-capa" src="" alt="Capa Edição">
+                <div class="edit-field-group">
+                    <label>Link da Capa (URL)</label>
+                    <input type="text" id="editModalCapaUrl" placeholder="https://exemplo.com/imagem.jpg">
+                </div>
             </div>
+        </div>
     </div>
 </div>
 
