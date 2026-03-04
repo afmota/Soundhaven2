@@ -16,8 +16,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnOpenEdit = document.getElementById('btnOpenEdit');
     if (btnOpenEdit) {
         btnOpenEdit.addEventListener('click', () => {
+            // Captura a URL da imagem atual antes de fechar o modal de detalhes
+            const currentImg = document.getElementById('modalImg').src;
+            
             closeModal();
-            openEditModal();
+            openEditModal(currentImg);
         });
     }
 
@@ -62,7 +65,8 @@ function closeModal() {
 }
 
 // Funções Auxiliares - Modal de Edição
-function openEditModal() {
+function openEditModal(imgSrc) {
+    document.getElementById('editModalImg').src = imgSrc;
     document.getElementById('editModal').style.display = "block";
 }
 
