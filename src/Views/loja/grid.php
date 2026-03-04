@@ -6,6 +6,7 @@
     <title>SoundHaven - Store</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/loja.css">
 </head>
 <body>
 
@@ -25,8 +26,7 @@
             <?php else: ?>
                 <?php foreach ($albuns as $album): ?>
                     <article class="album-card" 
-                             data-album='<?= htmlspecialchars(json_encode($album), ENT_QUOTES, 'UTF-8') ?>' 
-                             onclick="openModal(this)">
+                             data-album='<?= htmlspecialchars(json_encode($album), ENT_QUOTES, 'UTF-8') ?>'>
                         <img src="<?= htmlspecialchars($album['capa_url'] ?: 'assets/images/placeholder.jpg') ?>" alt="Capa">
                         <div class="album-info">
                             <span class="album-title"><?= htmlspecialchars($album['titulo']) ?></span>
@@ -112,7 +112,7 @@
 
 <div id="albumModal" class="modal">
     <div class="modal-content">
-        <span class="modal-close" onclick="closeModal()">&times;</span>
+        <span class="modal-close">&times;</span>
         <div style="flex: 0 0 300px;"><img id="modalImg" style="width:100%; border-radius:4px;" src="" alt="Capa"></div>
         <div style="flex: 1;">
             <h2 id="modalTitle" style="color:var(--accent-color); margin-top:0;"></h2>
@@ -125,7 +125,7 @@
             <div class="modal-actions" style="margin-top:20px; display:flex; gap:10px;">
                 <button class="btn btn-acquire"><i class="fa-solid fa-cart-shopping"></i> Adquirir</button>
                 <button class="btn btn-edit"><i class="fa-solid fa-pen"></i> Editar</button>
-                <form method="POST" id="formDelete" onsubmit="return confirm('Deseja realmente descartar este álbum?')">
+                <form method="POST" id="formDelete">
                     <input type="hidden" name="action" value="delete">
                     <input type="hidden" name="id" id="deleteId">
                     <button type="submit" class="btn btn-delete"><i class="fa-solid fa-trash"></i> Descartar</button>
@@ -135,26 +135,6 @@
     </div>
 </div>
 
-<script>
-function formatDate(dateStr) {
-    if (!dateStr || dateStr === 'N/D') return 'N/D';
-    const parts = dateStr.split('-');
-    return parts.length !== 3 ? dateStr : `${parts[2]}/${parts[1]}/${parts[0]}`;
-}
-function openModal(element) {
-    const album = JSON.parse(element.getAttribute('data-album'));
-    document.getElementById('modalTitle').innerText = album.titulo;
-    document.getElementById('modalArtist').innerText = album.artista_nome;
-    document.getElementById('modalLabel').innerText = album.gravadora_nome || 'N/D';
-    document.getElementById('modalDate').innerText = formatDate(album.data_lancamento);
-    document.getElementById('modalType').innerText = album.tipo_desc || 'N/D';
-    document.getElementById('modalStatus').innerText = album.situacao_desc || 'N/D';
-    document.getElementById('modalImg').src = album.capa_url || 'assets/images/placeholder.jpg';
-    document.getElementById('deleteId').value = album.id;
-    document.getElementById('albumModal').style.display = "block";
-}
-function closeModal() { document.getElementById('albumModal').style.display = "none"; }
-window.onclick = function(e) { if (e.target == document.getElementById('albumModal')) closeModal(); }
-</script>
+<script src="assets/js/loja.js"></script>
 </body>
 </html>

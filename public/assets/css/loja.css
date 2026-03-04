@@ -1,16 +1,15 @@
 /* Layout Principal com Simetria 20-60-20 */
 .page-wrapper {
     display: grid;
-    grid-template-columns: 1fr 60vw 1fr; /* Esquerda (20%) | Centro (60%) | Direita (20%) */
+    grid-template-columns: 1fr 60vw 1fr;
     gap: 0;
     padding: 40px 0;
     width: 100%;
     align-items: flex-start;
 }
 
-/* Seção do Grid Centralizada */
 .main-section {
-    grid-column: 2; /* Ocupa a coluna central de 60vw */
+    grid-column: 2;
     display: flex;
     flex-direction: column;
 }
@@ -21,9 +20,8 @@
     gap: 15px;
 }
 
-/* Sidebar na "Sobra" da Direita */
 .sidebar-filters {
-    grid-column: 3; /* Posicionada na calha de 20% à direita */
+    grid-column: 3;
     width: 250px;
     margin-left: 20px;
     background: var(--card-bg);
@@ -76,13 +74,13 @@
     border-radius: 4px;
 }
 
-/* CARDS REFORMULADOS */
+/* CARDS */
 .album-card {
     background: var(--card-bg);
     border: 1px solid var(--border-color);
     border-radius: 4px;
     padding: 10px;
-    height: 320px; /* Ajustado para acomodar o ano */
+    height: 320px;
     cursor: pointer;
     display: flex;
     flex-direction: column;
@@ -102,7 +100,7 @@
     font-size: 0.9em; 
     font-weight: 600; 
     color: var(--accent-color); 
-    margin-bottom: 2px; 
+    margin-bottom: 2px;
     display: -webkit-box; 
     -webkit-line-clamp: 2; 
     -webkit-box-orient: vertical; 
@@ -119,7 +117,7 @@
 .release-year {
     font-size: 0.75em;
     color: var(--text-secondary);
-    margin-top: auto; /* Garante que o ano fique sempre na base do card */
+    margin-top: auto;
     font-weight: 400;
 }
 
