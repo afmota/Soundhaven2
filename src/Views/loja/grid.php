@@ -113,7 +113,7 @@
 
 <div id="albumModal" class="modal">
     <div class="modal-content">
-        <span class="modal-close">&times;</span>
+        <span class="modal-close" onclick="closeModal()">&times;</span>
         <div style="flex: 0 0 300px;"><img id="modalImg" style="width:100%; border-radius:4px;" src="" alt="Capa"></div>
         <div style="flex: 1;">
             <h2 id="modalTitle" style="color:var(--accent-color); margin-top:0;"></h2>
@@ -125,7 +125,7 @@
             
             <div class="modal-actions" style="margin-top:20px; display:flex; gap:10px;">
                 <button class="btn btn-acquire"><i class="fa-solid fa-cart-shopping"></i> Adquirir</button>
-                <button class="btn btn-edit"><i class="fa-solid fa-pen"></i> Editar</button>
+                <button id="btnOpenEdit" class="btn btn-edit"><i class="fa-solid fa-pen"></i> Editar</button>
                 <form method="POST" id="formDelete" onsubmit="return confirm('Deseja realmente descartar este álbum?')">
                     <input type="hidden" name="action" value="delete">
                     <input type="hidden" name="id" id="deleteId">
@@ -133,6 +133,15 @@
                 </form>
             </div>
         </div>
+    </div>
+</div>
+
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close" onclick="closeEditModal()">&times;</span>
+        <h2 style="color:var(--accent-color); margin-top:0;">Editar Álbum</h2>
+        <div id="editModalBody">
+            </div>
     </div>
 </div>
 

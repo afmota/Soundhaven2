@@ -2,16 +2,24 @@
  * SoundHaven - Script Global de Interatividade
  */
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Lógica do Modal de Detalhes ---
+    // --- Referências de Modais ---
     const modal = document.getElementById('albumModal');
+    const editModal = document.getElementById('editModal');
     
+    // --- Lógica de Abertura do Modal de Detalhes ---
     document.addEventListener('click', (e) => {
         const card = e.target.closest('.album-card');
         if (card) openModal(card);
     });
 
-    const closeBtn = document.querySelector('.modal-close');
-    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    // --- Lógica do Botão Editar (Dentro do Modal de Detalhes) ---
+    const btnOpenEdit = document.getElementById('btnOpenEdit');
+    if (btnOpenEdit) {
+        btnOpenEdit.addEventListener('click', () => {
+            closeModal();
+            openEditModal();
+        });
+    }
 
     // --- Lógica do Dropdown do Header ---
     const avatarTrigger = document.getElementById('avatarTrigger');
@@ -26,17 +34,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Fechamento global (modais e dropdowns)
     window.addEventListener('click', (e) => {
-        // Fecha modal se clicar fora
         if (e.target === modal) closeModal();
+        if (e.target === editModal) closeEditModal();
         
-        // Fecha dropdown se clicar fora
         if (dropdown && !dropdown.contains(e.target) && !avatarTrigger.contains(e.target)) {
             dropdown.classList.remove('show');
         }
     });
 });
 
-// Funções Auxiliares
+// Funções Auxiliares - Modal de Detalhes
 function openModal(element) {
     const album = JSON.parse(element.getAttribute('data-album'));
     document.getElementById('modalTitle').innerText = album.titulo;
@@ -44,12 +51,23 @@ function openModal(element) {
     document.getElementById('modalLabel').innerText = album.gravadora_nome || 'N/D';
     document.getElementById('modalDate').innerText = formatDate(album.data_lancamento);
     document.getElementById('modalImg').src = album.capa_url || 'assets/images/placeholder.jpg';
+    document.getElementById('modalStatus').innerText = album.situacao_desc || 'N/D';
+    document.getElementById('modalType').innerText = album.tipo_desc || 'N/D';
     document.getElementById('deleteId').value = album.id;
     document.getElementById('albumModal').style.display = "block";
 }
 
 function closeModal() {
     document.getElementById('albumModal').style.display = "none";
+}
+
+// Funções Auxiliares - Modal de Edição
+function openEditModal() {
+    document.getElementById('editModal').style.display = "block";
+}
+
+function closeEditModal() {
+    document.getElementById('editModal').style.display = "none";
 }
 
 function formatDate(dateStr) {

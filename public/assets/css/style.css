@@ -8,6 +8,11 @@
     --text-secondary: #b0b0b0;
     --accent-color: #bb86fc;
     --border-color: #333333;
+
+    /* PALETA SEMÂNTICA PADRÃO - V2.2.0 */
+    --action-positive: #338d33;    /* Sucesso / Gravar / Editar */
+    --action-destructive: #ff3838; /* Cancelar / Apagar / Descartar */
+    --action-neutral: #3c3cff;     /* Outras ações / Primário */
 }
 
 body {
