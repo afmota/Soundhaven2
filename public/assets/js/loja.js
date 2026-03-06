@@ -79,9 +79,16 @@ function openEditModal(album) {
     document.getElementById('editModalCapaUrl').value = album.capa_url || '';
     document.getElementById('editModalTitulo').value = album.titulo;
     
+    // Seleciona o artista correto
     const selectArtista = document.getElementById('editModalArtista');
     if (selectArtista) {
         selectArtista.value = album.artista_id;
+    }
+
+    // ADICIONADO: Seleciona a gravadora correta
+    const selectGravadora = document.getElementById('editModalGravadora');
+    if (selectGravadora) {
+        selectGravadora.value = album.gravadora_id || "";
     }
     
     document.getElementById('editModal').style.display = "block";

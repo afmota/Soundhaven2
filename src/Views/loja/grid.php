@@ -139,37 +139,56 @@
         <span class="modal-close" onclick="closeEditModal()">&times;</span>
         <h2 id="editModalHeaderTitle" style="color:var(--accent-color); margin-top:0; margin-bottom: 20px;"></h2>
         
-        <div id="editModalBody">
-            <div class="edit-modal-header-row">
-                <img id="editModalImg" class="edit-modal-capa" src="" alt="Capa Edição">
+        <form method="POST" action="">
+            <input type="hidden" name="action" value="update">
+            <input type="hidden" name="album_id" id="editModalAlbumId">
+            
+            <div id="editModalBody">
+                <div class="edit-modal-header-row">
+                    <img id="editModalImg" class="edit-modal-capa" src="" alt="Capa Edição">
+                    <div class="edit-field-group">
+                        <label>CAPA</label>
+                        <input type="text" name="capa_url" id="editModalCapaUrl" placeholder="https://exemplo.com/imagem.jpg">
+                    </div>
+                </div>
+
+                <hr class="edit-modal-separator">
+
                 <div class="edit-field-group">
-                    <label>CAPA</label>
-                    <input type="text" id="editModalCapaUrl" placeholder="https://exemplo.com/imagem.jpg">
+                    <label>TÍTULO</label>
+                    <input type="text" name="titulo" id="editModalTitulo" placeholder="Ex: Master of Puppets">
+                </div>
+
+                <div class="edit-field-group" style="margin-top: 15px;">
+                    <label>ARTISTA</label>
+                    <select name="artista_id" id="editModalArtista">
+                        <option value="">Selecione o Artista</option>
+                        <?php foreach ($artistas as $art): ?>
+                            <option value="<?= $art['id'] ?>"><?= htmlspecialchars($art['nome']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="edit-field-group" style="margin-top: 15px;">
+                    <label>GRAVADORA</label>
+                    <select name="gravadora_id" id="editModalGravadora">
+                        <option value="">Selecione a Gravadora</option>
+                        <?php foreach ($gravadoras as $grav): ?>
+                            <option value="<?= $grav['id'] ?>"><?= htmlspecialchars($grav['nome']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                
+                <input type="hidden" name="data_lancamento" id="editModalData">
+                <input type="hidden" name="tipo_id" id="editModalTipoId">
+                <input type="hidden" name="situacao" id="editModalSituacao">
+
+                <div class="modal-actions" style="margin-top:30px; display:flex; justify-content: flex-end; gap:10px;">
+                    <button type="button" class="btn" style="background-color: var(--action-destructive);" onclick="closeEditModal()">Cancelar</button>
+                    <button type="submit" class="btn" style="background-color: var(--action-positive);"><i class="fa-solid fa-save"></i> Salvar</button>
                 </div>
             </div>
-
-            <hr class="edit-modal-separator">
-
-            <div class="edit-field-group">
-                <label>TÍTULO</label>
-                <input type="text" id="editModalTitulo" placeholder="Ex: Master of Puppets">
-            </div>
-
-            <div class="edit-field-group" style="margin-top: 15px;">
-                <label>ARTISTA</label>
-                <select id="editModalArtista">
-                    <option value="">Selecione o Artista</option>
-                    <?php foreach ($artistas as $art): ?>
-                        <option value="<?= $art['id'] ?>"><?= htmlspecialchars($art['nome']) ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            
-            <div class="modal-actions" style="margin-top:30px; display:flex; justify-content: flex-end; gap:10px;">
-                <button type="button" class="btn" style="background-color: var(--action-destructive);" onclick="closeEditModal()">Cancelar</button>
-                <button type="button" class="btn" style="background-color: var(--action-positive);"><i class="fa-solid fa-save"></i> Salvar</button>
-            </div>
-        </div>
+        </form>
     </div>
 </div>
 

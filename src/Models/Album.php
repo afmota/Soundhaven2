@@ -38,10 +38,10 @@ class Album {
     public function getAllPaginated($limit, $offset, $filters = []) {
         $filterData = $this->buildFilterQuery($filters);
         
-        // ADICIONADO: a.artista_id para podermos usar no Editar
         $sql = "SELECT a.album_id, a.titulo, a.capa_url, a.data_lancamento,
-                       a.artista_id, art.nome AS artista_nome, g.nome AS gravadora_nome,
-                       t.descricao AS tipo_desc, s.descricao AS situacao_desc
+                       a.artista_id, a.gravadora_id, art.nome AS artista_nome, 
+                       g.nome AS gravadora_nome, t.descricao AS tipo_desc, 
+                       s.descricao AS situacao_desc
                 FROM tb_albuns a
                 INNER JOIN tb_artistas art ON a.artista_id = art.artista_id
                 LEFT JOIN tb_gravadoras g ON a.gravadora_id = g.gravadora_id
@@ -71,6 +71,32 @@ class Album {
         }
         $stmt->execute();
         return (int) $stmt->fetchColumn();
+    }
+
+    // MÉTODO ADICIONADO: Salva as alterações no banco
+    public function update($id, $data) {
+        $sql = "UPDATE tb_albuns SET 
+                titulo = :titulo, 
+                capa_url = :capa_url, 
+                artista_id = :artista_id, 
+                gravadora_id = :gravadora_id, 
+                data_lancamento = :data_lancamento, 
+                tipo_id = :tipo_id, 
+                situacao = :situacao,
+                atualizado_em = CURRENT_TIMESTAMP
+                WHERE album_id = :id";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':titulo', $data['titulo']);
+        $stmt->bindValue(':capa_url', $data['capa_url']);
+        $stmt->bindValue(':artista_id', (int) $data['artista_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':gravadora_id', $data['gravadora_id'] ? (int) $data['gravadora_id'] : null, PDO::PARAM_INT);
+        $stmt->bindValue(':data_lancamento', $data['data_lancamento'] ?: null);
+        $stmt->bindValue(':tipo_id', (int) $data['tipo_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':situacao', (int) $data['situacao'], PDO::PARAM_INT);
+        $stmt->bindValue(':id', (int) $id, PDO::PARAM_INT);
+        
+        return $stmt->execute();
     }
 
     public function softDelete($id) {

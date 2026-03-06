@@ -3,6 +3,7 @@ namespace App\Controllers;
 
 use App\Models\Album;
 use App\Models\Artist;
+use App\Models\Label; // ADICIONADO
 use App\Models\Type;
 use App\Models\Situation;
 
@@ -24,7 +25,7 @@ class LojaController {
                     'situacao' => $_POST['situacao'],
                 ];
                 $model->update($id, $data);
-                header("Location: " . $_SERVER['REQUEST_URI']); // Recarrega a página mantendo filtros
+                header("Location: " . $_SERVER['REQUEST_URI']); 
                 exit;
             }
         }
@@ -40,7 +41,7 @@ class LojaController {
             }
         }
 
-        // Sanitização de Filtros (Garantindo que nunca sejam null)
+        // Sanitização de Filtros
         $filters = [
             'titulo'      => $_GET['titulo'] ?? '',
             'artista_id'  => $_GET['artista_id'] ?? '',
@@ -50,10 +51,11 @@ class LojaController {
 
         // Dados para os Selects
         $artistas   = Artist::all();
+        $gravadoras = Label::all(); // ADICIONADO: Agora a View vai saber o que é $gravadoras
         $tipos      = Type::all();
         $situacoes  = Situation::all();
 
-        // Paginação Blindada
+        // Paginação
         $itensPorPagina = 25;
         $paginaAtual = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
         if ($paginaAtual < 1) $paginaAtual = 1;
@@ -65,7 +67,7 @@ class LojaController {
         $offset = ($paginaAtual - 1) * $itensPorPagina;
         $albuns = $model->getAllPaginated($itensPorPagina, $offset, $filters);
 
-        // Lógica de Links Numéricos (Máximo 5)
+        // Lógica de Links Numéricos
         $range = 2;
         $inicioPagina = max(1, $paginaAtual - $range);
         $fimPagina = min($totalPaginas, $paginaAtual + $range);
