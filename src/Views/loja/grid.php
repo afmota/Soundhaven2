@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SoundHaven - Store</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/header.css">
     <link rel="stylesheet" href="assets/css/loja.css">
@@ -105,7 +103,7 @@
                 </select>
             </div>
 
-            <button type="submit" class="btn btn-search"><i class="fa-solid fa-magnifying-glass"></i> Filtrar</button>
+            <button type="submit" class="btn btn-search" style="background-color: var(--action-positive); color: #fff;"><i class="fa-solid fa-magnifying-glass"></i> Filtrar</button>
             <a href="?url=loja" class="btn btn-clear"><i class="fa-solid fa-rotate-left"></i> Limpar Filtros</a>
         </form>
     </aside>
@@ -124,12 +122,12 @@
             <p><span style="color:var(--text-secondary); font-size:0.8em; display:block;">SITUAÇÃO</span><span id="modalStatus"></span></p>
             
             <div class="modal-actions" style="margin-top:20px; display:flex; gap:10px;">
-                <button class="btn btn-acquire"><i class="fa-solid fa-cart-shopping"></i> Adquirir</button>
-                <button id="btnOpenEdit" class="btn btn-edit"><i class="fa-solid fa-pen"></i> Editar</button>
+                <button class="btn btn-acquire" style="background-color: var(--action-neutral);"><i class="fa-solid fa-cart-shopping"></i> Adquirir</button>
+                <button id="btnOpenEdit" class="btn btn-edit" style="background-color: var(--action-positive);"><i class="fa-solid fa-pen"></i> Editar</button>
                 <form method="POST" id="formDelete" onsubmit="return confirm('Deseja realmente descartar este álbum?')">
                     <input type="hidden" name="action" value="delete">
                     <input type="hidden" name="id" id="deleteId">
-                    <button type="submit" class="btn btn-delete"><i class="fa-solid fa-trash"></i> Descartar</button>
+                    <button type="submit" class="btn btn-delete" style="background-color: var(--action-destructive);"><i class="fa-solid fa-trash"></i> Descartar</button>
                 </form>
             </div>
         </div>
@@ -140,6 +138,7 @@
     <div class="modal-content">
         <span class="modal-close" onclick="closeEditModal()">&times;</span>
         <h2 id="editModalHeaderTitle" style="color:var(--accent-color); margin-top:0; margin-bottom: 20px;"></h2>
+        
         <div id="editModalBody">
             <div class="edit-modal-header-row">
                 <img id="editModalImg" class="edit-modal-capa" src="" alt="Capa Edição">
@@ -154,6 +153,21 @@
             <div class="edit-field-group">
                 <label>TÍTULO</label>
                 <input type="text" id="editModalTitulo" placeholder="Ex: Master of Puppets">
+            </div>
+
+            <div class="edit-field-group" style="margin-top: 15px;">
+                <label>ARTISTA</label>
+                <select id="editModalArtista">
+                    <option value="">Selecione o Artista</option>
+                    <?php foreach ($artistas as $art): ?>
+                        <option value="<?= $art['id'] ?>"><?= htmlspecialchars($art['nome']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            
+            <div class="modal-actions" style="margin-top:30px; display:flex; justify-content: flex-end; gap:10px;">
+                <button type="button" class="btn" style="background-color: var(--action-destructive);" onclick="closeEditModal()">Cancelar</button>
+                <button type="button" class="btn" style="background-color: var(--action-positive);"><i class="fa-solid fa-save"></i> Salvar</button>
             </div>
         </div>
     </div>

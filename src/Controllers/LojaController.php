@@ -10,6 +10,25 @@ class LojaController {
     public function index() {
         $model = new Album();
         
+        // Processamento de Edição
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update') {
+            $id = filter_input(INPUT_POST, 'album_id', FILTER_VALIDATE_INT);
+            if ($id) {
+                $data = [
+                    'titulo' => $_POST['titulo'],
+                    'capa_url' => $_POST['capa_url'],
+                    'artista_id' => $_POST['artista_id'],
+                    'gravadora_id' => $_POST['gravadora_id'],
+                    'data_lancamento' => $_POST['data_lancamento'],
+                    'tipo_id' => $_POST['tipo_id'],
+                    'situacao' => $_POST['situacao'],
+                ];
+                $model->update($id, $data);
+                header("Location: " . $_SERVER['REQUEST_URI']); // Recarrega a página mantendo filtros
+                exit;
+            }
+        }
+
         // Processamento de Deleção
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
             $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);

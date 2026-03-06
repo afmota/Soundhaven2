@@ -7,17 +7,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputCapaUrl = document.getElementById('editModalCapaUrl');
     const imgPreview = document.getElementById('editModalImg');
     
-    // Variável de controle para o álbum atual em memória
     let currentAlbumData = null;
 
-    // --- Reatividade da Capa ---
     if (inputCapaUrl && imgPreview) {
         inputCapaUrl.addEventListener('input', (e) => {
             imgPreview.src = e.target.value || 'assets/images/placeholder.jpg';
         });
     }
 
-    // --- Lógica de Abertura do Modal de Detalhes ---
     document.addEventListener('click', (e) => {
         const card = e.target.closest('.album-card');
         if (card) {
@@ -26,7 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- Lógica do Botão Editar ---
     const btnOpenEdit = document.getElementById('btnOpenEdit');
     if (btnOpenEdit) {
         btnOpenEdit.addEventListener('click', () => {
@@ -37,7 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Lógica do Dropdown do Header ---
     const avatarTrigger = document.getElementById('avatarTrigger');
     const dropdown = document.getElementById('myDropdown');
 
@@ -48,7 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Fechamento global
     window.addEventListener('click', (e) => {
         if (e.target === modal) closeModal();
         if (e.target === editModal) closeEditModal();
@@ -66,7 +60,12 @@ function openModal(album) {
     document.getElementById('modalImg').src = album.capa_url || 'assets/images/placeholder.jpg';
     document.getElementById('modalStatus').innerText = album.situacao_desc || 'N/D';
     document.getElementById('modalType').innerText = album.tipo_desc || 'N/D';
-    document.getElementById('deleteId').value = album.id;
+    
+    const deleteIdField = document.getElementById('deleteId');
+    if (deleteIdField) {
+        deleteIdField.value = album.album_id;
+    }
+
     document.getElementById('albumModal').style.display = "block";
 }
 
@@ -75,15 +74,15 @@ function closeModal() {
 }
 
 function openEditModal(album) {
-    // Atualiza o título dinamicamente (PATCH 2.3.4)
     document.getElementById('editModalHeaderTitle').innerText = `Editar ${album.titulo}`;
-    
-    // Popula campos existentes (PATCH 2.3.1 e 2.3.2)
     document.getElementById('editModalImg').src = album.capa_url || 'assets/images/placeholder.jpg';
     document.getElementById('editModalCapaUrl').value = album.capa_url || '';
-    
-    // CORREÇÃO PATCH 2.3.5: Popula o campo Título
     document.getElementById('editModalTitulo').value = album.titulo;
+    
+    const selectArtista = document.getElementById('editModalArtista');
+    if (selectArtista) {
+        selectArtista.value = album.artista_id;
+    }
     
     document.getElementById('editModal').style.display = "block";
 }

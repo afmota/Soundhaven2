@@ -38,14 +38,15 @@ class Album {
     public function getAllPaginated($limit, $offset, $filters = []) {
         $filterData = $this->buildFilterQuery($filters);
         
-        $sql = "SELECT a.id, a.titulo, a.capa_url, a.data_lancamento,
-                       art.nome AS artista_nome, g.nome AS gravadora_nome,
+        // ADICIONADO: a.artista_id para podermos usar no Editar
+        $sql = "SELECT a.album_id, a.titulo, a.capa_url, a.data_lancamento,
+                       a.artista_id, art.nome AS artista_nome, g.nome AS gravadora_nome,
                        t.descricao AS tipo_desc, s.descricao AS situacao_desc
                 FROM tb_albuns a
-                INNER JOIN tb_artistas art ON a.artista_id = art.id
-                LEFT JOIN tb_gravadoras g ON a.gravadora_id = g.id
-                LEFT JOIN tb_tipos t ON a.tipo_id = t.id
-                LEFT JOIN tb_situacoes s ON a.situacao = s.id
+                INNER JOIN tb_artistas art ON a.artista_id = art.artista_id
+                LEFT JOIN tb_gravadoras g ON a.gravadora_id = g.gravadora_id
+                LEFT JOIN tb_tipos t ON a.tipo_id = t.tipo_id
+                LEFT JOIN tb_situacoes s ON a.situacao = s.situacao_id
                 WHERE {$filterData['sql']}
                 ORDER BY a.data_lancamento DESC, a.titulo ASC
                 LIMIT :limit OFFSET :offset";
@@ -73,7 +74,7 @@ class Album {
     }
 
     public function softDelete($id) {
-        $sql = "UPDATE tb_albuns SET deletado = 1, atualizado_em = CURRENT_TIMESTAMP WHERE id = :id";
+        $sql = "UPDATE tb_albuns SET deletado = 1, atualizado_em = CURRENT_TIMESTAMP WHERE album_id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':id', (int) $id, PDO::PARAM_INT);
         return $stmt->execute();
