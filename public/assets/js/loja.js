@@ -74,22 +74,44 @@ function closeModal() {
 }
 
 function openEditModal(album) {
-    document.getElementById('editModalHeaderTitle').innerText = `Editar ${album.titulo}`;
-    document.getElementById('editModalImg').src = album.capa_url || 'assets/images/placeholder.jpg';
-    document.getElementById('editModalCapaUrl').value = album.capa_url || '';
-    document.getElementById('editModalTitulo').value = album.titulo;
-    
-    // Seleciona o artista correto
-    const selectArtista = document.getElementById('editModalArtista');
-    if (selectArtista) {
-        selectArtista.value = album.artista_id;
-    }
+    // Debug para você ver no Console se os nomes das chaves estão vindo certos
+    console.log("Dados do álbum para edição:", album);
 
-    // ADICIONADO: Seleciona a gravadora correta
-    const selectGravadora = document.getElementById('editModalGravadora');
-    if (selectGravadora) {
-        selectGravadora.value = album.gravadora_id || "";
-    }
+    const setVal = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) {
+            // A MÁGICA: Converte para String e garante que null vire string vazia
+            // Isso resolve o problema de o dropdown não selecionar o número vindo do banco
+            el.value = (value !== null && value !== undefined) ? String(value) : "";
+        } else {
+            console.warn(`Atenção: O elemento ID '${id}' não foi encontrado no HTML.`);
+        }
+    };
+
+    // Título no topo do modal
+    const headerTitle = document.getElementById('editModalHeaderTitle');
+    if (headerTitle) headerTitle.innerText = `Editar ${album.titulo}`;
+    
+    // Preview da imagem
+    const imgPreview = document.getElementById('editModalImg');
+    if (imgPreview) imgPreview.src = album.capa_url || 'assets/images/placeholder.jpg';
+
+    // Preenchimento dos campos
+    setVal('editModalAlbumId', album.album_id);
+    setVal('editModalCapaUrl', album.capa_url || '');
+    setVal('editModalTitulo', album.titulo);
+    
+    // Dropdowns de Artista e Gravadora
+    setVal('editModalArtista', album.artista_id);
+    setVal('editModalGravadora', album.gravadora_id);
+
+    // Dropdowns de Tipo e Situação
+    // Aqui usamos o que o seu PHP gera: tipo_id e situacao_id (ou situacao)
+    setVal('editModalTipo', album.tipo_id);
+    setVal('editModalSituacao', album.situacao_id || album.situacao);
+    
+    // Campo de Data (input type="date" espera YYYY-MM-DD)
+    setVal('editModalData', album.data_lancamento || '');
     
     document.getElementById('editModal').style.display = "block";
 }
