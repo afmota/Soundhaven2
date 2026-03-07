@@ -2,19 +2,36 @@
  * SoundHaven - Script Global de Interatividade
  */
 document.addEventListener('DOMContentLoaded', () => {
+    // Referências dos Modais
     const modal = document.getElementById('albumModal');
     const editModal = document.getElementById('editModal');
-    const inputCapaUrl = document.getElementById('editModalCapaUrl');
-    const imgPreview = document.getElementById('editModalImg');
+    const createModal = document.getElementById('createModal'); // Novo modal
     
     let currentAlbumData = null;
 
-    if (inputCapaUrl && imgPreview) {
-        inputCapaUrl.addEventListener('input', (e) => {
-            imgPreview.src = e.target.value || 'assets/images/placeholder.jpg';
+    // --- 1. PREVIEWS DE CAPA (LIVE UPDATE) ---
+    
+    // Preview na Edição
+    const inputCapaEdit = document.getElementById('editModalCapaUrl');
+    const imgPreviewEdit = document.getElementById('editModalImg');
+    if (inputCapaEdit && imgPreviewEdit) {
+        inputCapaEdit.addEventListener('input', (e) => {
+            imgPreviewEdit.src = e.target.value || 'assets/images/placeholder.jpg';
         });
     }
 
+    // Preview na Inclusão
+    const inputCapaCreate = document.getElementById('createModalCapaUrl');
+    const imgPreviewCreate = document.getElementById('createModalImg');
+    if (inputCapaCreate && imgPreviewCreate) {
+        inputCapaCreate.addEventListener('input', (e) => {
+            imgPreviewCreate.src = e.target.value || 'assets/images/placeholder.jpg';
+        });
+    }
+
+    // --- 2. EVENTOS DE CLIQUE ---
+
+    // Abrir Detalhes (ao clicar no card)
     document.addEventListener('click', (e) => {
         const card = e.target.closest('.album-card');
         if (card) {
@@ -23,6 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Abrir Edição (botão dentro do modal de detalhes)
     const btnOpenEdit = document.getElementById('btnOpenEdit');
     if (btnOpenEdit) {
         btnOpenEdit.addEventListener('click', () => {
@@ -33,6 +51,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Abrir Inclusão (botão no Header)
+    const btnNovoAlbum = document.querySelector('.btn-adicionar-album');
+    if (btnNovoAlbum) {
+        btnNovoAlbum.addEventListener('click', (e) => {
+            e.preventDefault(); // Impede o navegador de seguir o link ?url=album/novo
+            openCreateModal();
+        });
+    }
+
+    // --- 3. MENU DE PERFIL ---
     const avatarTrigger = document.getElementById('avatarTrigger');
     const dropdown = document.getElementById('myDropdown');
 
@@ -43,15 +71,23 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- 4. FECHAR AO CLICAR FORA ---
     window.addEventListener('click', (e) => {
         if (e.target === modal) closeModal();
         if (e.target === editModal) closeEditModal();
+        if (e.target === createModal) closeCreateModal(); // Fecha inclusão
+        
         if (dropdown && !dropdown.contains(e.target) && !avatarTrigger.contains(e.target)) {
             dropdown.classList.remove('show');
         }
     });
 });
 
+/**
+ * FUNÇÕES DE CONTROLE DOS MODAIS
+ */
+
+// MODAL DE DETALHES
 function openModal(album) {
     document.getElementById('modalTitle').innerText = album.titulo;
     document.getElementById('modalArtist').innerText = album.artista_nome;
@@ -62,9 +98,7 @@ function openModal(album) {
     document.getElementById('modalType').innerText = album.tipo_desc || 'N/D';
     
     const deleteIdField = document.getElementById('deleteId');
-    if (deleteIdField) {
-        deleteIdField.value = album.album_id;
-    }
+    if (deleteIdField) deleteIdField.value = album.album_id;
 
     document.getElementById('albumModal').style.display = "block";
 }
@@ -73,44 +107,26 @@ function closeModal() {
     document.getElementById('albumModal').style.display = "none";
 }
 
+// MODAL DE EDIÇÃO
 function openEditModal(album) {
-    // Debug para você ver no Console se os nomes das chaves estão vindo certos
-    console.log("Dados do álbum para edição:", album);
-
     const setVal = (id, value) => {
         const el = document.getElementById(id);
-        if (el) {
-            // A MÁGICA: Converte para String e garante que null vire string vazia
-            // Isso resolve o problema de o dropdown não selecionar o número vindo do banco
-            el.value = (value !== null && value !== undefined) ? String(value) : "";
-        } else {
-            console.warn(`Atenção: O elemento ID '${id}' não foi encontrado no HTML.`);
-        }
+        if (el) el.value = (value !== null && value !== undefined) ? String(value) : "";
     };
 
-    // Título no topo do modal
     const headerTitle = document.getElementById('editModalHeaderTitle');
     if (headerTitle) headerTitle.innerText = `Editar ${album.titulo}`;
     
-    // Preview da imagem
     const imgPreview = document.getElementById('editModalImg');
     if (imgPreview) imgPreview.src = album.capa_url || 'assets/images/placeholder.jpg';
 
-    // Preenchimento dos campos
     setVal('editModalAlbumId', album.album_id);
     setVal('editModalCapaUrl', album.capa_url || '');
     setVal('editModalTitulo', album.titulo);
-    
-    // Dropdowns de Artista e Gravadora
     setVal('editModalArtista', album.artista_id);
     setVal('editModalGravadora', album.gravadora_id);
-
-    // Dropdowns de Tipo e Situação
-    // Aqui usamos o que o seu PHP gera: tipo_id e situacao_id (ou situacao)
     setVal('editModalTipo', album.tipo_id);
     setVal('editModalSituacao', album.situacao_id || album.situacao);
-    
-    // Campo de Data (input type="date" espera YYYY-MM-DD)
     setVal('editModalData', album.data_lancamento || '');
     
     document.getElementById('editModal').style.display = "block";
@@ -120,6 +136,23 @@ function closeEditModal() {
     document.getElementById('editModal').style.display = "none";
 }
 
+// MODAL DE INCLUSÃO (NOVO)
+function openCreateModal() {
+    document.getElementById('createModal').style.display = "block";
+}
+
+function closeCreateModal() {
+    const modal = document.getElementById('createModal');
+    modal.style.display = "none";
+    // Limpa o formulário para a próxima vez
+    const form = modal.querySelector('form');
+    if (form) form.reset();
+    // Reseta o preview da imagem para o placeholder
+    const preview = document.getElementById('createModalImg');
+    if (preview) preview.src = 'assets/images/placeholder.jpg';
+}
+
+// FORMATADOR DE DATA
 function formatDate(dateStr) {
     if (!dateStr || dateStr === 'N/D') return 'N/D';
     const parts = dateStr.split('-');

@@ -163,7 +163,8 @@
 .btn-delete { background: var(--action-destructive); }
 
 /* ESTILO ESPECÍFICO PARA O MODAL DE EDIÇÃO */
-#editModal .modal-content {
+#editModal .modal-content,
+#createModal .modal-content {
     width: 700px;
     min-height: 450px;
     flex-direction: column;

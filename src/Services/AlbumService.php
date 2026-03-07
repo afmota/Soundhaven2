@@ -49,12 +49,20 @@ class AlbumService {
         return $this->repository->softDelete($id);
     }
     public function salvarEdicao($id, array $postData) {
-            // Validação simples
-            if (empty($postData['titulo'])) {
-                return false;
-            }
-    
-            // Aqui você poderia redimensionar imagem, logar quem editou, etc.
-            return $this->repository->update($id, $postData);
+        // Validação simples
+        if (empty($postData['titulo'])) {
+            return false;
         }
+
+        // Aqui você poderia redimensionar imagem, logar quem editou, etc.
+        return $this->repository->update($id, $postData);
+    }
+
+    public function criarNovoAlbum(array $dados) {
+        // Validação de segurança
+        if (empty($dados['titulo']) || empty($dados['artista_id'])) {
+            throw new \Exception("Dados obrigatórios faltando.");
+        }
+        return $this->repository->create($dados);
+    }
 }

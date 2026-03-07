@@ -107,4 +107,20 @@ class AlbumRepository {
         $stmt->bindValue(':id', (int) $id, PDO::PARAM_INT);
         return $stmt->execute();
     }
+
+    public function create(array $data) {
+        $sql = "INSERT INTO tb_albuns (titulo, capa_url, artista_id, gravadora_id, data_lancamento, tipo_id, situacao)
+                VALUES (:titulo, :capa_url, :artista_id, :gravadora_id, :data_lancamento, :tipo_id, :situacao)";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':titulo', $data['titulo']);
+        $stmt->bindValue(':capa_url', $data['capa_url'] ?: null);
+        $stmt->bindValue(':artista_id', (int)$data['artista_id']);
+        $stmt->bindValue(':gravadora_id', $data['gravadora_id'] ? (int)$data['gravadora_id'] : null);
+        $stmt->bindValue(':data_lancamento', $data['data_lancamento'] ?: null);
+        $stmt->bindValue(':tipo_id', (int)$data['tipo_id']);
+        $stmt->bindValue(':situacao', (int)$data['situacao']);
+        
+        return $stmt->execute();
+    }
 }

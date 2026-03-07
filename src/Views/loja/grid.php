@@ -47,6 +47,7 @@
 
 <?php include __DIR__ . '/../partials/modal_detalhes.php'; ?>
 <?php include __DIR__ . '/../partials/modal_edicao.php'; ?>
+<?php include __DIR__ . '/../partials/modal_inclusao.php'; ?>
 
 <script src="assets/js/loja.js"></script>
 </body>
