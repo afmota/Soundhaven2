@@ -25,7 +25,7 @@
             <select name="tipo_id">
                 <option value="">Todos os Tipos</option>
                 <?php foreach ($tipos as $t): ?>
-                    <option value="<?= $t['id'] ?>" <?= ($filters['tipo_id'] ?? '') == $t['id'] ? 'selected' : '' ?>>
+                    <option value="<?= $t['tipo_id'] ?>" <?= ($filters['tipo_id'] ?? '') == $t['tipo_id'] ? 'selected' : '' ?>>
                         <?= htmlspecialchars($t['descricao']) ?>
                     </option>
                 <?php endforeach; ?>
@@ -37,7 +37,7 @@
             <select name="situacao_id">
                 <option value="">Todas as Situações</option>
                 <?php foreach ($situacoes as $s): ?>
-                    <option value="<?= $s['id'] ?>" <?= ($filters['situacao_id'] ?? '') == $s['id'] ? 'selected' : '' ?>>
+                    <option value="<?= $s['situacao_id'] ?>" <?= ($filters['situacao_id'] ?? '') == $s['situacao_id'] ? 'selected' : '' ?>>
                         <?= htmlspecialchars($s['descricao']) ?>
                     </option>
                 <?php endforeach; ?>
