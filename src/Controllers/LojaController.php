@@ -30,6 +30,18 @@ class LojaController {
             }
         }
 
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'update') {
+            $id = filter_input(INPUT_POST, 'album_id', FILTER_VALIDATE_INT);
+            
+            if ($id && $service->salvarEdicao($id, $_POST)) {
+                // Sucesso! Recarrega a página para ver as mudanças
+                header("Location: " . $_SERVER['REQUEST_URI']);
+                exit;
+            } else {
+                $erro = "Erro ao salvar as alterações.";
+            }
+        }
+
         // GET: Preparação da View
         $filters = [
             'titulo'      => $_GET['titulo'] ?? '',

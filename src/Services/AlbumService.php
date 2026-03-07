@@ -35,4 +35,13 @@ class AlbumService {
     public function deletar($id) {
         return $this->repository->softDelete($id);
     }
+    public function salvarEdicao($id, array $postData) {
+            // Validação simples
+            if (empty($postData['titulo'])) {
+                return false;
+            }
+    
+            // Aqui você poderia redimensionar imagem, logar quem editou, etc.
+            return $this->repository->update($id, $postData);
+        }
 }

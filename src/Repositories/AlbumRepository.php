@@ -72,22 +72,32 @@ class AlbumRepository {
 
     public function update($id, array $data) {
         $sql = "UPDATE tb_albuns SET 
-                titulo = :titulo, capa_url = :capa_url, 
-                artista_id = :artista_id, gravadora_id = :gravadora_id, 
-                data_lancamento = :data_lancamento, tipo_id = :tipo_id, 
-                situacao = :situacao, atualizado_em = CURRENT_TIMESTAMP
+                titulo = :titulo, 
+                capa_url = :capa_url, 
+                artista_id = :artista_id, 
+                gravadora_id = :gravadora_id, 
+                data_lancamento = :data_lancamento, 
+                tipo_id = :tipo_id, 
+                situacao = :situacao, 
+                atualizado_em = CURRENT_TIMESTAMP
                 WHERE album_id = :id";
-        
+
         $stmt = $this->db->prepare($sql);
+
+        // Vinculando os valores com segurança
         $stmt->bindValue(':id', (int) $id, PDO::PARAM_INT);
         $stmt->bindValue(':titulo', $data['titulo']);
         $stmt->bindValue(':capa_url', $data['capa_url']);
         $stmt->bindValue(':artista_id', (int) $data['artista_id'], PDO::PARAM_INT);
-        $stmt->bindValue(':gravadora_id', $data['gravadora_id'] ? (int) $data['gravadora_id'] : null, PDO::PARAM_INT);
+
+        // Trata gravadora nula (ND)
+        $gravadora = !empty($data['gravadora_id']) ? (int)$data['gravadora_id'] : null;
+        $stmt->bindValue(':gravadora_id', $gravadora, $gravadora ? PDO::PARAM_INT : PDO::PARAM_NULL);
+
         $stmt->bindValue(':data_lancamento', $data['data_lancamento'] ?: null);
         $stmt->bindValue(':tipo_id', (int) $data['tipo_id'], PDO::PARAM_INT);
         $stmt->bindValue(':situacao', (int) $data['situacao'], PDO::PARAM_INT);
-        
+
         return $stmt->execute();
     }
 
