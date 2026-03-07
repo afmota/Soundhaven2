@@ -53,6 +53,13 @@ class LojaController {
         $paginaAtual = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
         $dadosPagina = $service->getListaPaginada($paginaAtual, $filters);
 
+        // Extraindo as variáveis para a View
+        $albuns        = $dadosPagina['itens'];
+        $totalPaginas  = $dadosPagina['totalPaginas'];
+        $paginaAtual   = $dadosPagina['paginaAtual'];
+        $inicioPagina  = $dadosPagina['inicioPagina']; // Agora ela existe!
+        $fimPagina     = $dadosPagina['fimPagina'];    // Agora ela existe!
+
         // Dados para selects (Partials)
         $artistas   = Artist::all();
         $gravadoras = Label::all();
@@ -60,8 +67,8 @@ class LojaController {
         $situacoes  = Situation::all();
 
         // Variáveis para a View
-        $albuns = $dadosPagina['itens'];
-        $totalPaginas = $dadosPagina['paginas'];
+        // $albuns = $dadosPagina['itens'];
+        // $totalPaginas = $dadosPagina['paginas'];
 
         include __DIR__ . '/../Views/loja/grid.php';
     }

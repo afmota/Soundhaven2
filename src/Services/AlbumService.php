@@ -16,14 +16,27 @@ class AlbumService {
         
         $albuns = $this->repository->findPaginated($limit, $offset, $filters);
         $total = $this->repository->getTotalCount($filters);
-        
+        $totalPaginas = ceil($total / $limit);
+    
+        // --- MÁGICA DA PAGINAÇÃO (A JANELA) ---
+        $maxBotoes = 5; // Quantos números você quer que apareçam?
+        $inicioPagina = max(1, $pagina - 2);
+        $fimPagina = min($totalPaginas, $inicioPagina + $maxBotoes - 1);
+    
+        // Ajuste caso estejamos nas últimas páginas
+        if ($fimPagina - $inicioPagina < $maxBotoes - 1) {
+            $inicioPagina = max(1, $fimPagina - $maxBotoes + 1);
+        }
+    
         return [
-            'itens' => $albuns,
-            'total' => $total,
-            'paginas' => ceil($total / $limit)
+            'itens'         => $albuns,
+            'totalPaginas'  => $totalPaginas,
+            'paginaAtual'   => $pagina,
+            'inicioPagina'  => $inicioPagina,
+            'fimPagina'     => $fimPagina
         ];
     }
-
+    
     public function atualizar($id, array $data) {
         // Regra: Se não tiver capa, define uma padrão
         if (empty($data['capa_url'])) {
