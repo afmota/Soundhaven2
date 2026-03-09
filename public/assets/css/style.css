@@ -1,5 +1,6 @@
 /* ARQUIVO ROTEADOR E VARIÁVEIS GLOBAIS - DARK MODE */
 @import url('loja.css');
+@import url('colecao.css');
 
 :root {
     --bg-color: #121212;

@@ -1,0 +1,49 @@
+/* Forçamos a variável de destaque para verde limão apenas nesta página */
+.colecao-module {
+    --accent-color: #2cf02c !important;
+}
+
+/* Blindagem do Card */
+.colecao-module .album-card:hover {
+    border-color: #2cf02c !important; /* Verde neon do RPM */
+    box-shadow: 0 0 15px rgba(44, 240, 44, 0.2);
+}
+
+/* Título e Artista (Herança do global) */
+.colecao-module .album-title { color: #ffffff; }
+.colecao-module .artist-name { color: #b0b0b0; }
+
+/* O Ano (1986) - Em cima e Verde */
+.colecao-module .acquisition-year {
+    color: #2cf02c !important;
+    font-weight: 900;
+    font-size: 0.95rem;
+    display: block;
+    margin-top: 5px;
+}
+
+/* A Tag de Formato (LP, CD, etc) */
+.colecao-module .format-tag {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10; /* Fica na frente da imagem */
+    
+    padding: 3px 8px;
+    border-radius: 50%;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #1a1a1a; /* Texto escuro para destacar no fundo colorido */
+    
+    /* Efeito de surgimento no hover */
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: all 0.3s ease;
+}
+
+/* Quando passamos o mouse no card, a tag aparece */
+.colecao-module .album-card:hover .format-tag {
+    opacity: 1;
+    transform: translateY(0);
+}

@@ -2,12 +2,18 @@
 require_once __DIR__ . '/../autoload.php';
 
 use App\Controllers\LojaController;
+use App\Controllers\ColecaoController; // 1. Importamos o novo Controller
 
 $route = $_GET['url'] ?? 'loja';
 
 switch ($route) {
     case 'loja':
         $controller = new LojaController();
+        $controller->index();
+        break;
+
+    case 'colecao': // 2. Criamos a rota para a Coleção
+        $controller = new ColecaoController();
         $controller->index();
         break;
 
