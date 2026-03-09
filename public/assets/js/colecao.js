@@ -1,0 +1,64 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('modalDetalhesColecao');
+    const cards = document.querySelectorAll('.album-card');
+    const closeBtn = modal.querySelector('.close-modal');
+
+    // Função para formatar moeda (BRL)
+    const formatarMoeda = (valor) => {
+        return new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+        }).format(valor || 0);
+    };
+
+    cards.forEach(card => {
+        card.addEventListener('click', () => {
+            const album = JSON.parse(card.getAttribute('data-album'));
+            console.log("Dados recebidos no clique:", album); // Mantenha para conferir
+
+            // 1. RESGATANDO A CAPA (O erro do Osvaldo rs)
+            const elCapa = document.getElementById('detalheCapa');
+            if (elCapa) {
+                elCapa.src = album.capa_url || 'assets/images/placeholder.jpg';
+            }
+
+            // 2. TEXTOS (Usando a função segura)
+            const setTxt = (id, text) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = text || 'N/D';
+            };
+
+            setTxt('detalheTitulo', album.titulo);
+            setTxt('detalheArtista', album.artista_nome);
+            setTxt('detalheGravadora', album.gravadora_nome);
+            setTxt('detalheCatalogo', album.numero_catalogo);
+            setTxt('detalheCondicao', album.condicao);
+            setTxt('detalheObservacoes', album.observacoes);
+
+            // 3. DATAS (Com o nome exato que vem do banco)
+            // Se no console log não aparecer 'data_lancamento', aqui vai dar N/D
+            const anoLanc = album.data_lancamento ? new Date(album.data_lancamento + 'T12:00:00').toLocaleDateString('pt-BR') : 'N/D';
+            setTxt('detalheLancamento', anoLanc);
+
+            const dataAqui = album.data_aquisicao ? new Date(album.data_aquisicao + 'T12:00:00').toLocaleDateString('pt-BR') : 'N/D';
+            setTxt('detalheAquisicao', dataAqui);
+
+            // 4. PREÇO E TAG
+            setTxt('detalhePreco', formatarMoeda(album.preco));
+
+            const tagModal = document.getElementById('detalheFormatoTag');
+            if (tagModal) {
+                tagModal.textContent = album.formato_nome;
+                tagModal.style.backgroundColor = album.formato_cor; // Já vem com # do banco
+            }
+
+            modal.style.display = 'block';
+        });
+    });
+
+    // Fechar modal
+    closeBtn.onclick = () => modal.style.display = 'none';
+    window.onclick = (event) => {
+        if (event.target == modal) modal.style.display = 'none';
+    };
+});

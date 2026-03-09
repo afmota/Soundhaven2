@@ -6,8 +6,6 @@
     <title>SoundHaven - Coleção</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/header.css">
-    <link rel="stylesheet" href="assets/css/loja.css">
 </head>
 <body class="colecao-module">
 
@@ -24,8 +22,7 @@
                 </p>
             <?php else: ?>
                 <?php foreach ($albuns as $album): ?>
-                    <article class="album-card" 
-                             data-album='<?= htmlspecialchars(json_encode($album), ENT_QUOTES, 'UTF-8') ?>'>
+                    <article class="album-card" data-album='<?= htmlspecialchars(json_encode($album), ENT_QUOTES, 'UTF-8') ?>'>
                         
                         <span class="format-tag" style="background-color: <?= $album['formato_cor'] ?> !important;">
                             <?= htmlspecialchars($album['formato_nome']) ?>
@@ -56,6 +53,7 @@
     <?php include __DIR__ . '/../partials/sidebar_filtros.php'; ?>
 </div>
 
+<?php include __DIR__ . '/../partials/modal_detalhes_colecao.php'; ?>
 <script src="assets/js/colecao.js"></script>
 </body>
 </html>

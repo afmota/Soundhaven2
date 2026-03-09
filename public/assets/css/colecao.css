@@ -47,3 +47,87 @@
     opacity: 1;
     transform: translateY(0);
 }
+
+.colecao-theme h2 { color: var(--accent-colecao); margin-bottom: 0; }
+.highlight-verde { color: var(--accent-colecao); font-weight: bold; }
+
+.modal-body-grid {
+    display: grid;
+    grid-template-columns: 350px 1fr; /* Coluna da capa fixa em 350px */
+    gap: 40px;
+    padding: 30px;
+    align-items: start;
+}
+
+.modal-capa {
+    position: relative;
+    width: 100%;
+}
+
+.modal-capa img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    display: block; /* Remove espaços indesejados embaixo da imagem */
+}
+
+.format-tag-modal {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 5px 12px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 900;
+    color: #121212 !important;
+    z-index: 10;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.info-row-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding-bottom: 10px;
+}
+
+.info-item label {
+    display: block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 4px;
+}
+
+.info-item span { font-size: 1rem; color: #eee; }
+
+.colecao-module #modalDetalhesColecao h2#detalheTitulo {
+    color: #2cf02c !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* O Artista em destaque sutil */
+.colecao-module #modalDetalhesColecao h3#detalheArtista {
+    color: #e0e0e0;
+    margin-top: 5px;
+    font-style: italic;
+}
+
+/* As datas e campos que você quer "esverdear" */
+.colecao-module #modalDetalhesColecao .highlight-verde,
+.colecao-module #modalDetalhesColecao #detalheAquisicao,
+.colecao-module #modalDetalhesColecao #detalheLancamento {
+    color: #2cf02c !important;
+    font-weight: 800;
+}
+
+/* Ajuste das bordas para não parecer a Loja */
+.colecao-module #modalDetalhesColecao .modal-content {
+    background-color: #1a1a1a;
+    border: 1px solid rgba(44, 240, 44, 0.3) !important;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+}
