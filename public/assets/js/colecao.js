@@ -53,6 +53,34 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             modal.style.display = 'block';
+
+            const renderizarTags = (containerId, dadosString, extraClass = '') => {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+
+                container.innerHTML = ''; // Limpa o anterior
+
+                if (dadosString) {
+                    const itens = dadosString.split('|');
+                    itens.forEach(item => {
+                        const span = document.createElement('span');
+                        span.className = `tag-item ${extraClass}`;
+                        span.textContent = item.trim();
+                        container.appendChild(span);
+                    });
+                } else {
+                    container.innerHTML = '<span class="no-data">Nenhum registro encontrado</span>';
+                }
+            };
+
+            // Renderiza Gêneros
+            renderizarTags('containerTagsGeneros', album.generos);
+                    
+            // Renderiza Estilos (agora com ID próprio)
+            renderizarTags('containerTagsEstilos', album.estilos, 'style-tag');
+                    
+            // Renderiza Produtores
+            renderizarTags('containerTagsProdutores', album.produtores);
         });
     });
 

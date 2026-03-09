@@ -11,22 +11,23 @@ class ColecaoRepository {
         $this->db = Database::getConnection();
     }
 
-    public function buscarParaGrid($limit, $offset) {
+    public function buscarParaGrid($limit = 25, $offset = 0) {
         $sql = "SELECT 
-                    tm.midia_id,
-                    tm.album_id,
-                    ta.titulo,
-                    ta.capa_url,
-                    art.nome AS artista_nome,
-                    tg.nome AS gravadora_nome,
-                    tf.descricao AS formato_nome,
-                    tf.cor_hex AS formato_cor,
-                    ta.data_lancamento,
-                    tm.data_aquisicao,
-                    tm.numero_catalogo,
-                    tm.preco,
-                    tm.condicao,
-                    tm.observacoes
+                    tm.*, ta.titulo, ta.capa_url, ta.data_lancamento,
+                    art.nome AS artista_nome, tg.nome AS gravadora_nome,
+                    tf.descricao AS formato_nome, tf.cor_hex AS formato_cor,
+                    (SELECT GROUP_CONCAT(p.nome SEPARATOR '|') 
+                     FROM tb_album_produtores ap 
+                     JOIN tb_produtores p ON ap.produtor_id = p.produtor_id 
+                     WHERE ap.album_id = ta.album_id) as produtores,
+                    (SELECT GROUP_CONCAT(g.descricao SEPARATOR '|') 
+                     FROM tb_album_generos ag 
+                     JOIN tb_generos g ON ag.genero_id = g.genero_id 
+                     WHERE ag.album_id = ta.album_id) as generos,
+                    (SELECT GROUP_CONCAT(e.descricao SEPARATOR '|') 
+                     FROM tb_album_estilos ae 
+                     JOIN tb_estilos e ON ae.estilo_id = e.estilo_id 
+                     WHERE ae.album_id = ta.album_id) as estilos
                 FROM tb_midias tm
                 INNER JOIN tb_albuns ta ON tm.album_id = ta.album_id
                 INNER JOIN tb_artistas art ON ta.artista_id = art.artista_id
@@ -36,11 +37,13 @@ class ColecaoRepository {
                 LIMIT :limit OFFSET :offset";
     
         $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
-        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+        
+        // O segredo aqui é garantir o (int) e o \PDO::PARAM_INT
+        $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int)$offset, \PDO::PARAM_INT);
+        
         $stmt->execute();
-    
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public function contarTotal() {

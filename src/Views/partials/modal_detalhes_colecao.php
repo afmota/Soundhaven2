@@ -34,22 +34,42 @@
                     </div>
                 </div>
 
-                <div class="info-row-group">
-                    <div class="info-item">
-                        <label>Preço Pago</label>
-                        <span id="detalhePreco"></span>
-                    </div>
-                    <div class="info-item">
-                        <label>Condição</label>
-                        <span id="detalheCondicao"></span>
-                    </div>
-                </div>
-
-                <div class="info-item full-width">
-                    <label>Observações</label>
-                    <p id="detalheObservacoes"></p>
+                <div class="info-item">
+                    <label>Preço Pago</label>
+                    <span id="detalhePreco"></span>
                 </div>
             </div>
+        </div> <hr class="modal-divider">
+
+        <div class="modal-metadata-section">
+            
+            <div class="genres-styles-row">
+                <div class="info-item">
+                    <label>Gêneros</label>
+                    <div id="containerTagsGeneros" class="tag-cloud"></div>
+                </div>
+                <div class="info-item">
+                    <label>Estilos</label>
+                    <div id="containerTagsEstilos" class="tag-cloud"></div>
+                </div>
+            </div>
+
+            <div class="info-item full-width mt-15">
+                <label>Produção</label>
+                <div id="containerTagsProdutores" class="tag-cloud"></div>
+            </div>
+
+            <div class="info-item full-width mt-15">
+                <label>Observações</label>
+                <p id="detalheObservacoes" class="obs-text"></p>
+            </div>
+        </div> <hr class="modal-divider">
+
+        <div id="containerFaixas" class="tracklist-section">
+            <label>Faixas do Álbum</label>
+            <div class="table-container-placeholder">
+                <p class="placeholder-text">Aguardando a agulha tocar o disco...</p>
+                </div>
         </div>
     </div>
 </div>

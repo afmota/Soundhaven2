@@ -1,133 +1,215 @@
-/* Forçamos a variável de destaque para verde limão apenas nesta página */
+/* ==========================================================================
+   VARIÁVEIS E DEFINIÇÕES GLOBAIS DA PÁGINA
+   ========================================================================== */
 .colecao-module {
-    --accent-color: #2cf02c !important;
+    --accent-color: #2cf02c;
+    --accent-colecao: #2cf02c;
+    --bg-dark: #121212;
+    --bg-card: #1a1a1a;
+    --text-muted: #888;
 }
+
+/* ==========================================================================
+   GRID DE CARDS (LISTAGEM PRINCIPAL)
+   ========================================================================== */
 
 /* Blindagem do Card */
-.colecao-module .album-card:hover {
-    border-color: #2cf02c !important; /* Verde neon do RPM */
-    box-shadow: 0 0 15px rgba(44, 240, 44, 0.2);
+.colecao-module .album-card {
+    position: relative;
+    background: var(--bg-card);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* Título e Artista (Herança do global) */
-.colecao-module .album-title { color: #ffffff; }
-.colecao-module .artist-name { color: #b0b0b0; }
+.colecao-module .album-card:hover {
+    border-color: var(--accent-colecao) !important;
+    box-shadow: 0 0 15px rgba(44, 240, 44, 0.2);
+    transform: translateY(-3px);
+}
 
-/* O Ano (1986) - Em cima e Verde */
+/* Títulos no Grid */
+.colecao-module .album-title { color: #ffffff; margin-bottom: 2px; }
+.colecao-module .artist-name { color: #b0b0b0; font-style: italic; }
+
+/* Destaque do Ano de Aquisição no Grid */
 .colecao-module .acquisition-year {
-    color: #2cf02c !important;
+    color: var(--accent-colecao) !important;
     font-weight: 900;
     font-size: 0.95rem;
     display: block;
     margin-top: 5px;
 }
 
-/* A Tag de Formato (LP, CD, etc) */
+/* Tag de Formato Flutuante (LP, CD) */
 .colecao-module .format-tag {
     position: absolute;
     top: 10px;
     right: 10px;
-    z-index: 10; /* Fica na frente da imagem */
-    
-    padding: 3px 8px;
-    border-radius: 50%;
+    z-index: 10;
+    padding: 4px 10px;
+    border-radius: 20px;
     font-size: 0.7rem;
     font-weight: 800;
     text-transform: uppercase;
-    color: #1a1a1a; /* Texto escuro para destacar no fundo colorido */
-    
-    /* Efeito de surgimento no hover */
+    color: #121212 !important;
     opacity: 0;
     transform: translateY(-5px);
     transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
 }
 
-/* Quando passamos o mouse no card, a tag aparece */
 .colecao-module .album-card:hover .format-tag {
     opacity: 1;
     transform: translateY(0);
 }
 
-.colecao-theme h2 { color: var(--accent-colecao); margin-bottom: 0; }
-.highlight-verde { color: var(--accent-colecao); font-weight: bold; }
+/* ==========================================================================
+   ESTRUTURA DO MODAL DE DETALHES
+   ========================================================================== */
 
+/* Container Principal do Conteúdo */
+.colecao-theme.modal-content {
+    display: flex;
+    flex-direction: column;
+    max-width: 850px; 
+    width: 95%;
+    margin: 2% auto;
+    background-color: #1a1a1a;
+    border: 1px solid rgba(44, 240, 44, 0.3) !important;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+    padding: 25px;
+    overflow-x: hidden;
+}
+
+/* Bloco 1: Capa (Esquerda) e Info Técnica (Direita) */
 .modal-body-grid {
     display: grid;
-    grid-template-columns: 350px 1fr; /* Coluna da capa fixa em 350px */
-    gap: 40px;
-    padding: 30px;
-    align-items: start;
-}
-
-.modal-capa {
-    position: relative;
+    grid-template-columns: 300px 1fr; 
+    gap: 30px;
     width: 100%;
+    margin-bottom: 5px;
 }
 
+.modal-capa { position: relative; width: 100%; }
 .modal-capa img {
     width: 100%;
     height: auto;
-    border-radius: 8px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    display: block; /* Remove espaços indesejados embaixo da imagem */
+    border-radius: 6px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
 }
 
+/* Tag de Formato dentro do Modal */
 .format-tag-modal {
     position: absolute;
-    top: 15px;
-    right: 15px;
+    top: 12px;
+    right: 12px;
     padding: 5px 12px;
     border-radius: 4px;
     font-size: 0.8rem;
     font-weight: 900;
     color: #121212 !important;
-    z-index: 10;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
+/* Tipografia do Modal */
+#detalheTitulo { 
+    color: var(--accent-colecao) !important; 
+    text-transform: uppercase; 
+    margin-bottom: 0;
+}
+#detalheArtista { color: #e0e0e0; font-style: italic; margin-top: 5px; margin-bottom: 20px; }
+
+/* Grupos de Informação (Lançamento/Aquisição etc) */
 .info-row-group {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 15px;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     border-bottom: 1px solid rgba(255,255,255,0.05);
-    padding-bottom: 10px;
+    padding-bottom: 8px;
 }
 
 .info-item label {
     display: block;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     text-transform: uppercase;
-    color: #888;
-    margin-bottom: 4px;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+    letter-spacing: 0.5px;
 }
 
 .info-item span { font-size: 1rem; color: #eee; }
+.highlight-verde { color: var(--accent-colecao) !important; font-weight: bold; }
 
-.colecao-module #modalDetalhesColecao h2#detalheTitulo {
-    color: #2cf02c !important;
+/* ==========================================================================
+   BLOCO 2: METADADOS (GÊNEROS, ESTILOS, PRODUTORES)
+   ========================================================================== */
+
+.modal-divider {
+    border: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin: 20px 0;
+}
+
+/* O "De Ladinho": Gêneros e Estilos */
+.genres-styles-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+.full-width { width: 100%; display: block; }
+.mt-15 { margin-top: 15px; }
+
+/* Tags/Pills */
+.tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.tag-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ccc;
+    padding: 3px 10px;
+    border-radius: 15px;
+    font-size: 0.75rem;
+}
+
+.tag-item.style-tag {
+    border-color: rgba(44, 240, 44, 0.3);
+    color: var(--accent-colecao);
+}
+
+/* Observações */
+.obs-text {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 12px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    color: #bbb;
+    line-height: 1.5;
+    border-left: 3px solid var(--accent-colecao);
+    min-height: 40px;
+}
+
+/* ==========================================================================
+   BLOCO 3: TABELA DE FAIXAS (PREPARAÇÃO)
+   ========================================================================== */
+
+.tracklist-section label {
+    display: block;
+    color: var(--accent-colecao);
+    font-weight: bold;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    font-size: 0.8rem;
+    margin-bottom: 15px;
 }
 
-/* O Artista em destaque sutil */
-.colecao-module #modalDetalhesColecao h3#detalheArtista {
-    color: #e0e0e0;
-    margin-top: 5px;
+.placeholder-text {
+    color: #555;
     font-style: italic;
-}
-
-/* As datas e campos que você quer "esverdear" */
-.colecao-module #modalDetalhesColecao .highlight-verde,
-.colecao-module #modalDetalhesColecao #detalheAquisicao,
-.colecao-module #modalDetalhesColecao #detalheLancamento {
-    color: #2cf02c !important;
-    font-weight: 800;
-}
-
-/* Ajuste das bordas para não parecer a Loja */
-.colecao-module #modalDetalhesColecao .modal-content {
-    background-color: #1a1a1a;
-    border: 1px solid rgba(44, 240, 44, 0.3) !important;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+    font-size: 0.85rem;
 }
