@@ -66,10 +66,23 @@
         </div> <hr class="modal-divider">
 
         <div id="containerFaixas" class="tracklist-section">
-            <label>Faixas do Álbum</label>
-            <div class="table-container-placeholder">
-                <p class="placeholder-text">Aguardando a agulha tocar o disco...</p>
-                </div>
+            <div class="tracklist-header">
+                <label>Faixas do Álbum</label>
+                <button type="button" id="btnAdicionarFaixa" class="btn-add-track">+ Add Faixa</button>
+            </div>
+            
+            <table class="track-table">
+                <thead>
+                    <tr>
+                        <th style="width: 40px;">#</th>
+                        <th>Título</th>
+                        <th style="width: 100px;">Duração</th>
+                        <th style="width: 80px;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoTabelaFaixas">
+                    </tbody>
+            </table>
         </div>
     </div>
 </div>

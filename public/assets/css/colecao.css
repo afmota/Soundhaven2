@@ -245,3 +245,69 @@
     top: 10px;
     right: 15px;
 }
+
+.tracklist-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.btn-add-track {
+    background: #338d33; /* Sua cor para ações positivas */
+    color: white;
+    border: none;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.track-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.track-table th {
+    text-align: left;
+    color: #666;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    padding: 8px 5px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.track-table td {
+    padding: 5px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Inputs de edição "invisíveis" até o foco */
+.track-input {
+    background: transparent;
+    border: 1px solid transparent;
+    color: #eee;
+    width: 100%;
+    padding: 4px;
+    border-radius: 3px;
+    transition: all 0.2s;
+}
+
+.track-input:hover, .track-input:focus {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(44, 240, 44, 0.3);
+    outline: none;
+}
+
+.btn-del-track {
+    background: transparent;
+    color: #ff3838; /* Sua cor para ações destrutivas */
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    opacity: 0.6;
+}
+
+.btn-del-track:hover { opacity: 1; }

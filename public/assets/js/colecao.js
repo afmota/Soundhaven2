@@ -89,4 +89,35 @@ document.addEventListener('DOMContentLoaded', () => {
     window.onclick = (event) => {
         if (event.target == modal) modal.style.display = 'none';
     };
+
+    // Função para criar uma linha da tabela
+    const criarLinhaFaixa = (faixa = { numero_faixa: '', titulo: '', duracao: '' }) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><input type="number" class="track-input" value="${faixa.numero_faixa}" style="width: 35px;"></td>
+            <td><input type="text" class="track-input" value="${faixa.titulo}" placeholder="Nome da música..."></td>
+            <td><input type="text" class="track-input" value="${faixa.duracao || '00:00'}" placeholder="00:00"></td>
+            <td style="text-align: center;">
+                <button class="btn-del-track" title="Excluir Faixa">&times;</button>
+            </td>
+        `;
+        return tr;
+    };
+    
+    // No evento de clique do card, após preencher os dados básicos:
+    const carregarFaixas = (midiaId) => {
+        const corpo = document.getElementById('corpoTabelaFaixas');
+        corpo.innerHTML = '<tr><td colspan="4">Carregando faixas...</td></tr>';
+    
+        fetch(`api/faixas.php?midia_id=${midiaId}`) // Exemplo de endpoint
+            .then(res => res.json())
+            .then(faixas => {
+                corpo.innerHTML = '';
+                if (faixas.length > 0) {
+                    faixas.forEach(f => corpo.appendChild(criarLinhaFaixa(f)));
+                } else {
+                    corpo.innerHTML = '<tr><td colspan="4" class="placeholder-text">Nenhuma faixa cadastrada.</td></tr>';
+                }
+            });
+    };    
 });
