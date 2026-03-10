@@ -74,20 +74,24 @@
     max-width: 850px; 
     width: 95%;
     margin: 2% auto;
+    margin-top: 1% auto !important;
     background-color: #1a1a1a;
     border: 1px solid rgba(44, 240, 44, 0.3) !important;
     box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
-    padding: 25px;
+    padding: 15px 25px 25px 25px;
     overflow-x: hidden;
 }
 
 /* Bloco 1: Capa (Esquerda) e Info Técnica (Direita) */
 .modal-body-grid {
     display: grid;
-    grid-template-columns: 300px 1fr; 
-    gap: 30px;
+    grid-template-columns: 225px 1fr; /* Capa reduzida em 25% */
+    gap: 25px; /* Gap um pouco menor para ganhar espaço central */
     width: 100%;
-    margin-bottom: 5px;
+    margin: 0px;
+    align-items: start;
+    padding: 0px !important;
+    line-height: 1.1;
 }
 
 .modal-capa { position: relative; width: 100%; }
@@ -101,11 +105,11 @@
 /* Tag de Formato dentro do Modal */
 .format-tag-modal {
     position: absolute;
-    top: 12px;
-    right: 12px;
-    padding: 5px 12px;
+    top: 8px;
+    right: 8px;
+    padding: 3px 10px;
     border-radius: 4px;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 900;
     color: #121212 !important;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
@@ -116,8 +120,19 @@
     color: var(--accent-colecao) !important; 
     text-transform: uppercase; 
     margin-bottom: 0;
+    font-size: 1.3rem !important; /* Estava muito grande, agora mais elegante */
+    letter-spacing: 0.5px;
+    margin-top: 0px;
+    padding: 0px;
 }
-#detalheArtista { color: #e0e0e0; font-style: italic; margin-top: 5px; margin-bottom: 20px; }
+#detalheArtista {
+    color: #e0e0e0;
+    font-style: italic;
+    margin-top: 5px;
+    margin-bottom: 20px;
+    font-size: 1rem !important; 
+    margin-bottom: 15px;
+}
 
 /* Grupos de Informação (Lançamento/Aquisição etc) */
 .info-row-group {
@@ -138,7 +153,13 @@
     letter-spacing: 0.5px;
 }
 
-.info-item span { font-size: 1rem; color: #eee; }
+.info-item span {
+    font-size: 1rem;
+    color: #eee;
+    font-size: 0.9rem !important; /* Estava em 1rem, 0.9rem é o "sweet spot" */
+    color: #ddd;
+}
+
 .highlight-verde { color: var(--accent-colecao) !important; font-weight: bold; }
 
 /* ==========================================================================
@@ -148,7 +169,12 @@
 .modal-divider {
     border: 0;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-    margin: 20px 0;
+    margin: 0;
+}
+
+/* Aproveitando para encostar as labels nos divisores */
+.modal-metadata-section {
+    margin: -5px 0px; /* Puxa levemente para cima para colar no HR */
 }
 
 /* O "De Ladinho": Gêneros e Estilos */
@@ -173,9 +199,9 @@
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: #ccc;
-    padding: 3px 10px;
+    padding: 2px 8px;
     border-radius: 15px;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
 }
 
 .tag-item.style-tag {
@@ -186,11 +212,11 @@
 /* Observações */
 .obs-text {
     background: rgba(0, 0, 0, 0.2);
-    padding: 12px;
+    padding: 8px 12px;
     border-radius: 4px;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: #bbb;
-    line-height: 1.5;
+    line-height: 1.4;
     border-left: 3px solid var(--accent-colecao);
     min-height: 40px;
 }
@@ -204,12 +230,18 @@
     color: var(--accent-colecao);
     font-weight: bold;
     text-transform: uppercase;
-    font-size: 0.8rem;
-    margin-bottom: 15px;
+    font-size: 0.75rem;
+    margin-top: 5px;
+    margin-bottom: 10px;
 }
 
 .placeholder-text {
     color: #555;
     font-style: italic;
     font-size: 0.85rem;
+}
+
+.close-modal {
+    top: 10px;
+    right: 15px;
 }
