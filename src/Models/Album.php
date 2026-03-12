@@ -40,8 +40,8 @@ class Album {
         
         $sql = "SELECT a.album_id, a.titulo, a.capa_url, a.data_lancamento,
                        a.artista_id, a.gravadora_id, 
-                       a.tipo_id,      -- ADICIONE ESTA LINHA
-                       a.situacao,     -- ADICIONE ESTA LINHA (ou a.situacao_id conforme seu banco)
+                       a.tipo_id, 
+                       a.situacao,
                        art.nome AS artista_nome, 
                        g.nome AS gravadora_nome, t.descricao AS tipo_desc, 
                        s.descricao AS situacao_desc

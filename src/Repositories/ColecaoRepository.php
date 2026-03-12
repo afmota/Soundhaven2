@@ -46,14 +46,23 @@ class ColecaoRepository {
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function contarTotal() {
-        $sql = "SELECT COUNT(*) 
-                FROM tb_albuns a 
-                INNER JOIN tb_situacoes s ON a.situacao = s.situacao_id 
-                WHERE s.descricao = 'Adquirido'";
-                
-        return $this->db->query($sql)->fetchColumn();
-    }
+public function contarTotal() {
+
+    $sql = "SELECT COUNT(*) 
+            FROM tb_midias
+            WHERE ativo = 1";
+
+    return $this->db->query($sql)->fetchColumn();
+}
+
+public function buscarTodasGravadoras()
+{
+    $sql = "SELECT gravadora_id, nome
+            FROM tb_gravadoras
+            ORDER BY nome";
+
+    return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+}
 
     public function buscarDetalhesMidia($midiaId) {
         $sql = "SELECT 

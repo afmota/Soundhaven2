@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Repositories\ColecaoRepository;
 
 class ColecaoService {
+
     private $repository;
 
     public function __construct() {
@@ -11,14 +12,17 @@ class ColecaoService {
     }
 
     public function getGridColecao($pagina) {
+
         $limit = 25;
         $offset = ($pagina - 1) * $limit;
 
         $itens = $this->repository->buscarParaGrid($limit, $offset);
         $totalRegistros = $this->repository->contarTotal();
+
         $totalPaginas = ceil($totalRegistros / $limit) ?: 1;
 
         $maxLinks = 2;
+
         $inicioPagina = max(1, $pagina - $maxLinks);
         $fimPagina = min($totalPaginas, $pagina + $maxLinks);
 
@@ -37,7 +41,14 @@ class ColecaoService {
     }
 
     public function desativarMidia($midiaId) {
-        // O Service pede para o Repository executar o UPDATE no banco
         return $this->repository->marcarComoInativo($midiaId);
+    }
+
+    public function buscarDetalhesMidia($midiaId) {
+        return $this->repository->buscarDetalhesMidia($midiaId);
+    }
+
+    public function buscarTodasGravadoras() {
+        return $this->repository->buscarTodasGravadoras();
     }
 }

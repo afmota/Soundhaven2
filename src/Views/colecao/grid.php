@@ -28,7 +28,10 @@
                             <?= htmlspecialchars($album['formato_nome']) ?>
                         </span>
 
-                        <img src="<?= htmlspecialchars($album['capa_url'] ?: 'assets/images/placeholder.jpg') ?>" alt="Capa">
+                        <img 
+    loading="lazy"
+    src="<?= htmlspecialchars($album['capa_url'] ?: 'assets/images/placeholder.jpg') ?>"
+    alt="Capa">
                         
                         <div class="album-info">
                             <span class="album-title"><?= htmlspecialchars($album['titulo']) ?></span>
