@@ -68,7 +68,6 @@
         <div id="containerFaixas" class="tracklist-section">
             <div class="tracklist-header">
                 <label>Faixas do Álbum</label>
-                <button type="button" id="btnAdicionarFaixa" class="btn-add-track">+ Add Faixa</button>
             </div>
             
             <div id="area-tabela-faixas">
@@ -83,6 +82,11 @@
                         </tbody>
                 </table>
             </div>
+        </div>
+
+        <div class="modal-actions">
+            <button id="btnEditarColecao" class="btn btn-edit">Editar</button>
+            <button id="btnDescartarColecao" class="btn btn-delete">Descartar</button>
         </div>
     </div>
 </div>

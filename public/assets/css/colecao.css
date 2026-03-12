@@ -80,7 +80,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-md);
-    max-width: 850px;
+    max-width: 600px;
     max-height: 85vh;
     width: 95%;
     margin: 1% auto;
@@ -270,8 +270,6 @@
     flex-direction: column;
     min-height: 0; 
     margin-top: 10px;
-    /* Removi os estilos de label que estavam aqui e deixei 
-       apenas o comportamento de container flex */
 }
 
 .tracklist-section label {
@@ -294,18 +292,6 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: var(--space-sm);
-}
-
-/* botão add faixa */
-.btn-add-track {
-    background: #338d33;
-    color: #fff;
-    border: none;
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-size: .7rem;
-    cursor: pointer;
-    font-weight: bold;
 }
 
 /* Onde a mágica acontece: área da tabela com scroll */
@@ -336,45 +322,13 @@
 .track-table thead th {
     position: sticky;
     top: 0;
-    background: #1a1a1a; /* Cor do fundo do modal para não ficar transparente */
+    background: #1a1a1a;
     z-index: 10;
 }
 
 .track-table td {
     padding: 5px;
     border-bottom: 1px solid rgba(255,255,255,.05);
-}
-
-/* inputs */
-.track-input {
-    background: transparent;
-    border: 1px solid transparent;
-    color: #eee;
-    width: 100%;
-    padding: 4px;
-    border-radius: 3px;
-    transition: all .2s;
-}
-
-.track-input:hover,
-.track-input:focus {
-    background: rgba(255,255,255,.05);
-    border-color: rgba(44,240,44,.3);
-    outline: none;
-}
-
-/* delete faixa */
-.btn-del-track {
-    background: transparent;
-    color: #ff3838;
-    border: none;
-    cursor: pointer;
-    font-size: 1rem;
-    opacity: .6;
-}
-
-.btn-del-track:hover {
-    opacity: 1;
 }
 
 /* fechar modal */
@@ -390,4 +344,24 @@
     font-style: italic;
     margin-top: 5px;
     display: block;
+}
+
+/* ==========================================================================
+   BOTÕES DE AÇÃO (MODAL COLEÇÃO)
+   ========================================================================== */
+
+.modal-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end; /* Alinhados à direita como no layout de 600px */
+}
+
+/* Aproveitando a classe .btn que você já usa no sistema */
+.btn-edit {
+    background-color: var(--action-neutral);
+}
+
+.btn-delete {
+    background-color: var(--action-destructive);
 }

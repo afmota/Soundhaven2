@@ -100,39 +100,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- LÓGICA DE ADICIONAR FAIXA ---
-    const btnAddFaixa = document.getElementById('btnAdicionarFaixa');
-    if (btnAddFaixa) {
-        btnAddFaixa.addEventListener('click', () => {
-            const corpoTabela = document.getElementById('corpoTabelaFaixas');
-            
-            if (corpoTabela.querySelector('.no-data') || corpoTabela.innerText.includes('Carregando')) {
-                corpoTabela.innerHTML = '';
-            }
-
-            const novaLinha = document.createElement('tr');
-            const proximoNumero = corpoTabela.querySelectorAll('tr').length + 1;
-
-            novaLinha.innerHTML = `
-                <td><input type="text" class="track-input" value="${proximoNumero}" style="width: 30px; text-align: center;"></td>
-                <td><input type="text" class="track-input" placeholder="Nome da música..." style="width: 100%;"></td>
-                <td>
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <input type="text" class="track-input" placeholder="00:00" style="width: 60px; text-align: center;">
-                        <button type="button" class="btn-del-track" title="Remover Faixa">×</button>
-                    </div>
-                </td>
-            `;
-
-            novaLinha.querySelector('.btn-del-track').addEventListener('click', () => novaLinha.remove());
-            corpoTabela.appendChild(novaLinha);
-            novaLinha.querySelectorAll('input')[1].focus();
-            
-            const container = document.getElementById('area-tabela-faixas');
-            if (container) container.scrollTop = container.scrollHeight;
-        });
-    }
-
     // --- FECHAR MODAL ---
     closeBtn.onclick = () => modal.style.display = 'none';
     window.onclick = (event) => {
