@@ -81,6 +81,7 @@
     flex-direction: column;
     gap: var(--space-md);
     max-width: 850px;
+    max-height: 85vh;
     width: 95%;
     margin: 1% auto;
     background: #1a1a1a;
@@ -88,6 +89,7 @@
     box-shadow: 0 0 40px rgba(0,0,0,.8);
     padding: 20px 25px;
     overflow-x: hidden;
+    overflow: hidden;
 }
 
 /* reset de margens internas */
@@ -261,6 +263,17 @@
    TRACKLIST
    ========================================================================== */
 
+/* A seção da tracklist precisa ser flexível */
+.tracklist-section {
+    flex: 1; 
+    display: flex; 
+    flex-direction: column;
+    min-height: 0; 
+    margin-top: 10px;
+    /* Removi os estilos de label que estavam aqui e deixei 
+       apenas o comportamento de container flex */
+}
+
 .tracklist-section label {
     display: block;
     color: var(--accent-colecao);
@@ -295,6 +308,14 @@
     font-weight: bold;
 }
 
+/* Onde a mágica acontece: área da tabela com scroll */
+#area-tabela-faixas {
+    flex: 1;
+    overflow-y: auto; 
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.1);
+}
+
 /* tabela */
 .track-table {
     width: 100%;
@@ -309,6 +330,14 @@
     text-transform: uppercase;
     padding: 8px 5px;
     border-bottom: 1px solid rgba(255,255,255,.1);
+}
+
+/* Manter o cabeçalho da tabela visível enquanto rola */
+.track-table thead th {
+    position: sticky;
+    top: 0;
+    background: #1a1a1a; /* Cor do fundo do modal para não ficar transparente */
+    z-index: 10;
 }
 
 .track-table td {
