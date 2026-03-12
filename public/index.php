@@ -22,7 +22,6 @@ switch ($route) {
         $controller->listarFaixas();
         break;
 
-    // --- NOVA ROTA PARA O DESCARTE ---
     case 'descartar_album':
         $controller = new ColecaoController();
         $controller->descartarAlbum();
