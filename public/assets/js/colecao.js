@@ -105,4 +105,38 @@ document.addEventListener('DOMContentLoaded', () => {
     window.onclick = (event) => {
         if (event.target == modal) modal.style.display = 'none';
     };
+
+    // --- LÓGICA DO BOTÃO DESCARTAR (EXCLUSÃO LÓGICA) ---
+    const btnDescartar = document.getElementById('btnDescartarColecao');
+    
+    if (btnDescartar) {
+        btnDescartar.addEventListener('click', () => {
+            // Pegamos o ID do álbum que está aberto no modal
+            // (Assumindo que você guardou o midia_id em algum lugar acessível)
+            const album = JSON.parse(document.querySelector('.album-card.active')?.getAttribute('data-album') || '{}');
+            const midiaId = album.midia_id;
+        
+            if (!midiaId) return;
+        
+            if (confirm('Deseja realmente remover este álbum da sua coleção ativa?')) {
+                fetch('index.php?url=descartar_album', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `midia_id=${midiaId}`
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        // 1. Fecha o modal
+                        document.getElementById('modalDetalhesColecao').style.display = 'none';
+                        // 2. Remove o card da tela (ou recarrega a página)
+                        location.reload(); 
+                    } else {
+                        alert('Erro ao descartar: ' + data.error);
+                    }
+                })
+                .catch(err => console.error('Erro na requisição:', err));
+            }
+        });
+    }
 });

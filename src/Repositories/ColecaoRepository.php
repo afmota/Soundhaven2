@@ -33,10 +33,10 @@ class ColecaoRepository {
                 INNER JOIN tb_artistas art ON ta.artista_id = art.artista_id
                 INNER JOIN tb_gravadoras tg ON tm.gravadora_id = tg.gravadora_id
                 INNER JOIN tb_formatos tf ON tm.formato_id = tf.formato_id
+                WHERE tm.ativo = 1
                 ORDER BY tm.data_aquisicao DESC
-                LIMIT :limit OFFSET :offset";
-    
-        $stmt = $this->db->prepare($sql);
+                LIMIT :limit OFFSET :offset";    
+                $stmt = $this->db->prepare($sql);
         
         // O segredo aqui é garantir o (int) e o \PDO::PARAM_INT
         $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
@@ -86,5 +86,11 @@ class ColecaoRepository {
         $stmt->execute();
         
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function marcarComoInativo($midiaId) {
+        $sql = "UPDATE tb_midias SET ativo = 0 WHERE midia_id = :id";
+        $stmt = $this->db->prepare($sql); // ou como você chama a conexão no Repository
+        return $stmt->execute([':id' => $midiaId]);
     }
 }

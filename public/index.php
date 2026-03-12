@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../autoload.php';
 
 use App\Controllers\LojaController;
-use App\Controllers\ColecaoController; // 1. Importamos o novo Controller
+use App\Controllers\ColecaoController;
 
 $route = $_GET['url'] ?? 'loja';
 
@@ -12,7 +12,7 @@ switch ($route) {
         $controller->index();
         break;
 
-    case 'colecao': // 2. Criamos a rota para a Coleção
+    case 'colecao':
         $controller = new ColecaoController();
         $controller->index();
         break;
@@ -20,6 +20,12 @@ switch ($route) {
     case 'buscar_faixas':
         $controller = new ColecaoController();
         $controller->listarFaixas();
+        break;
+
+    // --- NOVA ROTA PARA O DESCARTE ---
+    case 'descartar_album':
+        $controller = new ColecaoController();
+        $controller->descartarAlbum();
         break;
 
     default:
