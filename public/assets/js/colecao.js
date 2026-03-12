@@ -81,6 +81,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     
             // Renderiza Produtores
             renderizarTags('containerTagsProdutores', album.produtores);
+
+const corpoTabela = document.getElementById('corpoTabelaFaixas');
+corpoTabela.innerHTML = '<tr><td colspan="3">Carregando faixas...</td></tr>';
+
+        fetch(`index.php?url=buscar_faixas&midia_id=${album.midia_id}`)
+            .then(res => res.json())
+            .then(faixas => {
+                corpoTabela.innerHTML = ''; // Limpa o "Carregando" 
+                
+                faixas.forEach(f => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${f.numero_faixa}</td>
+                        <td>${f.titulo}</td>
+                        <td>${f.duracao || '--:--'}</td>
+                    `;
+                    corpoTabela.appendChild(tr);
+                });
+            })
+            .catch(err => console.error("Erro ao listar faixas:", err));
         });
     });
 

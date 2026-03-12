@@ -32,4 +32,10 @@ class ColecaoService {
             'totalRegistros' => $totalRegistros
         ];
     }
+
+    public function getFaixasPorMidia($midiaId) {
+        // Aqui o Service chama o método do Repository
+        // Certifique-se de que o seu Service tenha o $this->repository instanciado no construtor dele
+        return $this->repository->buscarFaixasPorMidia($midiaId);
+    }
 }

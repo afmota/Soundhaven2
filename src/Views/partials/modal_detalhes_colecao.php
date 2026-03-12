@@ -71,18 +71,18 @@
                 <button type="button" id="btnAdicionarFaixa" class="btn-add-track">+ Add Faixa</button>
             </div>
             
-            <table class="track-table">
-                <thead>
-                    <tr>
-                        <th style="width: 40px;">#</th>
-                        <th>Título</th>
-                        <th style="width: 100px;">Duração</th>
-                        <th style="width: 80px;">Ações</th>
-                    </tr>
-                </thead>
-                <tbody id="corpoTabelaFaixas">
-                    </tbody>
-            </table>
+            <div id="area-tabela-faixas">
+                <table class="track-table"> <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Título</th>
+                            <th>Duração</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpoTabelaFaixas">
+                        </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

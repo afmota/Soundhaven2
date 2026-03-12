@@ -17,6 +17,11 @@ switch ($route) {
         $controller->index();
         break;
 
+    case 'buscar_faixas':
+        $controller = new ColecaoController();
+        $controller->listarFaixas();
+        break;
+
     default:
         http_response_code(404);
         echo "404 - Página não encontrada no SoundHaven";

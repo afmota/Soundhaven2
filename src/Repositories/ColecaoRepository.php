@@ -74,4 +74,17 @@ class ColecaoRepository {
         $stmt->execute();
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
+
+    public function buscarFaixasPorMidia($midiaId) {
+        $sql = "SELECT numero_faixa, titulo, duracao 
+                FROM tb_midia_faixas 
+                WHERE midia_id = :midia_id 
+                ORDER BY numero_faixa ASC";
+        
+        $stmt = $this->db->prepare($sql); // Assumindo que seu repository usa $this->db para a conexão
+        $stmt->bindValue(':midia_id', $midiaId, \PDO::PARAM_INT);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }
