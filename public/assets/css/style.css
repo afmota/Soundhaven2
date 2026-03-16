@@ -2,6 +2,7 @@
 @import url('header.css');
 @import url('loja.css');
 @import url('colecao.css');
+@import url('includedit.css');
 
 :root {
     --bg-color: #121212;

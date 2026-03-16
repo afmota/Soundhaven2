@@ -64,25 +64,43 @@ public function buscarTodasGravadoras()
     return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 }
 
-    public function buscarDetalhesMidia($midiaId) {
-        $sql = "SELECT 
-                    tm.midia_id, tm.album_id, ta.titulo, ta.capa_url,
-                    art.nome AS artista_nome, tg.nome AS gravadora_nome,
-                    tf.descricao AS formato_nome, tf.cor_hex AS formato_cor,
-                    tm.numero_catalogo, ta.data_lancamento, tm.data_aquisicao,
-                    tm.preco, tm.condicao, tm.observacoes
-                FROM tb_midias tm
-                INNER JOIN tb_albuns ta ON tm.album_id = ta.album_id
-                INNER JOIN tb_gravadoras tg ON tm.gravadora_id = tg.gravadora_id
-                INNER JOIN tb_formatos tf ON tm.formato_id = tf.formato_id
-                INNER JOIN tb_artistas art ON ta.artista_id = art.artista_id
-                WHERE tm.midia_id = :id";
+public function buscarDetalhesMidia($midiaId) {
+    $sql = "SELECT 
+                tm.midia_id, tm.album_id, ta.titulo, ta.capa_url,
+                art.artista_id, art.nome AS artista_nome,
+                tg.gravadora_id, tg.nome AS gravadora_nome,
+                tf.formato_id, tf.descricao AS formato_nome,
+                tt.tipo_id, tt.descricao AS tipo_nome,
+                tm.numero_catalogo, ta.data_lancamento, tm.data_aquisicao,
+                tm.preco, tm.condicao, tm.observacoes,
+                
+                -- AS SUB-QUERIES QUE ESTAVAM FALTANDO AQUI:
+                (SELECT GROUP_CONCAT(p.nome SEPARATOR '|') 
+                 FROM tb_album_produtores ap 
+                 JOIN tb_produtores p ON ap.produtor_id = p.produtor_id 
+                 WHERE ap.album_id = ta.album_id) as produtores,
+                (SELECT GROUP_CONCAT(g.descricao SEPARATOR '|') 
+                 FROM tb_album_generos ag 
+                 JOIN tb_generos g ON ag.genero_id = g.genero_id 
+                 WHERE ag.album_id = ta.album_id) as generos,
+                (SELECT GROUP_CONCAT(e.descricao SEPARATOR '|') 
+                 FROM tb_album_estilos ae 
+                 JOIN tb_estilos e ON ae.estilo_id = e.estilo_id 
+                 WHERE ae.album_id = ta.album_id) as estilos
 
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(':id', $midiaId, \PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
-    }
+            FROM tb_midias tm
+            INNER JOIN tb_albuns ta ON tm.album_id = ta.album_id
+            INNER JOIN tb_gravadoras tg ON tm.gravadora_id = tg.gravadora_id
+            INNER JOIN tb_formatos tf ON tm.formato_id = tf.formato_id
+            INNER JOIN tb_artistas art ON ta.artista_id = art.artista_id
+            INNER JOIN tb_tipos tt ON ta.tipo_id = tt.tipo_id
+            WHERE tm.midia_id = :id";
+
+    $stmt = $this->db->prepare($sql);
+    $stmt->bindValue(':id', $midiaId, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
     public function buscarFaixasPorMidia($midiaId) {
         $sql = "SELECT numero_faixa, titulo, duracao 
@@ -91,15 +109,172 @@ public function buscarTodasGravadoras()
                 ORDER BY numero_faixa ASC";
         
         $stmt = $this->db->prepare($sql); // Assumindo que seu repository usa $this->db para a conexão
-        $stmt->bindValue(':midia_id', $midiaId, \PDO::PARAM_INT);
+        $stmt->bindValue(':midia_id', $midiaId, PDO::PARAM_INT);
         $stmt->execute();
         
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function marcarComoInativo($midiaId) {
         $sql = "UPDATE tb_midias SET ativo = 0 WHERE midia_id = :id";
         $stmt = $this->db->prepare($sql); // ou como você chama a conexão no Repository
         return $stmt->execute([':id' => $midiaId]);
+    }
+
+    public function getAllArtistas() {
+        $sql = "SELECT artista_id, nome FROM tb_artistas ORDER BY nome ASC";
+        return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getAllGravadoras() {
+        $sql = "SELECT gravadora_id, nome FROM tb_gravadoras ORDER BY nome ASC";
+        return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getAllTipos() {
+        $sql = "SELECT tipo_id, descricao FROM tb_tipos ORDER BY descricao ASC";
+        return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getAllGeneros() {
+        return $this->db->query("SELECT descricao FROM tb_generos ORDER BY descricao ASC")->fetchAll(\PDO::FETCH_COLUMN);
+    }
+    
+    public function getAllEstilos() {
+        return $this->db->query("SELECT descricao FROM tb_estilos ORDER BY descricao ASC")->fetchAll(\PDO::FETCH_COLUMN);
+    }
+    
+    public function getAllProdutores() {
+        return $this->db->query("SELECT nome FROM tb_produtores ORDER BY nome ASC")->fetchAll(\PDO::FETCH_COLUMN);
+    }
+
+    public function iniciarTransacao() {
+        return $this->db->beginTransaction();
+    }
+
+    public function confirmarTransacao() {
+        return $this->db->commit();
+    }
+
+    public function cancelarTransacao() {
+        return $this->db->rollBack();
+    }
+
+// No ColecaoRepository.php
+    public function salvarGeneros($albumId, array $generosNomes) {
+        // 1. Remove as associações antigas
+        $sqlDelete = "DELETE FROM tb_album_generos WHERE album_id = :album_id";
+        $stmtDelete = $this->db->prepare($sqlDelete);
+        $stmtDelete->execute([':album_id' => $albumId]);
+    
+        foreach ($generosNomes as $nome) {
+            $nome = trim($nome);
+            if (empty($nome)) continue;
+    
+            // 2. Busca ou Cria o gênero na tb_generos
+            $sqlCheck = "SELECT genero_id FROM tb_generos WHERE descricao = :nome";
+            $stmtCheck = $this->db->prepare($sqlCheck);
+            $stmtCheck->execute([':nome' => $nome]);
+            $generoId = $stmtCheck->fetchColumn();
+    
+            if (!$generoId) {
+                $sqlInsert = "INSERT INTO tb_generos (descricao) VALUES (:nome)";
+                $this->db->prepare($sqlInsert)->execute([':nome' => $nome]);
+                $generoId = $this->db->lastInsertId();
+            }
+    
+            // 3. Associa na tabela pivô
+            $sqlPivot = "INSERT INTO tb_album_generos (album_id, genero_id) VALUES (:album_id, :genero_id)";
+            $this->db->prepare($sqlPivot)->execute([
+                ':album_id' => $albumId,
+                ':genero_id' => $generoId
+            ]);
+        }
+    }
+
+    // Sincronizar Estilos
+    public function salvarEstilos($albumId, array $estilosNomes) {
+        $this->db->prepare("DELETE FROM tb_album_estilos WHERE album_id = :id")
+                 ->execute([':id' => $albumId]);
+
+        foreach ($estilosNomes as $nome) {
+            $nome = trim($nome);
+            if (empty($nome)) continue;
+
+            $stmt = $this->db->prepare("SELECT estilo_id FROM tb_estilos WHERE descricao = :nome");
+            $stmt->execute([':nome' => $nome]);
+            $id = $stmt->fetchColumn();
+
+            if (!$id) {
+                $this->db->prepare("INSERT INTO tb_estilos (descricao) VALUES (:nome)")
+                         ->execute([':nome' => $nome]);
+                $id = $this->db->lastInsertId();
+            }
+
+            $this->db->prepare("INSERT INTO tb_album_estilos (album_id, estilo_id) VALUES (?, ?)")
+                     ->execute([$albumId, $id]);
+        }
+    }
+
+    // Sincronizar Produtores
+    public function salvarProdutores($albumId, array $produtoresNomes) {
+        $this->db->prepare("DELETE FROM tb_album_produtores WHERE album_id = :id")
+                 ->execute([':id' => $albumId]);
+
+        foreach ($produtoresNomes as $nome) {
+            $nome = trim($nome);
+            if (empty($nome)) continue;
+
+            $stmt = $this->db->prepare("SELECT produtor_id FROM tb_produtores WHERE nome = :nome");
+            $stmt->execute([':nome' => $nome]);
+            $id = $stmt->fetchColumn();
+
+            if (!$id) {
+                $this->db->prepare("INSERT INTO tb_produtores (nome) VALUES (:nome)")
+                         ->execute([':nome' => $nome]);
+                $id = $this->db->lastInsertId();
+            }
+
+            $this->db->prepare("INSERT INTO tb_album_produtores (album_id, produtor_id) VALUES (?, ?)")
+                     ->execute([$albumId, $id]);
+        }
+    }
+
+    public function updateDadosBasicos($midiaId, $albumId, $dados) {
+        // 1. Atualiza a Tabela de Álbuns (Título, Lançamento, Artista, etc.)
+        $sqlAlbum = "UPDATE tb_albuns SET 
+                        titulo = :titulo, 
+                        data_lancamento = :data_lancamento,
+                        artista_id = :artista_id,
+                        tipo_id = :tipo_id
+                     WHERE album_id = :album_id";
+        
+        $this->db->prepare($sqlAlbum)->execute([
+            ':titulo' => $dados['titulo'],
+            ':data_lancamento' => $dados['data_lancamento'],
+            ':artista_id' => $dados['artista_id'],
+            ':tipo_id' => $dados['tipo_id'],
+            ':album_id' => $albumId
+        ]);
+    
+        // 2. Atualiza a Tabela de Mídias (Preço, Data Aquisição, Gravadora)
+        $sqlMidia = "UPDATE tb_midias SET 
+                        data_aquisicao = :data_aquisicao,
+                        preco = :preco,
+                        gravadora_id = :gravadora_id,
+                        numero_catalogo = :numero_catalogo,
+                        condicao = :condicao,
+                        observacoes = :observacoes
+                     WHERE midia_id = :midia_id";
+    
+        $this->db->prepare($sqlMidia)->execute([
+            ':data_aquisicao' => $dados['data_aquisicao'],
+            ':preco' => $dados['preco'],
+            ':gravadora_id' => $dados['gravadora_id'],
+            ':numero_catalogo' => $dados['numero_catalogo'],
+            ':condicao' => $dados['condicao'],
+            ':observacoes' => $dados['observacoes'],
+            ':midia_id' => $midiaId
+        ]);
     }
 }

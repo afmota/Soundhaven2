@@ -1,81 +1,186 @@
-<?php 
-// O header.php geralmente já inicia a sessão e traz os estilos CSS
-require_once 'views/partials/header.php'; 
-?>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoundHaven - Editar Álbum</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/includedit.css">
+</head>
+<body class="colecao-module">
+<?php include __DIR__ . '/../partials/header.php'; ?>
 
-<main class="container-edicao">
-    <section class="top-bar">
-        <a href="index.php?url=colecao" class="btn-voltar">← Voltar para a Coleção</a>
-        <h1>Editar Álbum</h1>
-    </section>
-
-    <form id="formEdicaoAlbum" method="POST" action="index.php?url=salvar_edicao">
-        <input type="hidden" name="midia_id" value="<?= $album['midia_id'] ?>">
-
-        <div class="edicao-grid">
-            <div class="edicao-col-capa">
-                <div class="capa-preview">
-                    <img id="imgPreviewCapa" src="<?= $album['capa_url'] ?: 'assets/images/placeholder.jpg' ?>" alt="Capa">
+<div class="edicao-pagina-content">
+    <h2 id="edicaoHeaderTitle" style="color:var(--accent-colecao); margin-top:0; margin-bottom: 20px;">
+        Editar: <?= htmlspecialchars($album['titulo'] ?? '') ?>
+    </h2>
+    
+    <form method="POST" action="processar_edicao.php">
+        <input type="hidden" name="action" value="update">
+        <input type="hidden" name="album_id" id="edicaoAlbumId" value="<?= $album['id'] ?? '' ?>">
+        
+        <div id="edicaoPaginaBody">
+            <div class="edicao-header-row">
+                <img id="edicaoImg" class="edicao-capa" src="<?= htmlspecialchars($album['capa_url'] ?? '') ?>" alt="Capa Edição">
+                <div class="edicao-field-group">
+                    <label>URL DA CAPA</label>
+                    <input type="text" name="capa_url" id="edicaoCapaUrl" value="<?= htmlspecialchars($album['capa_url'] ?? '') ?>">
                 </div>
-                <div class="form-group">
-                    <label for="inputCapaUrl">URL da Capa</label>
-                    <input type="text" name="capa_url" id="inputCapaUrl" class="form-control" 
-                           value="<?= htmlspecialchars($album['capa_url']) ?>">
+            </div>
+
+            <hr class="edicao-separator">
+
+            <div class="edicao-field-group">
+                <label>TÍTULO DO ÁLBUM</label>
+                <input type="text" name="titulo" id="edicaoTitulo" value="<?= htmlspecialchars($album['titulo'] ?? '') ?>">
+            </div>
+
+            <div class="edicao-row">
+                <div class="edicao-field-group">
+                    <label>ARTISTA</label>
+                    <select name="artista_id" id="edicaoArtista">
+                        <option value="">Selecione...</option>
+                        <?php foreach ($artistas as $art): ?>
+                            <option value="<?= $art['artista_id'] ?>" <?= (isset($album['artista_id']) && $art['artista_id'] == $album['artista_id']) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($art['nome']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="edicao-field-group">
+                    <label>GRAVADORA</label>
+                    <select name="gravadora_id" id="edicaoGravadora">
+                        <option value="">Selecione...</option>
+                        <?php foreach ($gravadoras as $grav): ?>
+                            <option value="<?= $grav['gravadora_id'] ?>" <?= (isset($album['gravadora_id']) && $grav['gravadora_id'] == $album['gravadora_id']) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($grav['nome']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </div>
+                        
+            <div class="edicao-row">
+                <div class="edicao-field-group">
+                    <label>DATA DE LANÇAMENTO</label>
+                    <input type="date" name="data_lancamento" id="edicaoDataLancamento" value="<?= $album['data_lancamento'] ?? '' ?>">
+                </div>
+                <div class="edicao-field-group">
+                    <label>DATA DE AQUISIÇÃO</label>
+                    <input type="date" name="data_aquisicao" id="edicaoDataAquisicao" value="<?= $album['data_aquisicao'] ?? '' ?>">
                 </div>
             </div>
 
-            <div class="edicao-col-dados">
-                <div class="form-group">
-                    <label>Título do Álbum</label>
-                    <input type="text" name="titulo" class="form-control" value="<?= htmlspecialchars($album['titulo']) ?>">
-                </div>
+            <div class="edicao-field-group">
+                <label>PREÇO DE AQUISIÇÃO (R$)</label>
+                <input type="text" 
+                       name="preco" 
+                       value="<?= number_format($album['preco'] ?? 0, 2, ',', '') ?>" 
+                       class="input-edicao"
+                       placeholder="0,00">
+                <small>Use vírgula para centavos (ex: 45,90)</small>
+            </div>
 
-                <div class="form-group">
-                    <label>Artista</label>
-                    <input type="text" class="form-control" value="<?= htmlspecialchars($album['artista_nome']) ?>" readonly title="Artista não editável por aqui">
-                </div>
+            <hr class="edicao-divider">
 
-                <div class="form-group">
-                    <label>Gravadora</label>
-                    <div class="input-group">
-                        <select name="gravadora_id" id="selectGravadora" class="form-control">
-                            <?php foreach ($gravadoras as $g): ?>
-                                <option value="<?= $g['id'] ?>" <?= $g['id'] == $album['gravadora_id'] ? 'selected' : '' ?>>
-                                    <?= htmlspecialchars($g['nome']) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                        <button type="button" id="btnNovaGravadora" class="btn-add" style="background-color: #3c3cff;">+</button>
+            <h3 class="edicao-subtitle">Classificação e Produção</h3>
+
+            <div class="edicao-row">
+                <div class="edicao-field-group">
+                    <div class="label-with-action">
+                        <label>GÊNEROS</label>
+                        <button type="button" class="btn-add-tag" data-target="Generos">
+                            <i class="fas fa-plus-circle"></i>
+                        </button>
+                    </div>
+                    <div class="search-tag-container" id="searchContainerGeneros" style="display: none;">
+                        <input type="text" 
+                            class="input-search-tag" 
+                            placeholder="Buscar ou digitar novo..."
+                            data-tipo="generos"
+                            list="listaSugestoesGeneros">
+                    </div>
+                    <div class="tags-container" id="containerGeneros">
+                        <?php 
+                        $listaGeneros = explode('|', $album['generos'] ?? '');
+                        foreach ($listaGeneros as $gen): if(empty(trim($gen))) continue; ?>
+                            <span class="tag-item">
+                                <?= htmlspecialchars($gen) ?>
+                                <input type="hidden" name="generos[]" value="<?= htmlspecialchars($gen) ?>">
+                                <i class="fas fa-times remove-tag"></i>
+                            </span>
+                        <?php endforeach; ?>
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="form-group">
-                        <label>Data de Lançamento</label>
-                        <input type="date" name="data_lancamento" class="form-control" value="<?= $album['data_lancamento'] ?>">
+                <div class="edicao-field-group">
+                    <div class="label-with-action">
+                        <label>ESTILOS</label>
+                        <button type="button" class="btn-add-tag" title="Adicionar Estilo" data-target="estilos">
+                            <i class="fas fa-plus-circle"></i>
+                        </button>
+                    </div>
+                    <div class="tags-container" id="containerEstilos">
+                        <?php 
+                        $listaEstilos = explode('|', $album['estilos'] ?? '');
+                        foreach ($listaEstilos as $est): if(empty(trim($est))) continue; ?>
+                            <span class="tag-item">
+                                <?= htmlspecialchars($est) ?>
+                                <i class="fas fa-times remove-tag"></i>
+                            </span>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="form-actions">
-            <button type="submit" class="btn-save" style="background-color: #338d33;">Salvar Alterações</button>
-            <a href="index.php?url=colecao" class="btn-cancel" style="background-color: #ff3838;">Cancelar</a>
+            <div class="edicao-row">
+                <div class="edicao-field-group">
+                    <div class="label-with-action">
+                        <label>PRODUTORES</label>
+                        <button type="button" class="btn-add-tag" title="Adicionar Produtor" data-target="produtores">
+                            <i class="fas fa-plus-circle"></i>
+                        </button>
+                    </div>
+                    <div class="tags-container" id="containerProdutores">
+                        <?php 
+                        $listaProdutores = explode('|', $album['produtores'] ?? '');
+                        foreach ($listaProdutores as $prod): if(empty(trim($prod))) continue; ?>
+                            <span class="tag-item">
+                                <?= htmlspecialchars($prod) ?>
+                                <i class="fas fa-times remove-tag"></i>
+                            </span>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="edicao-actions" style="margin-top:30px; display:flex; justify-content: flex-end; gap:10px;">
+                <button type="button" class="btn" style="background-color: var(--action-destructive);" onclick="window.history.back()">Cancelar</button>
+                <button type="submit" class="btn" style="background-color: var(--action-positive);"><i class="fa-solid fa-save"></i> Salvar</button>
+            </div>
         </div>
     </form>
-</main>
-
-<div id="dialogoGravadora" class="modal-overlay" style="display:none;">
-    <div class="modal-content-mini">
-        <h3>Nova Gravadora</h3>
-        <input type="text" id="nomeNovaGravadora" class="form-control" placeholder="Digite o nome...">
-        <div class="modal-actions">
-            <button type="button" id="btnSalvarGravadora" style="background-color: #338d33;">Salvar</button>
-            <button type="button" id="btnCancelarGravadora" style="background-color: #ff3838;">Cancelar</button>
-        </div>
-    </div>
 </div>
 
-<script src="js/edicao.js"></script>
+<datalist id="listaSugestoesGeneros">
+    <?php foreach ($sugestoes['generos'] as $gen): ?>
+        <option value="<?= htmlspecialchars($gen) ?>">
+    <?php endforeach; ?>
+</datalist>
 
-<?php require_once 'views/partials/footer.php'; ?>
+<datalist id="listaSugestoesEstilos">
+    <?php foreach ($todosEstilos as $est): ?>
+        <option value="<?= htmlspecialchars($dt['descricao'] ?? $est) ?>">
+    <?php endforeach; ?>
+</datalist>
+
+<datalist id="listaSugestoesProdutores">
+    <?php foreach ($todosProdutores as $prod): ?>
+        <option value="<?= htmlspecialchars($dt['nome'] ?? $prod) ?>">
+    <?php endforeach; ?>
+</datalist>
+
+<script src="assets/js/edicao_album.js"></script>
+</body>
+</html>
