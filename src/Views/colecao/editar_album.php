@@ -154,12 +154,53 @@
                     </div>
                 </div>
             </div>
+
+<hr class="edicao-divider">
+<div class="edicao-section-faixas">
+    <div class="label-with-action">
+        <h3 class="edicao-subtitle">Faixas / Músicas</h3>
+        <button type="button" class="btn-add-tag" id="btnAdicionarFaixa" title="Adicionar Faixa">
+            <i class="fas fa-plus-circle"></i>
+        </button>
+    </div>
+
+    <div id="containerListaFaixas" class="lista-faixas-edicao">
+        <div class="faixas-header">
+            <span class="col-pos">#</span>
+            <span class="col-titulo">Título</span>
+            <span class="col-duracao">Duração</span>
+            <span class="col-acoes"></span>
+        </div>
+        
+<div id="corpoListaFaixas">
+    <?php 
+    $listaFaixas = $faixas ?? []; 
+    foreach ($listaFaixas as $index => $faixa): 
+    ?>
+        <div class="faixa-item" data-posicao="<?= $faixa['numero_faixa'] ?>">
+            <input type="hidden" name="faixas[<?= $index ?>][numero_original]" value="<?= $faixa['numero_faixa'] ?>">
             
+            <input type="number" name="faixas[<?= $index ?>][numero_faixa]" 
+                   value="<?= $faixa['numero_faixa'] ?>" class="input-pos">
+            
+            <input type="text" name="faixas[<?= $index ?>][titulo]" 
+                   value="<?= htmlspecialchars($faixa['titulo']) ?>" class="input-titulo">
+            
+            <input type="text" name="faixas[<?= $index ?>][duracao]" 
+                   value="<?= $faixa['duracao'] ?>" class="input-duracao mask-tempo" placeholder="00:00:00">
+            
+            <button type="button" class="btn-remove-faixa"><i class="fas fa-trash"></i></button>
+        </div>
+    <?php endforeach; ?>
+</div>
+</div>
+            
+
+        </div>
             <div class="edicao-actions" style="margin-top:30px; display:flex; justify-content: flex-end; gap:10px;">
                 <button type="button" class="btn" style="background-color: var(--action-destructive);" onclick="window.history.back()">Cancelar</button>
                 <button type="submit" class="btn" style="background-color: var(--action-positive);"><i class="fa-solid fa-save"></i> Salvar</button>
             </div>
-        </div>
     </form>
 </div>
 

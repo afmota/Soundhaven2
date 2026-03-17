@@ -50,7 +50,7 @@ class ColecaoController {
         exit;
     }
 
-    public function exibirFormularioEdicao($midia_id) {
+public function exibirFormularioEdicao($midia_id) {
         $midia_id = filter_var($midia_id, FILTER_VALIDATE_INT);
     
         if (!$midia_id) {
@@ -58,24 +58,24 @@ class ColecaoController {
             exit;
         }
     
-        // 1. O Service busca o álbum específico
+        // 1. Busca os dados do álbum
         $album = $this->service->buscarDetalhesMidia($midia_id);
         
-        // 2. O Service busca as listas para alimentar os selects da View
+        // 2. BUSCA AS FAIXAS (O que estava faltando!)
+        // Use o método que você já tem no Service para listar as faixas
+        $faixas = $this->service->getFaixasPorMidia($midia_id);
+
+        // 3. Busca os dicionários para os selects e datalists
         $artistas = $this->service->buscarTodosArtistas();
         $gravadoras = $this->service->buscarTodasGravadoras();
         $tipos = $this->service->buscarTodosTipos();
-
-        // --- O "CANTO" PARA O NOVO CÓDIGO ---
-        // Aqui buscamos o "dicionário" para os datalists das tags N:N
         $sugestoes = $this->service->listarTodasSugestoes(); 
-        // ------------------------------------
     
         if (!$album) {
             die("Álbum não encontrado.");
         }
     
-        // 3. A View recebe o álbum, os selects e agora as $sugestoes
+        // Agora a View recebe $album, $faixas, $artistas, $gravadoras, $tipos e $sugestoes
         require_once __DIR__ . '/../Views/colecao/editar_album.php';
     }
 

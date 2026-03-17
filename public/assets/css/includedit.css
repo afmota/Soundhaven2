@@ -191,3 +191,160 @@
 .btn-add-tag:hover {
     transform: scale(1.2);
 }
+
+/* Seção de Faixas */
+.edicao-section-faixas {
+    margin-top: 30px;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+.faixas-header {
+    display: flex;
+    font-weight: bold;
+    color: #666;
+    padding: 10px 0;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 10px;
+}
+
+.faixa-item {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s;
+}
+
+.faixa-item:hover {
+    background: #f1f1f1;
+}
+
+/* Larguras específicas para cada coluna */
+.col-pos, .input-pos { width: 50px; text-align: center; }
+.col-titulo, .input-titulo { flex-grow: 1; }
+.col-duracao, .input-duracao { width: 100px; text-align: center; }
+.col-acoes { width: 40px; }
+
+.input-pos, .input-titulo, .input-duracao {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* O botão de remover (seguindo sua regra de cores de destruição) */
+.btn-remove-faixa {
+    background: #ff3838; /* A cor que você definiu para ações destrutivas */
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-remove-faixa:hover {
+    background: #d32f2f;
+}
+
+/* Botão de Adicionar (Ação Positiva) */
+.btn-add-tag, #btnAdicionarFaixa {
+    background-color: var(--action-positive); 
+    color: white;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: filter 0.2s;
+}
+
+.btn-add-tag:hover, #btnAdicionarFaixa:hover {
+    filter: brightness(0.9); /* Escurece levemente sem precisar de nova cor */
+}
+
+/* Botão de Remover Faixa (Ação Destrutiva) */
+.btn-remove-faixa {
+    background-color: var(--action-destructive);
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: filter 0.2s;
+}
+
+.btn-remove-faixa:hover {
+    filter: brightness(0.9);
+}
+
+/* Inputs em Foco (Ação Neutra/Destaque) */
+.faixa-item input:focus {
+    border-color: var(--action-neutral);
+    outline: none;
+    box-shadow: 0 0 4px var(--action-neutral);
+}
+
+/* Seção de Faixas - Agora integrada ao fundo escuro */
+.edicao-section-faixas {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.05); /* Um leve brilho sobre o seu cinza escuro */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+}
+
+.edicao-subtitle {
+    color: #fff; /* Título em destaque */
+    margin-bottom: 15px;
+}
+
+.faixas-header {
+    display: flex;
+    font-weight: bold;
+    color: var(--action-neutral); /* Usando sua variável para os cabeçalhos */
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+}
+
+.faixa-item {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background 0.2s;
+}
+
+.faixa-item:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Ajuste nos inputs para não "gritarem" no escuro */
+.input-pos, .input-titulo, .input-duracao {
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #eee;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.input-pos:focus, .input-titulo:focus, .input-duracao:focus {
+    border-color: var(--action-neutral);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* Botões respeitando as variáveis que você mandou */
+.btn-add-tag, #btnAdicionarFaixa {
+    background-color: var(--action-positive);
+    color: white;
+}
+
+.btn-remove-faixa {
+    background-color: var(--action-destructive);
+    color: white;
+}

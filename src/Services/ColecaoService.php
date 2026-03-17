@@ -72,19 +72,23 @@ public function atualizarAlbum($midiaId, $dados) {
     try {
         $this->repository->iniciarTransacao();
 
-        // 1. Salva Título, Datas e o PREÇO
+        // 1. Dados Básicos (Título, Preço, etc.)
         $this->repository->updateDadosBasicos($midiaId, $dados['album_id'], $dados);
 
-        // 2. Sincroniza Gêneros, Estilos e Produtores (os N:N que já fizemos)
+        // 2. Tags N:N (Gêneros, Estilos, Produtores)
         $this->repository->salvarGeneros($dados['album_id'], $dados['generos'] ?? []);
         $this->repository->salvarEstilos($dados['album_id'], $dados['estilos'] ?? []);
         $this->repository->salvarProdutores($dados['album_id'], $dados['produtores'] ?? []);
 
+        // 3. O Chefão Final: As FAIXAS
+        $this->repository->salvarFaixas($midiaId, $dados['faixas'] ?? []);
+
         $this->repository->confirmarTransacao();
         return true;
+
     } catch (\Exception $e) {
         $this->repository->cancelarTransacao();
-        error_log("Erro no Update: " . $e->getMessage());
+        error_log("Erro Fatal no Soundhaven2: " . $e->getMessage());
         return false;
     }
 }

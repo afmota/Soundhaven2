@@ -106,3 +106,71 @@ function adicionarTag(input) {
 function capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+// Pegamos o número atual de faixas para continuar a contagem
+let faixaIndex = document.querySelectorAll('.faixa-item').length;
+
+document.getElementById('btnAdicionarFaixa').addEventListener('click', function() {
+    const corpo = document.getElementById('corpoListaFaixas');
+    
+    // Sugestão de próxima posição (última + 1)
+    const proximaPos = corpo.querySelectorAll('.faixa-item').length + 1;
+
+    const novaLinha = document.createElement('div');
+    novaLinha.className = 'faixa-item';
+    novaLinha.innerHTML = `
+        <input type="hidden" name="faixas[${faixaIndex}][id]" value="new">
+        <input type="number" name="faixas[${faixaIndex}][posicao]" value="${proximaPos}" class="input-pos">
+        <input type="text" name="faixas[${faixaIndex}][titulo]" placeholder="Título da música" class="input-titulo">
+        <input type="text" name="faixas[${faixaIndex}][duracao]" placeholder="00:00" class="input-duracao mask-tempo">
+        <button type="button" class="btn-remove-faixa"><i class="fas fa-trash"></i></button>
+    `;
+
+    corpo.appendChild(novaLinha);
+    faixaIndex++;
+    
+    // Focar no título da nova faixa
+    novaLinha.querySelector('.input-titulo').focus();
+});
+
+// Delegação de evento para remover a faixa (mesmo as que acabaram de ser criadas)
+document.getElementById('corpoListaFaixas').addEventListener('click', function(e) {
+    if (e.target.closest('.btn-remove-faixa')) {
+        const linha = e.target.closest('.faixa-item');
+        
+        if (confirm('Deseja remover esta faixa da lista?')) {
+            linha.style.opacity = '0';
+            setTimeout(() => linha.remove(), 200);
+        }
+    }
+});
+
+document.getElementById('corpoListaFaixas').addEventListener('input', function(e) {
+    if (e.target.classList.contains('input-duracao')) {
+        let v = e.target.value.replace(/\D/g, ''); // Remove o que não é número
+        if (v.length > 4) v = v.substring(0, 4);   // Limita a 4 dígitos
+        
+        if (v.length >= 3) {
+            v = v.substring(0, v.length - 2) + ':' + v.substring(v.length - 2);
+        }
+        e.target.value = v;
+    }
+});
+
+// Ajuste na máscara de tempo para suportar HH:MM:SS ou garantir o formato TIME
+document.getElementById('corpoListaFaixas').addEventListener('input', function(e) {
+    if (e.target.classList.contains('input-duracao')) {
+        let v = e.target.value.replace(/\D/g, ''); 
+        
+        // Se o cara digitar 4 números (MMSS), a gente formata
+        if (v.length >= 3 && v.length <= 4) {
+            v = v.substring(0, v.length - 2) + ':' + v.substring(v.length - 2);
+        } 
+        // Se for mais que isso, a gente começa a pensar em HH:MM:SS
+        else if (v.length > 4) {
+            v = v.substring(0, v.length - 4) + ':' + v.substring(v.length - 4, v.length - 2) + ':' + v.substring(v.length - 2);
+        }
+        
+        e.target.value = v.substring(0, 8); // Limite do formato TIME
+    }
+});

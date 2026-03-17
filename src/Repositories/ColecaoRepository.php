@@ -277,4 +277,28 @@ public function buscarDetalhesMidia($midiaId) {
             ':midia_id' => $midiaId
         ]);
     }
+
+public function salvarFaixas($midiaId, array $faixas) {
+    // 1. Limpa o que já existe para essa mídia (O passado não nos pertence mais)
+    $sqlDelete = "DELETE FROM tb_midia_faixas WHERE midia_id = :midia_id";
+    $this->db->prepare($sqlDelete)->execute([':midia_id' => $midiaId]);
+
+    // 2. Insere a nova lista (O presente que veio do formulário)
+    $sqlInsert = "INSERT INTO tb_midia_faixas (midia_id, numero_faixa, titulo, duracao) 
+                  VALUES (:midia_id, :numero_faixa, :titulo, :duracao)";
+    
+    $stmt = $this->db->prepare($sqlInsert);
+
+    foreach ($faixas as $faixa) {
+        // Validação básica: se não tiver título, a gente pula
+        if (empty(trim($faixa['titulo']))) continue;
+
+        $stmt->execute([
+            ':midia_id'     => $midiaId,
+            ':numero_faixa' => $faixa['numero_faixa'],
+            ':titulo'       => trim($faixa['titulo']),
+            ':duracao'      => !empty($faixa['duracao']) ? $faixa['duracao'] : null
+        ]);
+    }
+}
 }
