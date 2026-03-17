@@ -1,5 +1,6 @@
-/* includedit.css - Estilos para a Página de Edição */
+/* includedit.css - Versão Otimizada SoundHaven */
 
+/* CONTAINER PRINCIPAL */
 .edicao-pagina-content {
     background: var(--card-bg);
     margin: 2% auto;
@@ -11,8 +12,10 @@
     display: flex;
     flex-direction: column;
     position: relative;
+    box-sizing: border-box;
 }
 
+/* CABEÇALHO (CAPA + URL) */
 .edicao-header-row {
     display: flex;
     align-items: flex-end;
@@ -30,12 +33,13 @@
     background: #121212;
 }
 
+/* GRUPOS DE CAMPOS */
 .edicao-field-group {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-bottom: 15px; /* Mantendo margem consistente */
+    margin-bottom: 15px;
 }
 
 .edicao-field-group label {
@@ -45,9 +49,10 @@
     text-transform: uppercase;
 }
 
-/* PADRONIZAÇÃO DOS CAMPOS DE EDIÇÃO (INPUT E SELECT) */
+/* PADRONIZAÇÃO DE INPUTS, SELECTS E TEXTAREA */
 .edicao-field-group input, 
-.edicao-field-group select {
+.edicao-field-group select,
+.input-edicao {
     width: 100%;
     padding: 12px;
     background: #121212;
@@ -56,7 +61,7 @@
     border-radius: 4px;
     font-size: 0.9em;
     box-sizing: border-box;
-    height: 45px;
+    transition: border-color 0.2s;
 }
 
 .edicao-field-group select {
@@ -67,14 +72,7 @@
     background-position: right 12px center;
 }
 
-.edicao-separator {
-    border: 0;
-    border-top: 1px solid var(--border-color);
-    margin: 25px 0;
-    width: 100%;
-}
-
-/* Organização de campos em linha */
+/* ORGANIZAÇÃO EM LINHA */
 .edicao-row {
     display: flex;
     gap: 20px;
@@ -86,13 +84,14 @@
     flex: 1;
 }
 
-.edicao-actions {
-    margin-top: 30px;
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
+.edicao-separator, .edicao-divider {
+    border: 0;
+    border-top: 1px solid var(--border-color);
+    margin: 25px 0;
+    width: 100%;
 }
 
+/* TAGS (Gêneros, Estilos, Produtores) */
 .label-with-action {
     display: flex;
     align-items: center;
@@ -100,212 +99,58 @@
     margin-bottom: 8px;
 }
 
-.btn-add-tag {
-    background: none;
-    border: none;
-    color: #3c3cff; /* Sua cor padrão para ações */
-    cursor: pointer;
-    font-size: 1.1rem;
-    padding: 0;
-    transition: transform 0.2s;
-}
-
-.btn-add-tag:hover {
-    transform: scale(1.2);
-    color: #338d33; /* Cor de "adicionar" */
-}
-
-/* Container das Tags */
 .tags-container {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     min-height: 40px;
-    padding: 8px;
-    /*background: #f4f4f9; /* Um fundo leve para dar contraste */
-    /*border: 1px solid #ddd;
-    border-radius: 6px;*/
+    padding: 8px 0;
     align-items: center;
 }
 
-/* A Tag em si */
 .tag-item {
     display: inline-flex;
     align-items: center;
-    background-color: #1a1a1a; /* Sua cor de 'outras ações' */
-    color: rgb(158, 158, 158);
-    padding: 4px 10px;
-    border-radius: 15px; /* Deixa arredondado estilo pílula */
+    background-color: var(--action-neutral); /* Azul conforme sua regra */
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 15px;
     font-size: 0.85rem;
     font-weight: 500;
-    transition: all 0.2s ease;
+    transition: filter 0.2s;
 }
 
 .tag-item:hover {
-    background-color: #2a2aff; /* Um tom mais escuro no hover */
-    transform: translateY(-1px);
+    filter: brightness(1.2);
 }
 
-/* O 'X' de remover */
 .remove-tag {
     margin-left: 8px;
     cursor: pointer;
     font-size: 0.8rem;
     opacity: 0.7;
-    transition: opacity 0.2s;
 }
 
 .remove-tag:hover {
+    color: var(--action-destructive); /* Vermelho */
     opacity: 1;
-    color: #ff3838; /* Vermelho destrutivo para o aviso de remoção */
 }
 
-/* Ajuste do Label com o botão + */
-.label-with-action {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 5px;
-}
-
-.label-with-action label {
-    margin-bottom: 0; /* Remove a margem padrão para alinhar com o botão */
-    font-weight: bold;
-    font-size: 0.9rem;
-    color: #444;
-}
-
-.btn-add-tag {
-    background: none;
-    border: none;
-    color: #338d33; /* Seu verde de 'aceitar/adicionar' */
-    cursor: pointer;
-    font-size: 1.2rem;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.2s;
-}
-
-.btn-add-tag:hover {
-    transform: scale(1.2);
-}
-
-/* Seção de Faixas */
+/* SEÇÃO DE FAIXAS */
 .edicao-section-faixas {
     margin-top: 30px;
     padding: 20px;
-    background: #f9f9f9;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
-    border: 1px solid #eee;
 }
 
 .faixas-header {
     display: flex;
     font-weight: bold;
-    color: #666;
+    color: var(--action-neutral);
     padding: 10px 0;
-    border-bottom: 2px solid #ddd;
-    margin-bottom: 10px;
-}
-
-.faixa-item {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    padding: 8px 0;
-    border-bottom: 1px solid #eee;
-    transition: background 0.2s;
-}
-
-.faixa-item:hover {
-    background: #f1f1f1;
-}
-
-/* Larguras específicas para cada coluna */
-.col-pos, .input-pos { width: 50px; text-align: center; }
-.col-titulo, .input-titulo { flex-grow: 1; }
-.col-duracao, .input-duracao { width: 100px; text-align: center; }
-.col-acoes { width: 40px; }
-
-.input-pos, .input-titulo, .input-duracao {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-/* O botão de remover (seguindo sua regra de cores de destruição) */
-.btn-remove-faixa {
-    background: #ff3838; /* A cor que você definiu para ações destrutivas */
-    color: white;
-    border: none;
-    padding: 8px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.btn-remove-faixa:hover {
-    background: #d32f2f;
-}
-
-/* Botão de Adicionar (Ação Positiva) */
-.btn-add-tag, #btnAdicionarFaixa {
-    background-color: var(--action-positive); 
-    color: white;
-    border: none;
-    padding: 5px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: filter 0.2s;
-}
-
-.btn-add-tag:hover, #btnAdicionarFaixa:hover {
-    filter: brightness(0.9); /* Escurece levemente sem precisar de nova cor */
-}
-
-/* Botão de Remover Faixa (Ação Destrutiva) */
-.btn-remove-faixa {
-    background-color: var(--action-destructive);
-    color: white;
-    border: none;
-    padding: 8px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: filter 0.2s;
-}
-
-.btn-remove-faixa:hover {
-    filter: brightness(0.9);
-}
-
-/* Inputs em Foco (Ação Neutra/Destaque) */
-.faixa-item input:focus {
-    border-color: var(--action-neutral);
-    outline: none;
-    box-shadow: 0 0 4px var(--action-neutral);
-}
-
-/* Seção de Faixas - Agora integrada ao fundo escuro */
-.edicao-section-faixas {
-    margin-top: 30px;
-    padding: 20px;
-    background-color: rgba(255, 255, 255, 0.05); /* Um leve brilho sobre o seu cinza escuro */
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-}
-
-.edicao-subtitle {
-    color: #fff; /* Título em destaque */
-    margin-bottom: 15px;
-}
-
-.faixas-header {
-    display: flex;
-    font-weight: bold;
-    color: var(--action-neutral); /* Usando sua variável para os cabeçalhos */
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1px solid var(--border-color);
     margin-bottom: 10px;
     text-transform: uppercase;
     font-size: 0.85rem;
@@ -317,34 +162,112 @@
     align-items: center;
     padding: 10px 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    transition: background 0.2s;
 }
 
 .faixa-item:hover {
     background-color: rgba(255, 255, 255, 0.03);
 }
 
-/* Ajuste nos inputs para não "gritarem" no escuro */
-.input-pos, .input-titulo, .input-duracao {
+/* COLUNAS DAS FAIXAS */
+.col-pos, .input-pos { width: 55px; text-align: center; }
+.col-titulo, .input-titulo { flex-grow: 1; }
+.col-duracao, .input-duracao { width: 110px; text-align: center; }
+.col-acoes { width: 40px; }
+
+.faixa-item input {
     background-color: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--border-color);
     color: #eee;
     padding: 8px;
     border-radius: 4px;
 }
 
-.input-pos:focus, .input-titulo:focus, .input-duracao:focus {
+.faixa-item input:focus {
     border-color: var(--action-neutral);
-    background-color: rgba(0, 0, 0, 0.4);
+    outline: none;
 }
 
-/* Botões respeitando as variáveis que você mandou */
+/* BOTÕES GERAIS E HOVERS */
 .btn-add-tag, #btnAdicionarFaixa {
-    background-color: var(--action-positive);
+    background-color: var(--action-positive); /* #338d33 */
     color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s;
 }
 
 .btn-remove-faixa {
-    background-color: var(--action-destructive);
+    background-color: var(--action-destructive); /* #ff3838 */
     color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-add-tag:hover, 
+#btnAdicionarFaixa:hover, 
+.btn-remove-faixa:hover,
+.edicao-actions .btn:hover {
+    filter: brightness(1.2);
+    transform: translateY(-1px);
+}
+
+.edicao-actions {
+    margin-top: 30px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* EFEITOS DE HOVER NOS BOTÕES DO MODAL */
+
+.modal-actions {
+    margin-top: 25px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+/* Botão Editar (Verde/Ação Positiva) */
+.modal-actions .btn-edit {
+    background-color: var(--action-positive); /* #338d33 */
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* Botão Descartar (Vermelho/Ação Destrutiva) */
+.modal-actions .btn-delete {
+    background-color: var(--action-destructive); /* #ff3838 */
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* O "Pulo do Gato": Efeito Hover Unificado */
+.modal-actions .btn-edit:hover, 
+.modal-actions .btn-delete:hover {
+    filter: brightness(1.2); /* Acende a cor */
+    transform: translateY(-2px); /* Sobe de leve */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* Feedback de clique */
+.modal-actions .btn-edit:active, 
+.modal-actions .btn-delete:active {
+    transform: translateY(0);
+    filter: brightness(0.9);
 }

@@ -9,219 +9,221 @@
     <link rel="stylesheet" href="assets/css/includedit.css">
 </head>
 <body class="colecao-module">
-<?php include __DIR__ . '/../partials/header.php'; ?>
+    <?php include __DIR__ . '/../partials/header.php'; ?>
 
-<div class="edicao-pagina-content">
-    <h2 id="edicaoHeaderTitle" style="color:var(--accent-colecao); margin-top:0; margin-bottom: 20px;">
-        Editar: <?= htmlspecialchars($album['titulo'] ?? '') ?>
-    </h2>
-    
-    <form method="POST" action="processar_edicao.php">
-        <input type="hidden" name="action" value="update">
-        <input type="hidden" name="album_id" id="edicaoAlbumId" value="<?= $album['id'] ?? '' ?>">
-        
-        <div id="edicaoPaginaBody">
-            <div class="edicao-header-row">
-                <img id="edicaoImg" class="edicao-capa" src="<?= htmlspecialchars($album['capa_url'] ?? '') ?>" alt="Capa Edição">
-                <div class="edicao-field-group">
-                    <label>URL DA CAPA</label>
-                    <input type="text" name="capa_url" id="edicaoCapaUrl" value="<?= htmlspecialchars($album['capa_url'] ?? '') ?>">
+    <div class="edicao-pagina-content">
+        <h2 id="edicaoHeaderTitle" style="color:var(--accent-colecao); margin-top:0; margin-bottom: 20px;">
+            Editar: <?= htmlspecialchars($album['titulo'] ?? '') ?>
+        </h2>
+
+        <form method="POST" action="index.php?url=salvar_edicao">
+            
+            <input type="hidden" name="album_id" value="<?= $album['album_id'] ?? '' ?>">
+            <input type="hidden" name="midia_id" value="<?= $album['midia_id'] ?? '' ?>">
+
+            <div id="edicaoPaginaBody">
+                <div class="edicao-header-row">
+                    <img id="edicaoImg" class="edicao-capa" src="<?= htmlspecialchars($album['capa_url'] ?? '') ?>" alt="Capa Edição">
+                    <div class="edicao-field-group">
+                        <label>URL DA CAPA</label>
+                        <input type="text" name="capa_url" id="edicaoCapaUrl" value="<?= htmlspecialchars($album['capa_url'] ?? '') ?>">
+                    </div>
                 </div>
-            </div>
 
-            <hr class="edicao-separator">
+                <hr class="edicao-separator">
 
-            <div class="edicao-field-group">
-                <label>TÍTULO DO ÁLBUM</label>
-                <input type="text" name="titulo" id="edicaoTitulo" value="<?= htmlspecialchars($album['titulo'] ?? '') ?>">
-            </div>
-
-            <div class="edicao-row">
                 <div class="edicao-field-group">
-                    <label>ARTISTA</label>
-                    <select name="artista_id" id="edicaoArtista">
-                        <option value="">Selecione...</option>
-                        <?php foreach ($artistas as $art): ?>
+                    <label>TÍTULO DO ÁLBUM</label>
+                    <input type="text" name="titulo" id="edicaoTitulo" value="<?= htmlspecialchars($album['titulo'] ?? '') ?>">
+                </div>
+
+                <div class="edicao-row">
+                    <div class="edicao-field-group">
+                        <label>ARTISTA</label>
+                        <select name="artista_id" id="edicaoArtista">
+                            <option value="">Selecione...</option>
+                            <?php foreach ($artistas as $art): ?>
                             <option value="<?= $art['artista_id'] ?>" <?= (isset($album['artista_id']) && $art['artista_id'] == $album['artista_id']) ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($art['nome']) ?>
                             </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div class="edicao-field-group">
-                    <label>GRAVADORA</label>
-                    <select name="gravadora_id" id="edicaoGravadora">
-                        <option value="">Selecione...</option>
-                        <?php foreach ($gravadoras as $grav): ?>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="edicao-field-group">
+                        <label>GRAVADORA</label>
+                        <select name="gravadora_id" id="edicaoGravadora">
+                            <option value="">Selecione...</option>
+                            <?php foreach ($gravadoras as $grav): ?>
                             <option value="<?= $grav['gravadora_id'] ?>" <?= (isset($album['gravadora_id']) && $grav['gravadora_id'] == $album['gravadora_id']) ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($grav['nome']) ?>
                             </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-            </div>
-                        
-            <div class="edicao-row">
-                <div class="edicao-field-group">
-                    <label>DATA DE LANÇAMENTO</label>
-                    <input type="date" name="data_lancamento" id="edicaoDataLancamento" value="<?= $album['data_lancamento'] ?? '' ?>">
-                </div>
-                <div class="edicao-field-group">
-                    <label>DATA DE AQUISIÇÃO</label>
-                    <input type="date" name="data_aquisicao" id="edicaoDataAquisicao" value="<?= $album['data_aquisicao'] ?? '' ?>">
-                </div>
-            </div>
-
-            <div class="edicao-field-group">
-                <label>PREÇO DE AQUISIÇÃO (R$)</label>
-                <input type="text" 
-                       name="preco" 
-                       value="<?= number_format($album['preco'] ?? 0, 2, ',', '') ?>" 
-                       class="input-edicao"
-                       placeholder="0,00">
-                <small>Use vírgula para centavos (ex: 45,90)</small>
-            </div>
-
-            <hr class="edicao-divider">
-
-            <h3 class="edicao-subtitle">Classificação e Produção</h3>
-
-            <div class="edicao-row">
-                <div class="edicao-field-group">
-                    <div class="label-with-action">
-                        <label>GÊNEROS</label>
-                        <button type="button" class="btn-add-tag" data-target="Generos">
-                            <i class="fas fa-plus-circle"></i>
-                        </button>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
-                    <div class="search-tag-container" id="searchContainerGeneros" style="display: none;">
-                        <input type="text" 
-                            class="input-search-tag" 
-                            placeholder="Buscar ou digitar novo..."
-                            data-tipo="generos"
-                            list="listaSugestoesGeneros">
+                </div>
+
+                <div class="edicao-row">
+                    <div class="edicao-field-group">
+                        <label>DATA DE LANÇAMENTO</label>
+                        <input type="date" name="data_lancamento" value="<?= $album['data_lancamento'] ?? '' ?>">
                     </div>
-                    <div class="tags-container" id="containerGeneros">
-                        <?php 
-                        $listaGeneros = explode('|', $album['generos'] ?? '');
-                        foreach ($listaGeneros as $gen): if(empty(trim($gen))) continue; ?>
+                    <div class="edicao-field-group">
+                        <label>DATA DE AQUISIÇÃO</label>
+                        <input type="date" name="data_aquisicao" value="<?= $album['data_aquisicao'] ?? '' ?>">
+                    </div>
+                    <div class="edicao-field-group">
+                        <label>TIPO DE MÍDIA</label>
+                        <select name="tipo_id">
+                            <?php foreach ($tipos as $tp): ?>
+                            <option value="<?= $tp['tipo_id'] ?>" <?= (isset($album['tipo_id']) && $tp['tipo_id'] == $album['tipo_id']) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($tp['descricao']) ?>
+                            </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="edicao-field-group">
+                    <label>PREÇO DE AQUISIÇÃO (R$)</label>
+                    <input type="text" name="preco" 
+                           value="<?= number_format($album['preco'] ?? 0, 2, ',', '') ?>" 
+                           class="input-edicao" placeholder="0,00">
+                    <small style="color: rgba(255,255,255,0.5)">Use vírgula para centavos (ex: 45,90)</small>
+                </div>
+
+                <div class="edicao-field-group" style="margin-top: 20px;">
+                    <label>OBSERVAÇÕES / HISTÓRIA DO ITEM</label>
+                    <textarea name="observacoes" class="input-edicao" rows="4" 
+                              style="width: 100%; background-color: rgba(0,0,0,0.2); color: #eee; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 10px; resize: vertical;"
+                              placeholder="Conte a história deste item na sua coleção..."><?= htmlspecialchars($album['observacoes'] ?? '') ?></textarea>
+                </div>
+
+                <hr class="edicao-divider">
+
+                <h3 class="edicao-subtitle">Classificação e Produção</h3>
+                <div class="edicao-row">
+                    <div class="edicao-field-group">
+                        <div class="label-with-action">
+                            <label>GÊNEROS</label>
+                            <button type="button" class="btn-add-tag" data-target="Generos">
+                                <i class="fas fa-plus-circle"></i>
+                            </button>
+                        </div>
+                        <div class="search-tag-container" id="searchContainerGeneros" style="display: none;">
+                            <input type="text" class="input-search-tag" placeholder="Buscar ou novo..." data-tipo="generos" list="listaSugestoesGeneros">
+                        </div>
+                        <div class="tags-container" id="containerGeneros">
+                            <?php 
+                            $listaGeneros = explode('|', $album['generos'] ?? '');
+                            foreach ($listaGeneros as $gen): if(empty(trim($gen))) continue; ?>
                             <span class="tag-item">
                                 <?= htmlspecialchars($gen) ?>
                                 <input type="hidden" name="generos[]" value="<?= htmlspecialchars($gen) ?>">
                                 <i class="fas fa-times remove-tag"></i>
                             </span>
-                        <?php endforeach; ?>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
-                </div>
 
-                <div class="edicao-field-group">
-                    <div class="label-with-action">
-                        <label>ESTILOS</label>
-                        <button type="button" class="btn-add-tag" title="Adicionar Estilo" data-target="estilos">
-                            <i class="fas fa-plus-circle"></i>
-                        </button>
-                    </div>
-                    <div class="tags-container" id="containerEstilos">
-                        <?php 
-                        $listaEstilos = explode('|', $album['estilos'] ?? '');
-                        foreach ($listaEstilos as $est): if(empty(trim($est))) continue; ?>
+                    <div class="edicao-field-group">
+                        <div class="label-with-action">
+                            <label>ESTILOS</label>
+                            <button type="button" class="btn-add-tag" data-target="Estilos">
+                                <i class="fas fa-plus-circle"></i>
+                            </button>
+                        </div>
+                        <div class="search-tag-container" id="searchContainerEstilos" style="display: none;">
+                            <input type="text" class="input-search-tag" placeholder="Buscar ou novo..." data-tipo="estilos" list="listaSugestoesEstilos">
+                        </div>
+                        <div class="tags-container" id="containerEstilos">
+                            <?php 
+                            $listaEstilos = explode('|', $album['estilos'] ?? '');
+                            foreach ($listaEstilos as $est): if(empty(trim($est))) continue; ?>
                             <span class="tag-item">
                                 <?= htmlspecialchars($est) ?>
+                                <input type="hidden" name="estilos[]" value="<?= htmlspecialchars($est) ?>">
                                 <i class="fas fa-times remove-tag"></i>
                             </span>
-                        <?php endforeach; ?>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="edicao-row">
-                <div class="edicao-field-group">
+                <div class="edicao-row">
+                    <div class="edicao-field-group">
+                        <div class="label-with-action">
+                            <label>PRODUTORES</label>
+                            <button type="button" class="btn-add-tag" data-target="Produtores">
+                                <i class="fas fa-plus-circle"></i>
+                            </button>
+                        </div>
+                        <div class="search-tag-container" id="searchContainerProdutores" style="display: none;">
+                            <input type="text" class="input-search-tag" placeholder="Buscar ou novo..." data-tipo="produtores" list="listaSugestoesProdutores">
+                        </div>
+                        <div class="tags-container" id="containerProdutores">
+                            <?php 
+                            $listaProdutores = explode('|', $album['produtores'] ?? '');
+                            foreach ($listaProdutores as $prod): if(empty(trim($prod))) continue; ?>
+                            <span class="tag-item">
+                                <?= htmlspecialchars($prod) ?>
+                                <input type="hidden" name="produtores[]" value="<?= htmlspecialchars($prod) ?>">
+                                <i class="fas fa-times remove-tag"></i>
+                            </span>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="edicao-divider">
+
+                <div class="edicao-section-faixas">
                     <div class="label-with-action">
-                        <label>PRODUTORES</label>
-                        <button type="button" class="btn-add-tag" title="Adicionar Produtor" data-target="produtores">
+                        <h3 class="edicao-subtitle">Faixas / Músicas</h3>
+                        <button type="button" class="btn-add-tag" id="btnAdicionarFaixa" title="Adicionar Faixa">
                             <i class="fas fa-plus-circle"></i>
                         </button>
                     </div>
-                    <div class="tags-container" id="containerProdutores">
-                        <?php 
-                        $listaProdutores = explode('|', $album['produtores'] ?? '');
-                        foreach ($listaProdutores as $prod): if(empty(trim($prod))) continue; ?>
-                            <span class="tag-item">
-                                <?= htmlspecialchars($prod) ?>
-                                <i class="fas fa-times remove-tag"></i>
-                            </span>
-                        <?php endforeach; ?>
+                    <div id="containerListaFaixas" class="lista-faixas-edicao">
+                        <div class="faixas-header">
+                            <span class="col-pos">#</span>
+                            <span class="col-titulo">Título</span>
+                            <span class="col-duracao">Duração</span>
+                            <span class="col-acoes"></span>
+                        </div>
+                        <div id="corpoListaFaixas">
+                            <?php foreach ($faixas as $index => $faixa): ?>
+                            <div class="faixa-item" data-posicao="<?= $faixa['numero_faixa'] ?>">
+                                <input type="number" name="faixas[<?= $index ?>][numero_faixa]" 
+                                       value="<?= $faixa['numero_faixa'] ?>" class="input-pos">
+                                <input type="text" name="faixas[<?= $index ?>][titulo]" 
+                                       value="<?= htmlspecialchars($faixa['titulo']) ?>" class="input-titulo">
+                                <input type="text" name="faixas[<?= $index ?>][duracao]" 
+                                       value="<?= $faixa['duracao'] ?>" class="input-duracao mask-tempo" placeholder="00:00:00">
+                                <button type="button" class="btn-remove-faixa"><i class="fas fa-trash"></i></button>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-<hr class="edicao-divider">
-<div class="edicao-section-faixas">
-    <div class="label-with-action">
-        <h3 class="edicao-subtitle">Faixas / Músicas</h3>
-        <button type="button" class="btn-add-tag" id="btnAdicionarFaixa" title="Adicionar Faixa">
-            <i class="fas fa-plus-circle"></i>
-        </button>
+                <div class="edicao-actions" style="margin-top:30px; display:flex; justify-content: flex-end; gap:10px;">
+                    <button type="submit" class="btn" style="background-color: var(--action-positive);"><i class="fa-solid fa-save"></i> Salvar</button>
+                    <button type="button" class="btn" style="background-color: var(--action-destructive);" onclick="window.history.back()">Cancelar</button>
+                </div>
+            </div>
+        </form>
     </div>
 
-    <div id="containerListaFaixas" class="lista-faixas-edicao">
-        <div class="faixas-header">
-            <span class="col-pos">#</span>
-            <span class="col-titulo">Título</span>
-            <span class="col-duracao">Duração</span>
-            <span class="col-acoes"></span>
-        </div>
-        
-<div id="corpoListaFaixas">
-    <?php 
-    $listaFaixas = $faixas ?? []; 
-    foreach ($listaFaixas as $index => $faixa): 
-    ?>
-        <div class="faixa-item" data-posicao="<?= $faixa['numero_faixa'] ?>">
-            <input type="hidden" name="faixas[<?= $index ?>][numero_original]" value="<?= $faixa['numero_faixa'] ?>">
-            
-            <input type="number" name="faixas[<?= $index ?>][numero_faixa]" 
-                   value="<?= $faixa['numero_faixa'] ?>" class="input-pos">
-            
-            <input type="text" name="faixas[<?= $index ?>][titulo]" 
-                   value="<?= htmlspecialchars($faixa['titulo']) ?>" class="input-titulo">
-            
-            <input type="text" name="faixas[<?= $index ?>][duracao]" 
-                   value="<?= $faixa['duracao'] ?>" class="input-duracao mask-tempo" placeholder="00:00:00">
-            
-            <button type="button" class="btn-remove-faixa"><i class="fas fa-trash"></i></button>
-        </div>
-    <?php endforeach; ?>
-</div>
-</div>
-            
+    <datalist id="listaSugestoesGeneros">
+        <?php foreach ($sugestoes['generos'] as $gen): ?><option value="<?= htmlspecialchars($gen) ?>"><?php endforeach; ?>
+    </datalist>
+    <datalist id="listaSugestoesEstilos">
+        <?php foreach ($sugestoes['estilos'] as $est): ?><option value="<?= htmlspecialchars($est) ?>"><?php endforeach; ?>
+    </datalist>
+    <datalist id="listaSugestoesProdutores">
+        <?php foreach ($sugestoes['produtores'] as $prod): ?><option value="<?= htmlspecialchars($prod) ?>"><?php endforeach; ?>
+    </datalist>
 
-        </div>
-            <div class="edicao-actions" style="margin-top:30px; display:flex; justify-content: flex-end; gap:10px;">
-                <button type="button" class="btn" style="background-color: var(--action-destructive);" onclick="window.history.back()">Cancelar</button>
-                <button type="submit" class="btn" style="background-color: var(--action-positive);"><i class="fa-solid fa-save"></i> Salvar</button>
-            </div>
-    </form>
-</div>
-
-<datalist id="listaSugestoesGeneros">
-    <?php foreach ($sugestoes['generos'] as $gen): ?>
-        <option value="<?= htmlspecialchars($gen) ?>">
-    <?php endforeach; ?>
-</datalist>
-
-<datalist id="listaSugestoesEstilos">
-    <?php foreach ($todosEstilos as $est): ?>
-        <option value="<?= htmlspecialchars($dt['descricao'] ?? $est) ?>">
-    <?php endforeach; ?>
-</datalist>
-
-<datalist id="listaSugestoesProdutores">
-    <?php foreach ($todosProdutores as $prod): ?>
-        <option value="<?= htmlspecialchars($dt['nome'] ?? $prod) ?>">
-    <?php endforeach; ?>
-</datalist>
-
-<script src="assets/js/edicao_album.js"></script>
+    <script src="assets/js/edicao_album.js"></script>
 </body>
 </html>

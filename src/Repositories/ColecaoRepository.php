@@ -241,64 +241,81 @@ public function buscarDetalhesMidia($midiaId) {
     }
 
     public function updateDadosBasicos($midiaId, $albumId, $dados) {
-        // 1. Atualiza a Tabela de Álbuns (Título, Lançamento, Artista, etc.)
-        $sqlAlbum = "UPDATE tb_albuns SET 
-                        titulo = :titulo, 
-                        data_lancamento = :data_lancamento,
-                        artista_id = :artista_id,
-                        tipo_id = :tipo_id
-                     WHERE album_id = :album_id";
-        
-        $this->db->prepare($sqlAlbum)->execute([
-            ':titulo' => $dados['titulo'],
-            ':data_lancamento' => $dados['data_lancamento'],
-            ':artista_id' => $dados['artista_id'],
-            ':tipo_id' => $dados['tipo_id'],
-            ':album_id' => $albumId
+        // 1. Atualiza a Obra (Álbum)
+        $sqlA = "UPDATE tb_albuns SET 
+                    titulo = :titulo, 
+                    artista_id = :artista_id, 
+                    capa_url = :capa_url,
+                    data_lancamento = :data_lancto,
+                    tipo_id = :tipo_id
+                 WHERE album_id = :album_id";
+
+        $this->db->prepare($sqlA)->execute([
+            ':titulo'      => $dados['titulo'],
+            ':artista_id'  => $dados['artista_id'],
+            ':capa_url'    => $dados['capa_url'],
+            ':data_lancto' => !empty($dados['data_lancamento']) ? $dados['data_lancamento'] : null,
+            ':tipo_id'     => $dados['tipo_id'],
+            ':album_id'    => $albumId
         ]);
-    
-        // 2. Atualiza a Tabela de Mídias (Preço, Data Aquisição, Gravadora)
-        $sqlMidia = "UPDATE tb_midias SET 
-                        data_aquisicao = :data_aquisicao,
-                        preco = :preco,
-                        gravadora_id = :gravadora_id,
-                        numero_catalogo = :numero_catalogo,
-                        condicao = :condicao,
-                        observacoes = :observacoes
-                     WHERE midia_id = :midia_id";
-    
-        $this->db->prepare($sqlMidia)->execute([
-            ':data_aquisicao' => $dados['data_aquisicao'],
-            ':preco' => $dados['preco'],
-            ':gravadora_id' => $dados['gravadora_id'],
-            ':numero_catalogo' => $dados['numero_catalogo'],
-            ':condicao' => $dados['condicao'],
-            ':observacoes' => $dados['observacoes'],
-            ':midia_id' => $midiaId
-        ]);
-    }
 
-public function salvarFaixas($midiaId, array $faixas) {
-    // 1. Limpa o que já existe para essa mídia (O passado não nos pertence mais)
-    $sqlDelete = "DELETE FROM tb_midia_faixas WHERE midia_id = :midia_id";
-    $this->db->prepare($sqlDelete)->execute([':midia_id' => $midiaId]);
+        // Update na tb_midias (Dados da sua cópia física)
+        $sqlM = "UPDATE tb_midias SET 
+                    gravadora_id = :gravadora_id,
+                    data_aquisicao = :data_aq,
+                    preco = :preco,
+                    numero_catalogo = :cat,
+                    condicao = :cond,
+                    observacoes = :obs
+                 WHERE midia_id = :midia_id";
 
-    // 2. Insere a nova lista (O presente que veio do formulário)
-    $sqlInsert = "INSERT INTO tb_midia_faixas (midia_id, numero_faixa, titulo, duracao) 
-                  VALUES (:midia_id, :numero_faixa, :titulo, :duracao)";
-    
-    $stmt = $this->db->prepare($sqlInsert);
-
-    foreach ($faixas as $faixa) {
-        // Validação básica: se não tiver título, a gente pula
-        if (empty(trim($faixa['titulo']))) continue;
-
-        $stmt->execute([
-            ':midia_id'     => $midiaId,
-            ':numero_faixa' => $faixa['numero_faixa'],
-            ':titulo'       => trim($faixa['titulo']),
-            ':duracao'      => !empty($faixa['duracao']) ? $faixa['duracao'] : null
+        $this->db->prepare($sqlM)->execute([
+            ':gravadora_id'    => $dados['gravadora_id'],
+            ':data_aq'         => !empty($dados['data_aquisicao']) ? $dados['data_aquisicao'] : null,
+            ':preco'           => $dados['preco'],
+            ':cat'             => $dados['numero_catalogo'] ?? null,
+            ':cond'            => $dados['condicao'] ?? null,
+            ':obs'             => $dados['observacoes'] ?? null, // PASSANDO O VALOR
+            ':midia_id'        => $midiaId
         ]);
     }
-}
+
+    public function salvarFaixas($midiaId, array $faixas) {
+        // 1. O Extermínio: Remove todas as faixas atuais desta mídia
+        $sqlDelete = "DELETE FROM tb_midia_faixas WHERE midia_id = :midia_id";
+        $this->db->prepare($sqlDelete)->execute([':midia_id' => $midiaId]);
+
+        // 2. A Fênix: Insere a lista vinda da tela (com os números de faixa atualizados)
+        $sqlInsert = "INSERT INTO tb_midia_faixas (midia_id, numero_faixa, titulo, duracao) 
+                      VALUES (:midia_id, :numero_faixa, :titulo, :duracao)";
+
+        $stmt = $this->db->prepare($sqlInsert);
+
+        foreach ($faixas as $faixa) {
+            $titulo = trim($faixa['titulo'] ?? '');
+            if (empty($titulo)) continue; // Não salva faixa sem nome
+
+            // Tratamento da duração para o formato TIME (HH:MM:SS)
+            $duracao = $this->formatarDuracaoParaBanco($faixa['duracao'] ?? '');
+
+            $stmt->execute([
+                ':midia_id'     => $midiaId,
+                ':numero_faixa' => (int)$faixa['numero_faixa'],
+                ':titulo'       => $titulo,
+                ':duracao'      => $duracao
+            ]);
+        }
+    }
+
+    private function formatarDuracaoParaBanco($tempo) {
+        if (empty($tempo)) return null;
+        $partes = explode(':', $tempo);
+
+        // Se mandou MM:SS, vira 00:MM:SS
+        if (count($partes) == 2) return "00:{$partes[0]}:{$partes[1]}";
+        // Se mandou HH:MM:SS, mantém
+        if (count($partes) == 3) return $tempo;
+
+        return null;
+    }
 }

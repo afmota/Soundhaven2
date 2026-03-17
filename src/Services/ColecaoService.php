@@ -88,8 +88,9 @@ public function atualizarAlbum($midiaId, $dados) {
 
     } catch (\Exception $e) {
         $this->repository->cancelarTransacao();
-        error_log("Erro Fatal no Soundhaven2: " . $e->getMessage());
-        return false;
+        //error_log("Erro Fatal no Soundhaven2: " . $e->getMessage());
+        //return false;
+        die("Erro no Service: " . $e->getMessage());
     }
 }
 }

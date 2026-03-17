@@ -28,11 +28,15 @@ switch ($route) {
         break;
 
     case 'editar_album':
-        // Pegamos o ID da mídia da URL (ex: index.php?url=editar_album&midia_id=123)
         $midia_id = $_GET['midia_id'] ?? null;
         $controller = new ColecaoController();
         $controller->exibirFormularioEdicao($midia_id);
         break;
+
+    case 'salvar_edicao':
+            $controller = new ColecaoController();
+            $controller->salvarEdicao();
+            break;
 
     default:
         http_response_code(404);

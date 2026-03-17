@@ -79,34 +79,36 @@ public function exibirFormularioEdicao($midia_id) {
         require_once __DIR__ . '/../Views/colecao/editar_album.php';
     }
 
-public function salvarEdicao() {
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        header("Location: index.php?url=colecao");
+    public function salvarEdicao() {
+        // Pegamos os IDs ocultos que colocamos no form
+        $midiaId = filter_input(INPUT_POST, 'midia_id', FILTER_VALIDATE_INT);
+        $albumId = filter_input(INPUT_POST, 'album_id', FILTER_VALIDATE_INT);
+    
+        if (!$midiaId || !$albumId) {
+            die("Erro: IDs de mídia ou álbum não fornecidos.");
+        }
+    
+        // O restante dos dados vem no $_POST
+        $dados = $_POST;
+    
+        // --- CORREÇÃO DO MONSTRO: TRATAMENTO DO PREÇO ---
+        if (isset($dados['preco'])) {
+            // Troca a vírgula (BR) pelo ponto (SQL)
+            $precoLimpo = str_replace(',', '.', $dados['preco']);
+            // Remove qualquer caractere que não seja número ou ponto
+            $dados['preco'] = filter_var($precoLimpo, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+        }
+    
+        // Chama o Service para processar a transação (Agora com o preço certo!)
+        $sucesso = $this->service->atualizarAlbum($midiaId, $dados);
+    
+        if ($sucesso) {
+            // Redireciona de volta para a coleção com mensagem de sucesso
+            header("Location: index.php?url=colecao&status=success");
+        } else {
+            // Caso algo dê errado no banco (Ex: erro de constraint ou SQL)
+            header("Location: index.php?url=colecao&status=error");
+        }
         exit;
     }
-
-    $midiaId = filter_input(INPUT_POST, 'midia_id', FILTER_VALIDATE_INT);
-    $dados = $_POST;
-
-    // A Mágica da Validação: Troca vírgula por ponto e garante que seja um float
-    if (isset($dados['preco'])) {
-        $precoLimpo = str_replace(',', '.', $dados['preco']);
-        $dados['preco'] = filter_var($precoLimpo, FILTER_VALIDATE_FLOAT);
-        
-        // Se o valor for inválido ou negativo, a gente reseta para 0 ou trata o erro
-        if ($dados['preco'] === false || $dados['preco'] < 0) {
-            $dados['preco'] = 0.00;
-        }
-    }
-
-    $sucesso = $this->service->atualizarAlbum($midiaId, $dados);
-
-    if ($sucesso) {
-        header("Location: index.php?url=colecao&status=success");
-    } else {
-        // Seria bom passar uma mensagem de erro mais específica aqui
-        header("Location: index.php?url=colecao&status=error");
-    }
-    exit;
-}
 }
