@@ -45,15 +45,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
 document.querySelectorAll('.btn-add-tag').forEach(btn => {
     btn.addEventListener('click', function() {
-        const target = this.getAttribute('data-target'); // Ex: 'Generos'
+        const target = this.getAttribute('data-target'); 
+        
+        // Se o botão não tiver data-target (como o nosso de Importar), ignore este bloco
+        if (!target) return; 
+
         const searchBox = document.getElementById('searchContainer' + target);
         
-        // Toggle: Se estiver visível, esconde. Se estiver escondido, mostra e foca.
-        if (searchBox.style.display === 'none') {
-            searchBox.style.display = 'flex';
-            searchBox.querySelector('input').focus();
-        } else {
-            searchBox.style.display = 'none';
+        if (searchBox) { // Segurança extra: só mexe se o elemento existir
+            if (searchBox.style.display === 'none' || searchBox.style.display === '') {
+                searchBox.style.display = 'flex';
+                searchBox.querySelector('input').focus();
+            } else {
+                searchBox.style.display = 'none';
+            }
         }
     });
 });
@@ -172,5 +177,91 @@ document.getElementById('corpoListaFaixas').addEventListener('input', function(e
         }
         
         e.target.value = v.substring(0, 8); // Limite do formato TIME
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const btnImport = document.getElementById('btn-import-tracks');
+    const inputCatalogo = document.getElementById('inputCatalogo');
+    const inputTitulo = document.querySelector('input[name="titulo"]'); // Captura o título para o desempate
+    const corpoTabela = document.getElementById('corpoListaFaixas');
+    const inputDiscogsId = document.getElementById('inputDiscogsId');
+
+    if (btnImport) {
+        btnImport.addEventListener('click', async () => {
+            const catalogo = inputCatalogo.value.trim();
+            const titulo = inputTitulo ? inputTitulo.value.trim() : '';
+
+            if (!catalogo) {
+                alert("Opa! Preciso do Número de Catálogo para falar com o Discogs.");
+                inputCatalogo.focus();
+                return;
+            }
+
+            // Feedback visual de carregamento
+            const originalHTML = btnImport.innerHTML;
+            btnImport.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Buscando...';
+            btnImport.disabled = true;
+
+            try {
+                // Chamada para o nosso novo Controller/API
+                const response = await fetch(`index.php?url=api_importar_discogs`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        catalogo: catalogo,
+                        titulo: titulo 
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success && data.tracklist) {
+                    // 1. Limpa a tabela atual (O "Inferno Astral" de jogar fora o antigo)
+                    corpoTabela.innerHTML = '';
+
+                    // 2. Atualiza o discogs_id no campo escondido
+                    if(inputDiscogsId) inputDiscogsId.value = data.discogs_id;
+
+                    // 3. Popula com as novas faixas
+                    data.tracklist.forEach(track => {
+                        // Aqui usamos a sua função existente que cria a linha do formulário
+                        if (typeof inserirLinhaNaTabela === "function") {
+                            inserirLinhaNaTabela(track.numero, track.titulo, track.duracao);
+                        }
+                    });
+
+                    alert(`Sucesso! Encontramos o álbum no Discogs e importamos ${data.tracklist.length} faixas.`);
+                } else {
+                    alert("Discogs diz: " + (data.message || "Álbum não encontrado com esses dados. Tente ajustar o catálogo."));
+                }
+
+            } catch (error) {
+                console.error("Erro na importação:", error);
+                alert("Falha crítica ao conectar com a API de importação.");
+            } finally {
+                btnImport.innerHTML = originalHTML;
+                btnImport.disabled = false;
+            }
+        });
+    }
+
+    function inserirLinhaNaTabela(numero, titulo, duracao) {
+        const corpo = document.getElementById('corpoListaFaixas');
+
+        const novaLinha = document.createElement('div');
+        novaLinha.className = 'faixa-item';
+
+        // Usamos o faixaIndex global para manter a contagem correta dos names[]
+        novaLinha.innerHTML = `
+            <input type="hidden" name="faixas[${faixaIndex}][id]" value="new">
+            <input type="number" name="faixas[${faixaIndex}][posicao]" value="${numero}" class="input-pos">
+            <input type="text" name="faixas[${faixaIndex}][titulo]" value="${titulo}" class="input-titulo">
+            <input type="text" name="faixas[${faixaIndex}][duracao]" value="${duracao}" class="input-duracao">
+            <button type="button" class="btn-remove-faixa"><i class="fas fa-trash"></i></button>
+        `;
+
+        corpo.appendChild(novaLinha);
+        faixaIndex++; // Incrementa para a próxima não sobrescrever
     }
 });

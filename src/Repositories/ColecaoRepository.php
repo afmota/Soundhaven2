@@ -265,6 +265,7 @@ public function buscarDetalhesMidia($midiaId) {
                     data_aquisicao = :data_aq,
                     preco = :preco,
                     numero_catalogo = :cat,
+                    discogs_id = :d_id,
                     condicao = :cond,
                     observacoes = :obs
                  WHERE midia_id = :midia_id";

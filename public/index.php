@@ -1,4 +1,5 @@
 <?php
+ob_start();
 require_once __DIR__ . '/../autoload.php';
 
 use App\Controllers\LojaController;
@@ -37,6 +38,11 @@ switch ($route) {
             $controller = new ColecaoController();
             $controller->salvarEdicao();
             break;
+
+    case 'api_importar_discogs':
+        $controller = new App\Controllers\ColecaoController();
+        $controller->importarDadosDiscogs();
+        break;
 
     default:
         http_response_code(404);

@@ -111,4 +111,43 @@ public function exibirFormularioEdicao($midia_id) {
         }
         exit;
     }
+
+    public function importarDadosDiscogs() {
+        // 1. Desliga qualquer exibição de erro que possa sujar a saída
+        error_reporting(0);
+        ini_set('display_errors', 0);
+
+        // 2. Limpa o buffer de saída (caso algum arquivo tenha dado include com espaço em branco)
+        if (ob_get_length()) ob_clean();
+
+        header('Content-Type: application/json');
+
+        try {
+            $json = file_get_contents('php://input');
+            $data = json_decode($json, true);
+
+            if (!$data || empty($data['catalogo'])) {
+                echo json_encode(['success' => false, 'message' => 'Dados de entrada inválidos.']);
+                exit;
+            }
+
+            $discogsService = new \App\Services\DiscogsService();
+            $resultado = $discogsService->buscarFaixas($data['catalogo'], $data['titulo'] ?? '');
+
+            if ($resultado) {
+                echo json_encode([
+                    'success' => true,
+                    'discogs_id' => $resultado['discogs_id'],
+                    'tracklist' => $resultado['tracklist']
+                ]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Álbum não encontrado no Service.']);
+            }
+        } catch (\Throwable $e) {
+            ob_clean();
+            echo json_encode(['success' => false, 'message' => 'Erro interno: ' . $e->getMessage()]);
+            exit;
+        }
+        exit; // Garante que o PHP pare aqui e não renderize rodapés ou layouts
+    }
 }

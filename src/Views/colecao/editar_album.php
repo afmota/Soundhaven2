@@ -91,6 +91,22 @@
                     <small style="color: rgba(255,255,255,0.5)">Use vírgula para centavos (ex: 45,90)</small>
                 </div>
 
+                <div class="edicao-field-group">
+                    <div class="label-with-action">
+                        <label>Nº de Catálogo</label>
+                        <button type="button" id="btn-import-tracks" class="btn-add-tag" title="Importar faixas do Discogs">
+                            <i class="fas fa-sync"></i> Importar
+                        </button>
+                    </div>
+                    <input type="text" name="numero_catalogo" id="inputCatalogo" 
+                           class="input-edicao" value="<?= htmlspecialchars($album['numero_catalogo'] ?? '') ?>" 
+                           placeholder="Ex: 88875120972">
+                                            
+                    <input type="hidden" name="discogs_id" id="inputDiscogsId" value="<?= $album['discogs_id'] ?? '' ?>">
+                </div>
+
+                <input type="hidden" name="discogs_id" id="inputDiscogsId" value="<?= $album['discogs_id'] ?? '' ?>">                
+
                 <div class="edicao-field-group" style="margin-top: 20px;">
                     <label>OBSERVAÇÕES / HISTÓRIA DO ITEM</label>
                     <textarea name="observacoes" class="input-edicao" rows="4" 
