@@ -71,7 +71,7 @@ class LojaController {
         $artistas   = Artist::all();
         $gravadoras = Label::all();
         $tipos      = Type::all();
-        $situacoes  = Situation::all();
+        $situacoes  = Situation::all(true);
 
         // --- 3. RENDERIZAÇÃO ---
         include __DIR__ . '/../Views/loja/grid.php';

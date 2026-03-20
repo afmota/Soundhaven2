@@ -25,7 +25,7 @@ body {
 }
 
 /********************************************************************************/
-/*                                    HEADER                                    */
+/* HEADER                                    */
 /********************************************************************************/
 
 .main-header {
@@ -63,6 +63,7 @@ body {
     border-color: var(--text-primary);
     background: var(--border-light);
     color: var(--bg-color);
+    transform: translateY(-2px); /* Adicionado: feedback visual */
 }
 
 .profile-avatar-trigger { display: flex; align-items: center; gap: 8px; cursor: pointer; }
@@ -116,7 +117,7 @@ body {
 .logout-link:hover { color: #ff5555 !important;}
 
 /********************************************************************************/
-/*                                    GLOBAL                                    */
+/* GLOBAL                                    */
 /********************************************************************************/
 /* Estrutura de Layout do SoundHaven */
 .page-wrapper {
@@ -244,10 +245,6 @@ body {
     border-radius: 4px;
 }
 
-.album-title {
-    color: #fff;
-}
-
 .album-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 2px; }
 
 .album-info {
@@ -276,7 +273,34 @@ body {
 /* ==========================================================================
    MODAL
    ==========================================================================*/
-.modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(5px); }
+.modal { 
+    display: none; 
+    position: fixed; 
+    z-index: 1000; 
+    left: 0; 
+    top: 0; 
+    width: 100%; 
+    height: 100%; 
+    background: rgba(0,0,0,0.95); 
+    backdrop-filter: blur(5px); 
+    overflow-y: auto; /* Permite rolar a tela se o modal for comprido */
+    padding: 20px 0;   /* Espaço para o modal não encostar nas bordas */
+}
+
+.modal-content {
+    background: var(--card-bg);
+    margin: 2% auto; /* Diminuído a margem para dar mais espaço */
+    padding: 30px;
+    border: 1px solid var(--border-color);
+    width: 800px;
+    /* Removido: min-height: 450px; (deixe o conteúdo ditar a altura) */
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    position: relative;
+    box-sizing: border-box;
+}
 .modal-close { position: absolute; top: 15px; right: 20px; color: var(--text-secondary); font-size: 28px; font-weight: bold; cursor: pointer; }
 .modal-close:hover { color: var(--text-primary); }
 
@@ -292,15 +316,23 @@ body {
     font-weight: bold; 
     width: 130px; 
     border: none; 
-    color: #ffffff; 
+    color: #ffffff !important; /* Garantindo cor do texto */
+    transition: all 0.2s ease; /* Transição global */
 }
 
 .btn-acquire { background: var(--action-neutral); }
 .btn-edit { background: var(--action-positive); }
 .btn-delete { background: var(--action-destructive); }
 
+/* Adicionado: Hover unificado sem quebrar seu width de 130px */
+.btn:hover {
+    filter: brightness(1.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
 /***************************************/
-/*          PÁGINAS DE EDIÇÃO          */
+/* PÁGINAS DE EDIÇÃO          */
 /***************************************/
 /* MODAIS */
 .modal-content {
@@ -338,7 +370,7 @@ body {
 /* PADRONIZAÇÃO DOS CAMPOS DE EDIÇÃO (INPUT E SELECT) */
 .edit-field-group select {
     cursor: pointer;
-    appearance: none; /* Remove seta padrão em alguns browsers se desejar */
+    appearance: none; 
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23b0b0b0' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 12px center;
@@ -354,8 +386,7 @@ body {
     color: var(--text-primary);
     border-radius: 4px;
     font-size: 0.9em;
-    box-sizing: border-box; /* Garante que padding não estoure a largura */
-    /*height: 45px; /* Altura fixa para manter simetria entre input e select */
+    box-sizing: border-box; 
     transition: border-color 0.2s;
 }
 
@@ -383,7 +414,7 @@ body {
 }
 
 .edit-modal-row .edit-field-group {
-    flex: 1; /* Faz com que ambos ocupem 50% da linha */
+    flex: 1; 
 }
 
 .edit-modal-separator {

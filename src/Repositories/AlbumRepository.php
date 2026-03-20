@@ -12,7 +12,7 @@ class AlbumRepository {
     }
 
     public function findPaginated($limit, $offset, array $filters = []) {
-        $where = ["a.deletado = 0", "a.situacao NOT IN (4, 5)"];
+        $where = ["a.deletado = 0"];
         $params = [];
 
         if (!empty($filters['titulo'])) {
@@ -28,8 +28,13 @@ class AlbumRepository {
             $params[':tipo_id'] = (int) $filters['tipo_id'];
         }
         if (!empty($filters['situacao_id'])) {
+            // Se o usuário escolheu uma situação no select, filtramos exatamente por ela
             $where[] = "a.situacao = :situacao_id";
             $params[':situacao_id'] = (int) $filters['situacao_id'];
+        } else {
+            // Se NÃO escolheu situação, mantemos o padrão da loja:
+            // NÃO mostra o que está em situações de "fora da loja" (4 e 5)
+            $where[] = "a.situacao NOT IN (4, 5)";
         }
 
         $sql = "SELECT a.album_id, a.titulo, a.capa_url, a.data_lancamento,
@@ -59,13 +64,40 @@ class AlbumRepository {
     }
 
     public function getTotalCount(array $filters = []) {
-        $where = ["a.deletado = 0", "a.situacao NOT IN (4, 5)"];
+        // 1. Base idêntica ao findPaginated
+        $where = ["a.deletado = 0"];
         $params = [];
-        // ... (repetir lógica de filtros do findPaginated aqui para o count)
-        
+    
+        // 2. Lógica de Situação (O segredo do nosso resgate!)
+        if (!empty($filters['situacao_id'])) {
+            $where[] = "a.situacao = :situacao_id";
+            $params[':situacao_id'] = (int) $filters['situacao_id'];
+        } else {
+            $where[] = "a.situacao NOT IN (4, 5)";
+        }
+    
+        // 3. Repetir os outros filtros para o cálculo ser exato
+        if (!empty($filters['titulo'])) {
+            $where[] = "a.titulo LIKE :titulo";
+            $params[':titulo'] = "%" . $filters['titulo'] . "%";
+        }
+        if (!empty($filters['artista_id'])) {
+            $where[] = "a.artista_id = :artista_id";
+            $params[':artista_id'] = (int) $filters['artista_id'];
+        }
+        if (!empty($filters['tipo_id'])) {
+            $where[] = "a.tipo_id = :tipo_id";
+            $params[':tipo_id'] = (int) $filters['tipo_id'];
+        }
+    
         $sql = "SELECT COUNT(*) FROM tb_albuns a WHERE " . implode(" AND ", $where);
         $stmt = $this->db->prepare($sql);
-        // bind parameters...
+    
+        // 4. Não esqueça de bindar os parâmetros aqui também!
+        foreach ($params as $key => $val) {
+            $stmt->bindValue($key, $val);
+        }
+    
         $stmt->execute();
         return (int) $stmt->fetchColumn();
     }

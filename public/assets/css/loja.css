@@ -61,7 +61,7 @@
 
 /* Container específico para o modal de detalhes da loja */
 .modal-detalhes-loja {
-    max-width: 750px;
+    max-width: 775px;
     min-height: auto !important;
 }
 
@@ -73,7 +73,7 @@
 
 /* Controle rígido da imagem */
 .modal-capa-container {
-    flex: 0 0 300px; /* Não deixa crescer nem diminuir de 300px */
+    flex: 0 0 300px; 
     max-width: 300px;
 }
 
@@ -125,7 +125,7 @@
 }
 
 .modal-detalhes-loja .btn {
-    width: auto; /* Deixa o botão respirar conforme o texto */
+    width: auto; 
     padding: 10px 20px;
     min-width: 120px;
 }
