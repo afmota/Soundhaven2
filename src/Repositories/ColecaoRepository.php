@@ -241,7 +241,7 @@ public function buscarDetalhesMidia($midiaId) {
     }
 
     public function updateDadosBasicos($midiaId, $albumId, $dados) {
-        // 1. Atualiza a Obra (Álbum)
+        // 1. Atualiza a Obra (Álbum) - Esta parte parece ok
         $sqlA = "UPDATE tb_albuns SET 
                     titulo = :titulo, 
                     artista_id = :artista_id, 
@@ -259,7 +259,7 @@ public function buscarDetalhesMidia($midiaId) {
             ':album_id'    => $albumId
         ]);
 
-        // Update na tb_midias (Dados da sua cópia física)
+        // 2. Update na tb_midias - CORRIGIDO
         $sqlM = "UPDATE tb_midias SET 
                     gravadora_id = :gravadora_id,
                     data_aquisicao = :data_aq,
@@ -275,35 +275,42 @@ public function buscarDetalhesMidia($midiaId) {
             ':data_aq'         => !empty($dados['data_aquisicao']) ? $dados['data_aquisicao'] : null,
             ':preco'           => $dados['preco'],
             ':cat'             => $dados['numero_catalogo'] ?? null,
+            ':d_id'            => (!empty($dados['discogs_id'])) ? (int)$dados['discogs_id'] : null,
             ':cond'            => $dados['condicao'] ?? null,
-            ':obs'             => $dados['observacoes'] ?? null, // PASSANDO O VALOR
-            ':midia_id'        => $midiaId
+            ':obs'             => $dados['observacoes'] ?? null,
+            ':midia_id'        => (int)$midiaId
         ]);
     }
 
     public function salvarFaixas($midiaId, array $faixas) {
-        // 1. O Extermínio: Remove todas as faixas atuais desta mídia
-        $sqlDelete = "DELETE FROM tb_midia_faixas WHERE midia_id = :midia_id";
-        $this->db->prepare($sqlDelete)->execute([':midia_id' => $midiaId]);
+        // 1. O EXTERMÍNIO: Remove as faixas antigas para reinserir as novas (ou importadas)
+        $sqlDelete = "DELETE FROM tb_midia_faixas WHERE midia_id = ?";
+        $this->db->prepare($sqlDelete)->execute([(int)$midiaId]);
 
-        // 2. A Fênix: Insere a lista vinda da tela (com os números de faixa atualizados)
+        // 2. A PREPARAÇÃO: Usamos '?' para evitar o erro 'Invalid parameter number'
         $sqlInsert = "INSERT INTO tb_midia_faixas (midia_id, numero_faixa, titulo, duracao) 
-                      VALUES (:midia_id, :numero_faixa, :titulo, :duracao)";
-
+                      VALUES (?, ?, ?, ?)";
         $stmt = $this->db->prepare($sqlInsert);
 
         foreach ($faixas as $faixa) {
             $titulo = trim($faixa['titulo'] ?? '');
-            if (empty($titulo)) continue; // Não salva faixa sem nome
 
-            // Tratamento da duração para o formato TIME (HH:MM:SS)
-            $duracao = $this->formatarDuracaoParaBanco($faixa['duracao'] ?? '');
+            // Se a faixa não tiver título (vazia), ignoramos e pulamos para a próxima
+            if (empty($titulo)) continue;
 
+            // O Discogs manda 'posicao', o seu form manda 'numero_faixa'. Pegamos o que existir.
+            $numero = $faixa['numero_faixa'] ?? ($faixa['posicao'] ?? 0);
+
+            // Tratamento da Duração
+            $duracaoRaw = $faixa['duracao'] ?? '';
+            $duracao = !empty($duracaoRaw) ? $this->formatarDuracaoParaBanco($duracaoRaw) : '00:00:00';
+
+            // Execução direta e segura
             $stmt->execute([
-                ':midia_id'     => $midiaId,
-                ':numero_faixa' => (int)$faixa['numero_faixa'],
-                ':titulo'       => $titulo,
-                ':duracao'      => $duracao
+                (int)$midiaId,
+                (int)$numero,
+                (string)$titulo,
+                (string)$duracao
             ]);
         }
     }

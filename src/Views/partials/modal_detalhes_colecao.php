@@ -1,6 +1,6 @@
 <div id="modalDetalhesColecao" class="modal">
     <div class="modal-content colecao-theme">
-        <span class="close-modal">&times;</span>
+        <span class="modal-close">&times;</span>
         
         <div class="modal-body-grid">
             <div class="modal-capa">

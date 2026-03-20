@@ -6,12 +6,12 @@
     <title>SoundHaven - Editar Álbum</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/includedit.css">
+    <link rel="stylesheet" href="assets/css/colecao.css">
 </head>
 <body class="colecao-module">
     <?php include __DIR__ . '/../partials/header.php'; ?>
 
-    <div class="edicao-pagina-content">
+    <div class="modal-content">
         <h2 id="edicaoHeaderTitle" style="color:var(--accent-colecao); margin-top:0; margin-bottom: 20px;">
             Editar: <?= htmlspecialchars($album['titulo'] ?? '') ?>
         </h2>
@@ -22,23 +22,23 @@
             <input type="hidden" name="midia_id" value="<?= $album['midia_id'] ?? '' ?>">
 
             <div id="edicaoPaginaBody">
-                <div class="edicao-header-row">
-                    <img id="edicaoImg" class="edicao-capa" src="<?= htmlspecialchars($album['capa_url'] ?? '') ?>" alt="Capa Edição">
-                    <div class="edicao-field-group">
+                <div class="edit-modal-header-row">
+                    <img id="edicaoImg" class="edit-modal-capa" src="<?= htmlspecialchars($album['capa_url'] ?? '') ?>" alt="Capa Edição">
+                    <div class="edit-field-group">
                         <label>URL DA CAPA</label>
                         <input type="text" name="capa_url" id="edicaoCapaUrl" value="<?= htmlspecialchars($album['capa_url'] ?? '') ?>">
                     </div>
                 </div>
 
-                <hr class="edicao-separator">
+                <hr class="edit-modal-separator">
 
-                <div class="edicao-field-group">
+                <div class="edit-field-group">
                     <label>TÍTULO DO ÁLBUM</label>
                     <input type="text" name="titulo" id="edicaoTitulo" value="<?= htmlspecialchars($album['titulo'] ?? '') ?>">
                 </div>
 
-                <div class="edicao-row">
-                    <div class="edicao-field-group">
+                <div class="edit-modal-row">
+                    <div class="edit-field-group">
                         <label>ARTISTA</label>
                         <select name="artista_id" id="edicaoArtista">
                             <option value="">Selecione...</option>
@@ -49,7 +49,7 @@
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <div class="edicao-field-group">
+                    <div class="edit-field-group">
                         <label>GRAVADORA</label>
                         <select name="gravadora_id" id="edicaoGravadora">
                             <option value="">Selecione...</option>
@@ -62,16 +62,16 @@
                     </div>
                 </div>
 
-                <div class="edicao-row">
-                    <div class="edicao-field-group">
+                <div class="edit-modal-row">
+                    <div class="edit-field-group">
                         <label>DATA DE LANÇAMENTO</label>
                         <input type="date" name="data_lancamento" value="<?= $album['data_lancamento'] ?? '' ?>">
                     </div>
-                    <div class="edicao-field-group">
+                    <div class="edit-field-group">
                         <label>DATA DE AQUISIÇÃO</label>
                         <input type="date" name="data_aquisicao" value="<?= $album['data_aquisicao'] ?? '' ?>">
                     </div>
-                    <div class="edicao-field-group">
+                    <div class="edit-field-group">
                         <label>TIPO DE MÍDIA</label>
                         <select name="tipo_id">
                             <?php foreach ($tipos as $tp): ?>
@@ -83,7 +83,7 @@
                     </div>
                 </div>
 
-                <div class="edicao-field-group">
+                <div class="edit-field-group">
                     <label>PREÇO DE AQUISIÇÃO (R$)</label>
                     <input type="text" name="preco" 
                            value="<?= number_format($album['preco'] ?? 0, 2, ',', '') ?>" 
@@ -91,7 +91,7 @@
                     <small style="color: rgba(255,255,255,0.5)">Use vírgula para centavos (ex: 45,90)</small>
                 </div>
 
-                <div class="edicao-field-group">
+                <div class="edit-field-group">
                     <div class="label-with-action">
                         <label>Nº de Catálogo</label>
                         <button type="button" id="btn-import-tracks" class="btn-add-tag" title="Importar faixas do Discogs">
@@ -107,18 +107,18 @@
 
                 <input type="hidden" name="discogs_id" id="inputDiscogsId" value="<?= $album['discogs_id'] ?? '' ?>">                
 
-                <div class="edicao-field-group" style="margin-top: 20px;">
+                <div class="edit-field-group" style="margin-top: 20px;">
                     <label>OBSERVAÇÕES / HISTÓRIA DO ITEM</label>
                     <textarea name="observacoes" class="input-edicao" rows="4" 
                               style="width: 100%; background-color: rgba(0,0,0,0.2); color: #eee; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 10px; resize: vertical;"
                               placeholder="Conte a história deste item na sua coleção..."><?= htmlspecialchars($album['observacoes'] ?? '') ?></textarea>
                 </div>
 
-                <hr class="edicao-divider">
+                <hr class="edit-modal-separator">
 
                 <h3 class="edicao-subtitle">Classificação e Produção</h3>
-                <div class="edicao-row">
-                    <div class="edicao-field-group">
+                <div class="edit-modal-row">
+                    <div class="edit-field-group">
                         <div class="label-with-action">
                             <label>GÊNEROS</label>
                             <button type="button" class="btn-add-tag" data-target="Generos">
@@ -141,7 +141,7 @@
                         </div>
                     </div>
 
-                    <div class="edicao-field-group">
+                    <div class="edit-field-group">
                         <div class="label-with-action">
                             <label>ESTILOS</label>
                             <button type="button" class="btn-add-tag" data-target="Estilos">
@@ -165,8 +165,8 @@
                     </div>
                 </div>
 
-                <div class="edicao-row">
-                    <div class="edicao-field-group">
+                <div class="edit-modal-row">
+                    <div class="edit-field-group">
                         <div class="label-with-action">
                             <label>PRODUTORES</label>
                             <button type="button" class="btn-add-tag" data-target="Produtores">
@@ -190,7 +190,7 @@
                     </div>
                 </div>
 
-                <hr class="edicao-divider">
+                <hr class="edit-modal-separator">
 
                 <div class="edicao-section-faixas">
                     <div class="label-with-action">

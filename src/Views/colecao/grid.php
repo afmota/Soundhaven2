@@ -6,6 +6,7 @@
     <title>SoundHaven - Coleção</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/colecao.css">
 </head>
 <body class="colecao-module">
 
@@ -28,10 +29,7 @@
                             <?= htmlspecialchars($album['formato_nome']) ?>
                         </span>
 
-                        <img 
-    loading="lazy"
-    src="<?= htmlspecialchars($album['capa_url'] ?: 'assets/images/placeholder.jpg') ?>"
-    alt="Capa">
+                        <img loading="lazy" src="<?= htmlspecialchars($album['capa_url'] ?: 'assets/images/placeholder.jpg') ?>" alt="Capa">
                         
                         <div class="album-info">
                             <span class="album-title"><?= htmlspecialchars($album['titulo']) ?></span>

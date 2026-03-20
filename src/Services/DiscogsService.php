@@ -11,35 +11,6 @@ class DiscogsService {
     private $userAgent = 'SoundHavenApp/2.0 (contato@seusite.com)';
 
     /**
-     * Busca o álbum e retorna o ID do Discogs e a Tracklist
-     */
-    public function buscarFaixas($catalogo, $titulo = '') {
-        // 1. Limpeza de catálogo para fallback (remove espaços e traços)
-        $catalogoLimpo = preg_replace('/[^a-zA-Z0-9]/', '', $catalogo);
-        $tituloEncoded = urlencode($titulo);
-
-        // 2. Estratégia de busca em cascata (Agressiva)
-        // Tentamos primeiro a busca global 'q', que é a mais eficaz do Discogs
-        $tentativas = [
-            "https://api.discogs.com/database/search?q=" . urlencode($catalogo) . "&type=release",
-            "https://api.discogs.com/database/search?q={$catalogoLimpo}&release_title={$tituloEncoded}&type=release",
-            "https://api.discogs.com/database/search?catno=" . urlencode($catalogo) . "&type=release"
-        ];
-
-        foreach ($tentativas as $url) {
-            $data = $this->request($url);
-
-            if ($data && !empty($data['results'])) {
-                // Pegamos o ID do primeiro resultado (Release ID)
-                $releaseId = $data['results'][0]['id'];
-                return $this->getReleaseDetails($releaseId);
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * Recupera os detalhes específicos de um Release (especialmente a tracklist)
      */
     private function getReleaseDetails($id) {
@@ -86,32 +57,59 @@ class DiscogsService {
         return $duracao;
     }
 
-    /**
-     * Realiza a requisição usando cURL (mais estável que file_get_contents para APIs externas)
-     */
-    private function request($url) {
-        $ch = curl_init();
-        
-        curl_setopt_array($ch, [
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_USERAGENT => $this->userAgent,
-            CURLOPT_TIMEOUT => 15,
-            CURLOPT_SSL_VERIFYPEER => false, // Evita erros de SSL em ambiente local (XAMPP/WAMP)
-            CURLOPT_HTTPHEADER => [
-                "Authorization: Discogs token=" . $this->token,
-                "Accept: application/json"
-            ]
-        ]);
+public function buscarFaixas($catalogo, $titulo = '') {
+    $catalogoLimpo = preg_replace('/[^a-zA-Z0-9]/', '', $catalogo);
+    $tituloEncoded = urlencode($titulo);
 
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
+    // As 4 tentativas sugeridas, da mais precisa para a mais aberta
+    $tentativas = [
+        "https://api.discogs.com/database/search?q=" . urlencode($catalogo . " " . $titulo) . "&type=release",
+        "https://api.discogs.com/database/search?q=" . urlencode($catalogo) . "&type=release",
+        "https://api.discogs.com/database/search?q={$catalogoLimpo}&release_title={$tituloEncoded}&type=release",
+        "https://api.discogs.com/database/search?catno=" . urlencode($catalogo) . "&type=release"
+    ];
 
-        if ($httpCode !== 200) {
-            return null;
+    foreach ($tentativas as $url) {
+        $url .= "&token={$this->token}"; // Anexa o token na URL para garantir
+        $data = $this->request($url);
+
+        if ($data && !empty($data['results'])) {
+            // --- AQUI ENTRA A INTELIGÊNCIA DO LOOP ---
+            foreach ($data['results'] as $result) {
+                if (isset($result['id'])) {
+                    $details = $this->getReleaseDetails($result['id']);
+                    
+                    // Só aceitamos se o release tiver faixas!
+                    if ($details && !empty($details['tracklist'])) {
+                        return $details; // Vitória! Encontramos um release completo.
+                    }
+                }
+            }
         }
-
-        return json_decode($response, true);
     }
+    return null;
+}
+
+private function request($url) {
+    $ch = curl_init();
+    curl_setopt_array($ch, [
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_USERAGENT => $this->userAgent,
+        CURLOPT_TIMEOUT => 20,
+        CURLOPT_SSL_VERIFYPEER => false
+    ]);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    // Log de erro para você não ficar no escuro
+    if ($httpCode !== 200) {
+        error_log("SoundHaven Discogs Error: HTTP $httpCode na URL $url");
+        return null;
+    }
+
+    return json_decode($response, true);
+}
 }
