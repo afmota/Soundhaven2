@@ -19,7 +19,7 @@
                 </div>
                 
                 <div class="modal-actions">
-                    <button class="btn btn-acquire"><i class="fa-solid fa-cart-shopping"></i> Adquirir</button>
+                    <a href="index.php?url=adquirir_album&id=<?= $album['album_id'] ?>" class="btn-acao-positiva"><i class="fas fa-shopping-cart"></i> Adquirir</a>
                     <button id="btnOpenEdit" class="btn btn-edit"><i class="fa-solid fa-pen"></i> Editar</button>
                     
                     <form method="POST" id="formDelete" onsubmit="return confirm('Deseja realmente descartar este álbum?')">

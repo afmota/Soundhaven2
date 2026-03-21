@@ -21,7 +21,7 @@
 .modal-content h3,
 .modal-content p,
 .modal-content hr {
-    margin: 0;
+    margin: 15px 0px;
 }
 
 .sidebar-filters h3 {

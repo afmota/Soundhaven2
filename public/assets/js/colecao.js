@@ -12,16 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
             currency: 'BRL'
         }).format(valor || 0);
 
-    const formatarTempo = tempo => {
-        if (!tempo) return '--:--';
-        const partes = tempo.split(':');
-        if (partes.length === 3) {
-            const [h, m, s] = partes;
-            return h === '00' ? `${m}:${s}` : `${h}:${m}:${s}`;
-        }
-        return tempo;
-    };
-
     const setTxt = (id, text) => {
         const el = document.getElementById(id);
         if (el) el.textContent = text || 'N/D';
@@ -60,24 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
             corpoTabela.innerHTML = '<tr><td colspan="3">Erro ao carregar faixas</td></tr>';
             console.error(e);
         }
-    };
-
-    const renderizarFaixas = faixas => {
-        const corpoTabela = document.getElementById('corpoTabelaFaixas');
-        corpoTabela.innerHTML = '';
-        if (!faixas.length) {
-            corpoTabela.innerHTML = '<tr><td colspan="3">Nenhuma faixa cadastrada</td></tr>';
-            return;
-        }
-        faixas.forEach(f => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${f.numero_faixa}</td>
-                <td>${f.titulo}</td>
-                <td>${formatarTempo(f.duracao)}</td>
-            `;
-            corpoTabela.appendChild(tr);
-        });
     };
 
     cards.forEach(card => {

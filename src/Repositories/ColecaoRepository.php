@@ -136,6 +136,12 @@ public function buscarDetalhesMidia($midiaId) {
         return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getAllFormatos() {
+        $sql = "SELECT formato_id, descricao FROM tb_formatos ORDER BY descricao ASC";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
     public function getAllGeneros() {
         return $this->db->query("SELECT descricao FROM tb_generos ORDER BY descricao ASC")->fetchAll(\PDO::FETCH_COLUMN);
     }
@@ -325,5 +331,29 @@ public function buscarDetalhesMidia($midiaId) {
         if (count($partes) == 3) return $tempo;
 
         return null;
+    }
+
+    public function buscarDetalhesAlbum($album_id) {
+        $sql = "SELECT 
+                    ta.album_id,
+                    ta.capa_url,
+                    ta.titulo,
+                    ta.artista_id,
+                    art.nome AS artista_nome,
+                    ta.gravadora_id,
+                    tg.nome AS gravadora_nome,
+                    ta.data_lancamento
+                FROM
+                    tb_albuns ta
+                    INNER JOIN tb_artistas art ON ta.artista_id = art.artista_id
+                    INNER JOIN tb_gravadoras tg ON ta.gravadora_id = tg.gravadora_id
+                WHERE
+                    ta.album_id = :album_id";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':album_id', $album_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }

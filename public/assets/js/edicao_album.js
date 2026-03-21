@@ -63,8 +63,6 @@ document.querySelectorAll('.btn-add-tag').forEach(btn => {
     });
 });
 
-// Dentro do seu edicao_album.js
-
 document.querySelectorAll('.input-search-tag').forEach(input => {
     // Escuta o "Enter" para adicionar a tag
     input.addEventListener('keypress', function(e) {

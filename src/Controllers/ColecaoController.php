@@ -6,8 +6,8 @@ use App\Services\ColecaoService;
 class ColecaoController {
     private $service;
 
-    public function __construct() {
-        $this->service = new ColecaoService();
+    public function __construct($service = null) {
+        $this->service = $service ?? new ColecaoService();
     }
 
     public function index() {
@@ -50,7 +50,7 @@ class ColecaoController {
         exit;
     }
 
-public function exibirFormularioEdicao($midia_id) {
+    public function exibirFormularioEdicao($midia_id) {
         $midia_id = filter_var($midia_id, FILTER_VALIDATE_INT);
     
         if (!$midia_id) {
@@ -77,6 +77,23 @@ public function exibirFormularioEdicao($midia_id) {
     
         // Agora a View recebe $album, $faixas, $artistas, $gravadoras, $tipos e $sugestoes
         require_once __DIR__ . '/../Views/colecao/editar_album.php';
+    }
+
+    public function exibirFormularioInclusao() {
+        // 1. Busca os dicionários idênticos à edição
+        $artistas = $this->service->buscarTodosArtistas();
+        $gravadoras = $this->service->buscarTodasGravadoras();
+        $formatos = $this->service->buscarTodosFormatos();
+
+        // Opcional: se o seu formulário usar as sugestões de gêneros/estilos
+        $sugestoes = $this->service->listarTodasSugestoes(); 
+
+        // 2. Inicializa o array vazio para não dar erro de "undefined variable" na View
+        $album = []; 
+        $faixas = []; // Se a tela de aquisição também mostrar a lista de faixas
+
+        // 3. O CAMINHO TESTADO: mesmo diretório e método do editar_album
+        require_once __DIR__ . '/../Views/colecao/adquirir_album.php';
     }
 
     public function salvarEdicao() {
@@ -149,5 +166,29 @@ public function exibirFormularioEdicao($midia_id) {
             exit;
         }
         exit; // Garante que o PHP pare aqui e não renderize rodapés ou layouts
+    }
+
+    public function adquirir() {
+        // 1. Pega o ID que veio no chute do botão
+        $album_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+
+        // 2. Chama o arquivo do formulário
+        require_once __DIR__ . '/../Views/colecao/adquirir_album.php';
+    }
+
+    public function obterDetalhesPorId() {
+        $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+
+        if (!$id) {
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'ID ausente ou inválido']);
+            exit;
+        }
+
+        $dados = $this->service->buscarPorId($id);
+
+        header('Content-Type: application/json');
+        echo json_encode($dados);
+        exit;
     }
 }

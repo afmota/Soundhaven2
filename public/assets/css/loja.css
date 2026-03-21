@@ -129,3 +129,34 @@
     padding: 10px 20px;
     min-width: 120px;
 }
+
+.btn-acao-positiva {
+    background-color: var(--action-neutral);
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex; /* Alinha ícone e texto */
+    align-items: center;
+    gap: 8px; /* Espaço entre o ícone e o texto */
+    border-radius: 4px;
+    
+    /* Tipografia de Botão */
+    font-family: inherit; 
+    font-size: 14px; 
+    font-weight: 600;
+    line-height: 1.2;
+
+    justify-content: center;
+    vertical-align: middle; /* Alinha a base com os outros botões */
+    width: 120px;
+    height: 38px; /* Force uma altura idêntica à dos botões Editar/Descartar */
+    box-sizing: border-box; /* Garante que bordas não empurrem o botão */
+    transition: filter 0.2s; /* Hover suave sem mover o elemento */
+}
+
+.btn-acao-positiva:hover {
+    filter: brightness(90%);
+    transform: none; /* Garante que nenhum efeito de movimento seja herdado */
+}

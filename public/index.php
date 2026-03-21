@@ -44,6 +44,19 @@ switch ($route) {
         $controller->importarDadosDiscogs();
         break;
 
+    case 'adquirir_album':
+        $controller = new App\Controllers\ColecaoController();
+        $controller->exibirFormularioInclusao(); // Deixa o Controller resolver!
+        break;
+
+    case 'obter_detalhes_album':
+        $service = new App\Services\ColecaoService();
+        $controller = new App\Controllers\ColecaoController($service);
+        
+        // Este método DEVE existir no seu Controller e dar um echo json_encode()
+        $controller->obterDetalhesPorId(); 
+        break;
+
     default:
         http_response_code(404);
         echo "404 - Página não encontrada no SoundHaven";
