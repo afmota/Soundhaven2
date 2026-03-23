@@ -55,6 +55,8 @@
 </div>
 
 <?php include __DIR__ . '/../partials/modal_detalhes_colecao.php'; ?>
+
+<script src="assets/js/functions.js"></script>
 <script src="assets/js/colecao.js"></script>
 </body>
 </html>

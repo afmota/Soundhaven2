@@ -110,12 +110,17 @@
 
                 <hr class="edit-modal-separator">
 
-                <h3 class="edicao-subtitle">Classificação (Gêneros e Estilos)</h3>
+                <h3 class="edicao-subtitle">Classificação e Produção</h3>
                 <div class="edit-modal-row">
                     <div class="edit-field-group">
                         <div class="label-with-action">
                             <label>GÊNEROS</label>
-                            <button type="button" class="btn-add-tag" data-target="Generos"><i class="fas fa-plus-circle"></i></button>
+                            <button type="button" class="btn-add-tag" data-target="Generos">
+                                <i class="fas fa-plus-circle"></i>
+                            </button>
+                        </div>
+                        <div class="search-tag-container" id="searchContainerGeneros" style="display: none;">
+                            <input type="text" class="input-search-tag" placeholder="Buscar ou novo..." data-tipo="generos" list="listaSugestoesGeneros">
                         </div>
                         <div class="tags-container" id="containerGeneros">
                             <?php 
@@ -129,10 +134,16 @@
                             <?php endforeach; ?>
                         </div>
                     </div>
+
                     <div class="edit-field-group">
                         <div class="label-with-action">
                             <label>ESTILOS</label>
-                            <button type="button" class="btn-add-tag" data-target="Estilos"><i class="fas fa-plus-circle"></i></button>
+                            <button type="button" class="btn-add-tag" data-target="Estilos">
+                                <i class="fas fa-plus-circle"></i>
+                            </button>
+                        </div>
+                        <div class="search-tag-container" id="searchContainerEstilos" style="display: none;">
+                            <input type="text" class="input-search-tag" placeholder="Buscar ou novo..." data-tipo="estilos" list="listaSugestoesEstilos">
                         </div>
                         <div class="tags-container" id="containerEstilos">
                             <?php 
@@ -141,6 +152,31 @@
                             <span class="tag-item">
                                 <?= htmlspecialchars($est) ?>
                                 <input type="hidden" name="estilos[]" value="<?= htmlspecialchars($est) ?>">
+                                <i class="fas fa-times remove-tag"></i>
+                            </span>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="edit-modal-row">
+                    <div class="edit-field-group">
+                        <div class="label-with-action">
+                            <label>PRODUTORES</label>
+                            <button type="button" class="btn-add-tag" data-target="Produtores">
+                                <i class="fas fa-plus-circle"></i>
+                            </button>
+                        </div>
+                        <div class="search-tag-container" id="searchContainerProdutores" style="display: none;">
+                            <input type="text" class="input-search-tag" placeholder="Buscar ou novo..." data-tipo="produtores" list="listaSugestoesProdutores">
+                        </div>
+                        <div class="tags-container" id="containerProdutores">
+                            <?php 
+                            $listaProdutores = explode('|', $album['produtores'] ?? '');
+                            foreach ($listaProdutores as $prod): if(empty(trim($prod))) continue; ?>
+                            <span class="tag-item">
+                                <?= htmlspecialchars($prod) ?>
+                                <input type="hidden" name="produtores[]" value="<?= htmlspecialchars($prod) ?>">
                                 <i class="fas fa-times remove-tag"></i>
                             </span>
                             <?php endforeach; ?>
@@ -174,6 +210,24 @@
             </div>
         </form>
     </div>
+
+    <datalist id="listaSugestoesGeneros">
+        <?php foreach ($sugestoes['generos'] as $g): ?>
+            <option value="<?= htmlspecialchars($g) ?>">
+        <?php endforeach; ?>
+    </datalist>
+        
+    <datalist id="listaSugestoesEstilos">
+        <?php foreach ($sugestoes['estilos'] as $e): ?>
+            <option value="<?= htmlspecialchars($e) ?>">
+        <?php endforeach; ?>
+    </datalist>
+        
+    <datalist id="listaSugestoesProdutores">
+        <?php foreach ($sugestoes['produtores'] as $p): ?>
+            <option value="<?= htmlspecialchars($p) ?>">
+        <?php endforeach; ?>
+    </datalist>
 
     <script src="assets/js/functions.js"></script>
     <script src="assets/js/adquirir_album.js"></script>

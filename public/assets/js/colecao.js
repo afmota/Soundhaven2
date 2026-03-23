@@ -34,21 +34,36 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const carregarFaixas = async midiaId => {
-        const corpoTabela = document.getElementById('corpoTabelaFaixas');
+        // 1. Verifique se o ID no seu HTML é 'corpoTabelaFaixas' ou 'corpoListaFaixas'
+        const ID_CONTAINER = 'corpoTabelaFaixas'; 
+        const corpoTabela = document.getElementById(ID_CONTAINER);
+        
         if (!corpoTabela) return;
+    
         if (cacheFaixas[midiaId]) {
-            renderizarFaixas(cacheFaixas[midiaId]);
+            // Passamos o ID correto para a função global
+            renderizarFaixas(cacheFaixas[midiaId], ID_CONTAINER);
             return;
         }
+    
         corpoTabela.innerHTML = '<tr><td colspan="3">Carregando faixas...</td></tr>';
+    
         try {
             const res = await fetch(`index.php?url=buscar_faixas&midia_id=${midiaId}`);
             const faixas = await res.json();
+            
             cacheFaixas[midiaId] = faixas;
-            renderizarFaixas(faixas);
+        
+            // CHAMA A FUNÇÃO PASSANDO O ID DO CONTAINER
+            if (typeof renderizarFaixas === "function") {
+                renderizarFaixas(faixas, ID_CONTAINER);
+            } else {
+                console.error("A função renderizarFaixas não foi encontrada no functions.js");
+            }
+        
         } catch (e) {
             corpoTabela.innerHTML = '<tr><td colspan="3">Erro ao carregar faixas</td></tr>';
-            console.error(e);
+            console.error("Erro no fetch das faixas:", e);
         }
     };
 

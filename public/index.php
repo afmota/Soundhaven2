@@ -57,6 +57,11 @@ switch ($route) {
         $controller->obterDetalhesPorId(); 
         break;
 
+    case 'salvar_inclusao':
+            $controller = new App\Controllers\ColecaoController();
+            $controller->salvarInclusao();
+            break;
+
     default:
         http_response_code(404);
         echo "404 - Página não encontrada no SoundHaven";

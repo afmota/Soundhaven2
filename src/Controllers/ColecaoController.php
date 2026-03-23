@@ -80,19 +80,23 @@ class ColecaoController {
     }
 
     public function exibirFormularioInclusao() {
+        // Pega o ID que veio na URL (caso o usuário clique em um álbum da loja para incluir)
+        $album_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+
         // 1. Busca os dicionários idênticos à edição
         $artistas = $this->service->buscarTodosArtistas();
         $gravadoras = $this->service->buscarTodasGravadoras();
         $formatos = $this->service->buscarTodosFormatos();
 
-        // Opcional: se o seu formulário usar as sugestões de gêneros/estilos
+        // Busca as sugestões de gêneros/estilos
         $sugestoes = $this->service->listarTodasSugestoes(); 
 
         // 2. Inicializa o array vazio para não dar erro de "undefined variable" na View
-        $album = []; 
-        $faixas = []; // Se a tela de aquisição também mostrar a lista de faixas
+        // Mas se veio um ID na URL, guardamos ele aqui para o HTML saber
+        $album = $album_id ? ['album_id' => $album_id] : []; 
+        $faixas = []; 
 
-        // 3. O CAMINHO TESTADO: mesmo diretório e método do editar_album
+        // 3. Renderiza a View
         require_once __DIR__ . '/../Views/colecao/adquirir_album.php';
     }
 
@@ -168,14 +172,6 @@ class ColecaoController {
         exit; // Garante que o PHP pare aqui e não renderize rodapés ou layouts
     }
 
-    public function adquirir() {
-        // 1. Pega o ID que veio no chute do botão
-        $album_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-
-        // 2. Chama o arquivo do formulário
-        require_once __DIR__ . '/../Views/colecao/adquirir_album.php';
-    }
-
     public function obterDetalhesPorId() {
         $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
@@ -189,6 +185,31 @@ class ColecaoController {
 
         header('Content-Type: application/json');
         echo json_encode($dados);
+        exit;
+    }
+
+    public function salvarInclusao() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: index.php?url=colecao");
+            exit;
+        }
+    
+        $dados = $_POST;
+    
+        // Tratamento do preço (mesma lógica que usamos na edição)
+        if (isset($dados['preco'])) {
+            $precoLimpo = str_replace(',', '.', $dados['preco']);
+            $dados['preco'] = filter_var($precoLimpo, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+        }
+    
+        // O Service vai cuidar da transação complexa
+        $sucesso = $this->service->inserirNovoAlbumNaColecao($dados);
+    
+        if ($sucesso) {
+            header("Location: index.php?url=colecao&status=success&msg=Album+adquirido!");
+        } else {
+            header("Location: index.php?url=adquirir_album&status=error");
+        }
         exit;
     }
 }

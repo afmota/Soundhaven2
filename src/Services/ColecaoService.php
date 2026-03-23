@@ -102,4 +102,37 @@ class ColecaoService {
         // A responsabilidade de saber o SQL é do Repository
         return $this->repository->buscarDetalhesAlbum($id);
     }
+
+public function inserirNovoAlbumNaColecao($dados) {
+    try {
+        $this->repository->iniciarTransacao();
+
+        // 1. O ID do álbum deve vir do formulário (input hidden) ou da URL
+        $albumId = $dados['album_id'] ?? null;
+        if (!$albumId) throw new \Exception("ID do álbum não fornecido.");
+
+        // 2. Sincroniza as Tags (Gêneros, Estilos, Produtores) na tb_albuns
+        // Usando os métodos que você já tem no Repo e que funcionam na edição
+        $this->repository->salvarGeneros($albumId, $dados['generos'] ?? []);
+        $this->repository->salvarEstilos($albumId, $dados['estilos'] ?? []);
+        $this->repository->salvarProdutores($albumId, $dados['produtores'] ?? []);
+
+        // 3. Insere a nova Mídia na tb_midias e pega o ID gerado
+        $midiaId = $this->repository->inserirNovaMidia($dados);
+
+        // 4. Salva as Faixas vinculadas a esta MÍDIA específica
+        // O seu repo->salvarFaixas já faz o delete/insert, o que é seguro
+        if (!empty($dados['faixas'])) {
+            $this->repository->salvarFaixas($midiaId, $dados['faixas']);
+        }
+
+        $this->repository->confirmarTransacao();
+        return true;
+
+    } catch (\Exception $e) {
+        $this->repository->cancelarTransacao();
+        error_log("Erro ao adquirir álbum: " . $e->getMessage());
+        return false;
+    }
+}
 }

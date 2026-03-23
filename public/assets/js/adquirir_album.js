@@ -1,15 +1,21 @@
 // assets/js/adquirir_album.js
 
-// Variável global para controlar o índice das faixas (evita sobrescrever inputs no PHP)
+// Variável global para controlar o índice das faixas
 let faixaIndex = 0;
 
 document.addEventListener("DOMContentLoaded", async () => {
+    // --- 1. ATIVAÇÃO DOS COMPORTAMENTOS COMUNS ---
+    // Esta função (do functions.js) liga os botões de Gêneros, Estilos, Produtores e Máscaras
+    if (typeof inicializarComportamentosFormulario === 'function') {
+        inicializarComportamentosFormulario();
+    }
+
     const urlParams = new URLSearchParams(window.location.search);
     const albumId = urlParams.get('id');
     const btnImport = document.getElementById('btn-import-tracks');
     const corpoTabela = document.getElementById('corpoListaFaixas');
 
-    // 1. Carregamento inicial de detalhes (se houver ID na URL)
+    // --- 2. CARREGAMENTO INICIAL DE DETALHES ---
     if (albumId) {
         try {
             const response = await fetch(`index.php?url=obter_detalhes_album&id=${albumId}`);
@@ -31,7 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // 2. Lógica de Importação do Discogs (Idêntica à Edição)
+    // --- 3. IMPORTAÇÃO DO DISCOGS ---
     if (btnImport) {
         btnImport.addEventListener('click', async () => {
             const catalogo = document.getElementById('inputCatalogo').value.trim();
@@ -48,27 +54,21 @@ document.addEventListener("DOMContentLoaded", async () => {
             btnImport.disabled = true;
 
             try {
-                // Chamada via POST para bater com o Controller
                 const response = await fetch(`index.php?url=api_importar_discogs`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        catalogo: catalogo,
-                        titulo: titulo 
-                    })
+                    body: JSON.stringify({ catalogo, titulo })
                 });
 
                 const data = await response.json();
 
                 if (data.success && data.tracklist) {
-                    // Limpa a lista atual antes de inserir as importadas
                     corpoTabela.innerHTML = '';
                     faixaIndex = 0; 
 
                     const inputDiscogsId = document.getElementById('inputDiscogsId');
                     if(inputDiscogsId) inputDiscogsId.value = data.discogs_id;
 
-                    // Itera sobre as faixas e usa a função de inserção
                     data.tracklist.forEach(track => {
                         inserirLinhaNaTabela(track.numero, track.titulo, track.duracao);
                     });
@@ -77,10 +77,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 } else {
                     alert("Discogs diz: " + (data.message || "Álbum não encontrado."));
                 }
-
             } catch (error) {
                 console.error("Erro na importação:", error);
-                alert("Falha ao conectar com a API de importação.");
             } finally {
                 btnImport.innerHTML = originalHTML;
                 btnImport.disabled = false;
@@ -88,40 +86,42 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // 3. Função para inserir linha na tabela (Replicada da edição)
-    function inserirLinhaNaTabela(numero, titulo, duracao) {
-        const novaLinha = document.createElement('div');
-        novaLinha.className = 'faixa-item';
-
-        novaLinha.innerHTML = `
-            <input type="hidden" name="faixas[${faixaIndex}][id]" value="new">
-            <input type="number" name="faixas[${faixaIndex}][posicao]" value="${numero}" class="input-pos">
-            <input type="text" name="faixas[${faixaIndex}][titulo]" value="${titulo}" class="input-titulo">
-            <input type="text" name="faixas[${faixaIndex}][duracao]" value="${duracao}" class="input-duracao">
-            <button type="button" class="btn-remove-faixa"><i class="fas fa-trash"></i></button>
-        `;
-
-        corpoTabela.appendChild(novaLinha);
-        faixaIndex++;
-    }
-
-    // 4. Lógica para o botão manual de "Adicionar Faixa"
+    // --- 4. BOTÃO MANUAL "ADICIONAR FAIXA" ---
     const btnAddManual = document.getElementById('btnAdicionarFaixa');
     if (btnAddManual) {
         btnAddManual.addEventListener('click', () => {
             const proximaPos = corpoTabela.querySelectorAll('.faixa-item').length + 1;
             inserirLinhaNaTabela(proximaPos, '', '');
-            corpoTabela.lastElementChild.querySelector('.input-titulo').focus();
+            
+            const ultimaFaixa = corpoTabela.lastElementChild;
+            if (ultimaFaixa) {
+                const inputTitulo = ultimaFaixa.querySelector('.input-titulo');
+                if (inputTitulo) inputTitulo.focus();
+            }
         });
     }
 
-    // 5. Delegação para remover faixas
+    // --- 5. REMOÇÃO DE FAIXAS E MÁSCARA DE TEMPO (DELEGAÇÃO) ---
+    // Centralizamos aqui para evitar conflitos com faixas criadas dinamicamente
     corpoTabela.addEventListener('click', (e) => {
         if (e.target.closest('.btn-remove-faixa')) {
             const linha = e.target.closest('.faixa-item');
-            if (confirm('Deseja remover esta faixa?')) {
-                linha.remove();
+            if (confirm('Deseja remover esta faixa da lista?')) {
+                linha.style.opacity = '0';
+                setTimeout(() => linha.remove(), 200);
             }
+        }
+    });
+
+    corpoTabela.addEventListener('input', (e) => {
+        if (e.target.classList.contains('input-duracao')) {
+            let v = e.target.value.replace(/\D/g, ''); 
+            if (v.length >= 3 && v.length <= 4) {
+                v = v.substring(0, v.length - 2) + ':' + v.substring(v.length - 2);
+            } else if (v.length > 4) {
+                v = v.substring(0, v.length - 4) + ':' + v.substring(v.length - 4, v.length - 2) + ':' + v.substring(v.length - 2);
+            }
+            e.target.value = v.substring(0, 8);
         }
     });
 });

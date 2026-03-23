@@ -55,8 +55,7 @@ public function contarTotal() {
     return $this->db->query($sql)->fetchColumn();
 }
 
-public function buscarTodasGravadoras()
-{
+public function buscarTodasGravadoras() {
     $sql = "SELECT gravadora_id, nome
             FROM tb_gravadoras
             ORDER BY nome";
@@ -166,7 +165,6 @@ public function buscarDetalhesMidia($midiaId) {
         return $this->db->rollBack();
     }
 
-// No ColecaoRepository.php
     public function salvarGeneros($albumId, array $generosNomes) {
         // 1. Remove as associações antigas
         $sqlDelete = "DELETE FROM tb_album_generos WHERE album_id = :album_id";
@@ -355,5 +353,28 @@ public function buscarDetalhesMidia($midiaId) {
         $stmt->execute();
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Insere a mídia (o item físico da coleção) vinculada ao álbum
+     */
+    public function inserirNovaMidia(array $dados) {
+        $sql = "INSERT INTO tb_midias (album_id, formato_id, gravadora_id, data_aquisicao, preco, numero_catalogo, discogs_id, condicao, observacoes, ativo) 
+                VALUES (:album_id, :formato_id, :gravadora_id, :data_aq, :preco, :cat, :d_id, :cond, :obs, 1)";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            ':album_id'     => (int)$dados['album_id'],
+            ':formato_id'   => (int)$dados['formato_id'],
+            ':gravadora_id' => (int)$dados['gravadora_id'],
+            ':data_aq'      => !empty($dados['data_aquisicao']) ? $dados['data_aquisicao'] : date('Y-m-d'),
+            ':preco'        => $dados['preco'] ?? 0,
+            ':cat'          => $dados['numero_catalogo'] ?? null,
+            ':d_id'         => !empty($dados['discogs_id']) ? (int)$dados['discogs_id'] : null,
+            ':cond'         => $dados['condicao'] ?? null,
+            ':obs'          => $dados['observacoes'] ?? null
+        ]);
+
+        return $this->db->lastInsertId();
     }
 }
