@@ -21,6 +21,7 @@ class DashboardController {
             'total_cds'        => $stats['total_cds'] ?? 0,
             'total_artistas'   => $stats['total_artistas'] ?? 0,
             'total_gravadoras' => $stats['total_gravadoras'] ?? 0,
+            'total_anos'       => $stats['total_anos'] ?? 0,
             'ultimos_albuns'   => $ultimos
         ];
 

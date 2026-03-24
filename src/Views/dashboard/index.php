@@ -60,6 +60,16 @@
             <div class="icon-container cor-5"><i class="fas fa-users"></i></div>
         </div>
     </div>
+
+    <div class="card metric-card">
+        <div class="metric-card-content">
+            <div>
+                <div class="metric-value"><?= $total_gravadoras ?></div>
+                <div class="metric-label">Gravadoras</div>
+            </div>
+            <div class="icon-container cor-5"><i class="fas fa-users"></i></div>
+        </div>
+    </div>
 </div>
 
 <div class="span-card-container container">
@@ -72,7 +82,8 @@
             </div>
         </div>
         <div class="span-value-area">
-            <div class="years-value">75</div> <div class="years-label">Anos de Música</div>
+            <div class="years-value"><?= $total_anos ?></div> 
+            <div class="years-label">Anos de Música</div>
         </div>
     </div>
 </div>

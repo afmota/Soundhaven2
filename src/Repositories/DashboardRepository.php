@@ -11,11 +11,12 @@ class DashboardRepository {
     public function buscarDadosGerais() {
         // Centralizamos as queries de contagem aqui
         $sql = "SELECT 
-                (SELECT COUNT(*) FROM tb_albuns) as total_albuns,
-                (SELECT COUNT(*) FROM tb_artistas) as total_artistas,
-                (SELECT COUNT(*) FROM tb_gravadoras) as total_gravadoras,
+                (SELECT COUNT(*) FROM tb_midias tm INNER JOIN tb_albuns ta ON tm.album_id = ta.album_id) as total_albuns,
+                (SELECT COUNT(DISTINCT(art.nome)) FROM tb_midias tm INNER JOIN tb_albuns ta ON tm.album_id = ta.album_id INNER JOIN tb_artistas art ON ta.artista_id = art.artista_id) as total_artistas,
+                (SELECT COUNT(DISTINCT(tg.nome)) FROM tb_midias tm INNER JOIN tb_albuns ta ON tm.album_id = ta.album_id INNER JOIN tb_gravadoras tg ON tm.gravadora_id = tg.gravadora_id) as total_gravadoras,
                 (SELECT COUNT(*) FROM tb_midias WHERE formato_id = 1) as total_lps,
-                (SELECT COUNT(*) FROM tb_midias WHERE formato_id = 2) as total_cds";
+                (SELECT COUNT(*) FROM tb_midias WHERE formato_id = 2) as total_cds,
+                (SELECT (MAX(YEAR(ta.data_lancamento)) - MIN(YEAR(ta.data_lancamento))) FROM tb_midias tm INNER JOIN tb_albuns ta ON tm.album_id = ta.album_id) as total_anos";
         
         return $this->db->query($sql)->fetch(\PDO::FETCH_ASSOC);
     }

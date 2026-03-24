@@ -15,12 +15,14 @@
     --sombra-card: rgba(0, 0, 0, 0.3);
 }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Arial', sans-serif; 
-}
+/* Cores dos Ícones */
+.cor-1 { background: linear-gradient(to right, #8b5cf6, #ec4899); } 
+.cor-2 { background: linear-gradient(to right, #f59e0b, #f97316); } 
+.cor-3 { background: linear-gradient(to right, #3b82f6, #06b6d4); } 
+.cor-4 { background: linear-gradient(to right, #10b981, #059669); } 
+.cor-5 { background: linear-gradient(to right, #ef4444, #f43f5e); } 
+.cor-6 { background: linear-gradient(to right, #6366f1, #8b5cf6); } 
+
 
 body {
     background-color: var(--cor-fundo-principal);
@@ -28,7 +30,6 @@ body {
     line-height: 1.6;
 }
 
-/* Centraliza o conteúdo principal */
 .container {
     max-width: 1280px;
     margin: 0 auto;
@@ -36,35 +37,29 @@ body {
     padding-bottom: 0px;
 }
 
-a {
-    color: var(--cor-destaque);
-    text-decoration: none;
-    transition: color 0.3s;
-}
-
-a:hover {
-    color: #f59e0b; /* Yellow-500 
-}
-/*
-/* Alerta de Erro e Sucesso 
-.alerta {
-    padding: 15px;
-    border-radius: 8px;
+.dashboard-header-section {
+    padding-top: 100px; 
     margin-bottom: 20px;
-    color: #fff;
-    border: 1px solid;
-}
-.alerta.erro {
-    background-color: #dc2626; 
-    border-color: #b91c1c;
-}
-.alerta.sucesso {
-    background-color: #10b981; 
-    border-color: #059669;
 }
 
+.dashboard-title {
+    font-size: 1.8em; 
+    font-weight: 300; 
+    color: var(--cor-texto-principal);
+}
 
-/* Card base 
+.dashboard-album-count {
+    font-weight: 600; 
+    font-size: 1.8em; 
+}
+
+.metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px; 
+    margin-bottom: 30px;
+}
+
 .card {
     background: linear-gradient(to bottom right, var(--cor-fundo-card), var(--cor-fundo-principal)); 
     border: 1px solid var(--cor-borda); 
@@ -80,21 +75,91 @@ a:hover {
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.5);
 }
 
-/* FOOTER 
-footer {
-    background-color: #111827;
-    color: var(--cor-texto-secundario);
-    text-align: center;
-    padding: 20px 0;
-    font-size: 0.8em;
-    border-top: 1px solid #374151;
+.metric-card-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
-/* Arquivo: /public/css/_album_card.css */
+.metric-value {
+    font-size: 2.2em;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 5px;
+    line-height: 1; 
+}
 
-/* ====================================================== */
-/* ESTILOS DA LOJA / ÚLTIMAS AQUISIÇÕES - CARD MODERN)    */
-/* ====================================================== 
+.metric-label {
+    color: var(--cor-texto-secundario);
+    font-size: 0.7em;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.icon-container {
+    padding: 15px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.icon-container i {
+    color: #fff;
+    font-size: 1.25em; 
+}
+
+.span-card-container {
+    margin-bottom: 30px;
+}
+
+.span-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.span-details {
+    display: flex;
+    align-items: center;
+}
+
+.span-details i {
+    color: var(--cor-destaque); 
+    font-size: 2em;
+    margin-right: 15px;
+}
+
+.span-title {
+    font-weight: 700;
+    font-size: 1.1em;
+    color: #fff;
+    margin-bottom: 4px;
+    line-height: 1.1;
+}
+
+.span-years-range {
+    color: var(--cor-texto-secundario);
+    font-size: 0.9em;
+}
+
+.span-value-area {
+    text-align: right;
+}
+
+.years-value {
+    font-size: 2em; 
+    font-weight: 700;
+    color: var(--cor-destaque); 
+    line-height: 1;
+}
+
+.years-label {
+    color: var(--cor-texto-secundario);
+    font-size: 0.875em;
+}
 
 .recent-albums-section {
     margin-bottom: 40px;
@@ -131,6 +196,59 @@ footer {
     transform: scale(1.05); 
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.6);
 }
+
+/*
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif; 
+}
+
+a {
+    color: var(--cor-destaque);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+a:hover {
+    color: #f59e0b; /* Yellow-500
+}
+/*
+/* Alerta de Erro e Sucesso 
+.alerta {
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    color: #fff;
+    border: 1px solid;
+}
+.alerta.erro {
+    background-color: #dc2626; 
+    border-color: #b91c1c;
+}
+.alerta.sucesso {
+    background-color: #10b981; 
+    border-color: #059669;
+}
+
+
+/* Card base 
+/* FOOTER 
+footer {
+    background-color: #111827;
+    color: var(--cor-texto-secundario);
+    text-align: center;
+    padding: 20px 0;
+    font-size: 0.8em;
+    border-top: 1px solid #374151;
+}
+
+/* Arquivo: /public/css/_album_card.css */
+
+/* ====================================================== */
+/* ESTILOS DA LOJA / ÚLTIMAS AQUISIÇÕES - CARD MODERN)    */
+/* ====================================================== 
 
 /* Área da Capa 
 .album-cover-area {
@@ -508,12 +626,6 @@ footer {
 /*-------------------------------------------------------
 
 /* Layout Geral 
-body.dark-mode {
-    background: #0f0f0f;
-    color: #e0e0e0;
-    font-family: 'Inter', sans-serif;
-}
-
 .colecao-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -693,7 +805,7 @@ input:focus, select:focus {
 /* Item focado/passando o mouse 
 .select2-results__option--highlighted[aria-selected] {
     background-color: #00d4ff !important;
-    color: #000 !important; /* Inverte para contraste */
+    color: #000 !important; /* Inverte para contraste
 }
 
 /* Item já selecionado 
@@ -748,22 +860,6 @@ input:focus, select:focus {
     color: #000 !important;
 }
 
-.dashboard-header-section {
-    padding-top: 100px; 
-    margin-bottom: 20px;
-}
-
-.dashboard-title {
-    font-size: 1.8em; 
-    font-weight: 300; 
-    color: var(--cor-texto-principal);
-}
-
-.dashboard-album-count {
-    font-weight: 600; 
-    font-size: 1.8em; 
-}
-
 /* MEDIA QUERIES GERAIS 
 
 @media (max-width: 420px) {
@@ -806,111 +902,6 @@ input:focus, select:focus {
 /* ========================================= */
 /* 1. GRADE DE MÉTRICAS                      */
 /* ========================================= 
-
-.metric-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 16px; 
-    margin-bottom: 30px;
-}
-
-.metric-card-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.metric-value {
-    font-size: 2.2em;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 5px;
-    line-height: 1; 
-}
-
-.metric-label {
-    color: var(--cor-texto-secundario);
-    font-size: 0.7em;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.icon-container {
-    padding: 15px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-}
-
-.icon-container i {
-    color: #fff;
-    font-size: 1.25em; 
-}
-
-/* Cores dos Ícones 
-.cor-1 { background: linear-gradient(to right, #8b5cf6, #ec4899); } 
-.cor-2 { background: linear-gradient(to right, #f59e0b, #f97316); } 
-.cor-3 { background: linear-gradient(to right, #3b82f6, #06b6d4); } 
-.cor-4 { background: linear-gradient(to right, #10b981, #059669); } 
-.cor-5 { background: linear-gradient(to right, #ef4444, #f43f5e); } 
-.cor-6 { background: linear-gradient(to right, #6366f1, #8b5cf6); } 
-
-/* ========================================= */
-/* 2. SPAN CARD (Abrangência da Coleção)     */
-/* ========================================= 
-
-.span-card-container {
-    margin-bottom: 30px;
-}
-
-.span-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.span-details {
-    display: flex;
-    align-items: center;
-}
-
-.span-details i {
-    color: var(--cor-destaque); 
-    font-size: 2em;
-    margin-right: 15px;
-}
-
-.span-title {
-    font-weight: 700;
-    font-size: 1.1em;
-    color: #fff;
-    margin-bottom: 4px;
-    line-height: 1.1;
-}
-
-.span-years-range {
-    color: var(--cor-texto-secundario);
-    font-size: 0.9em;
-}
-
-.span-value-area {
-    text-align: right;
-}
-
-.years-value {
-    font-size: 2em; 
-    font-weight: 700;
-    color: var(--cor-destaque); 
-    line-height: 1;
-}
-
-.years-label {
-    color: var(--cor-texto-secundario);
-    font-size: 0.875em;
-}
 
 /* ========================================= */
 /* 3. CARD ANIVERSÁRIO                      */
@@ -1039,7 +1030,7 @@ input:focus, select:focus {
     z-index: 9999; /* Garante que fique acima de tudo 
     justify-content: center;
     align-items: center;
-    backdrop-filter: blur(5px); /* Efeito de desfoque no fundo */
+    backdrop-filter: blur(5px); /* Efeito de desfoque no fundo 
 }
 
 /* 2. A Caixa do Modal 
