@@ -103,36 +103,43 @@ class ColecaoService {
         return $this->repository->buscarDetalhesAlbum($id);
     }
 
-public function inserirNovoAlbumNaColecao($dados) {
-    try {
-        $this->repository->iniciarTransacao();
+    public function inserirNovoAlbumNaColecao($dados) {
+        try {
+            $this->repository->iniciarTransacao();
 
-        // 1. O ID do álbum deve vir do formulário (input hidden) ou da URL
-        $albumId = $dados['album_id'] ?? null;
-        if (!$albumId) throw new \Exception("ID do álbum não fornecido.");
+            $albumId = (int)$dados['album_id'];
 
-        // 2. Sincroniza as Tags (Gêneros, Estilos, Produtores) na tb_albuns
-        // Usando os métodos que você já tem no Repo e que funcionam na edição
-        $this->repository->salvarGeneros($albumId, $dados['generos'] ?? []);
-        $this->repository->salvarEstilos($albumId, $dados['estilos'] ?? []);
-        $this->repository->salvarProdutores($albumId, $dados['produtores'] ?? []);
+            // --- TRATAMENTO DA GRAVADORA DINÂMICA ---
+            // Se veio um nome de gravadora, precisamos de um ID
+            if (!empty($dados['gravadora_nome'])) {
+                // Este método novo no Repo cuida de achar ou criar
+                $idGravadora = $this->repository->buscarOuCriarGravadora($dados['gravadora_nome']);
 
-        // 3. Insere a nova Mídia na tb_midias e pega o ID gerado
-        $midiaId = $this->repository->inserirNovaMidia($dados);
+                // SOBRESCREVEMOS o gravadora_id no array de dados para o Repo usar
+                $dados['gravadora_id'] = $idGravadora;
+            }
 
-        // 4. Salva as Faixas vinculadas a esta MÍDIA específica
-        // O seu repo->salvarFaixas já faz o delete/insert, o que é seguro
-        if (!empty($dados['faixas'])) {
-            $this->repository->salvarFaixas($midiaId, $dados['faixas']);
+            // 1. Sincroniza Tags do Álbum (Gêneros, etc)
+            $this->repository->salvarGeneros($albumId, $dados['generos'] ?? []);
+            $this->repository->salvarEstilos($albumId, $dados['estilos'] ?? []);
+            $this->repository->salvarProdutores($albumId, $dados['produtores'] ?? []);
+
+            // 2. Insere a Mídia usando o $dados['gravadora_id'] que acabamos de garantir
+            $midiaId = $this->repository->inserirNovaMidia($dados);
+
+            // 3. Faixas e Status
+            if (!empty($dados['faixas'])) {
+                $this->repository->salvarFaixas($midiaId, $dados['faixas']);
+            }
+            $this->repository->atualizarStatusAlbum($albumId, 4);
+
+            $this->repository->confirmarTransacao();
+            return true;
+
+        } catch (\Exception $e) {
+            $this->repository->cancelarTransacao();
+            error_log("Erro na aquisição: " . $e->getMessage());
+            return false;
         }
-
-        $this->repository->confirmarTransacao();
-        return true;
-
-    } catch (\Exception $e) {
-        $this->repository->cancelarTransacao();
-        error_log("Erro ao adquirir álbum: " . $e->getMessage());
-        return false;
     }
-}
 }

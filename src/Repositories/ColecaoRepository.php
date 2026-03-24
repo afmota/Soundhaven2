@@ -377,4 +377,32 @@ public function buscarDetalhesMidia($midiaId) {
 
         return $this->db->lastInsertId();
     }
+
+    public function atualizarStatusAlbum($albumId, $statusId) {
+        $sql = "UPDATE tb_albuns SET situacao = :status WHERE album_id = :id";
+        return $this->db->prepare($sql)->execute([
+            ':status' => (int)$statusId,
+            ':id'     => (int)$albumId
+        ]);
+    }
+
+    public function buscarOuCriarGravadora($nome) {
+        $nome = trim($nome);
+        
+        // Tenta encontrar por nome
+        $sql = "SELECT gravadora_id FROM tb_gravadoras WHERE nome = :nome LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':nome' => $nome]);
+        $res = $stmt->fetch();
+    
+        if ($res) {
+            return $res['gravadora_id'];
+        }
+    
+        // Se não existir, cria agora
+        $sqlIns = "INSERT INTO tb_gravadoras (nome) VALUES (:nome)";
+        $this->db->prepare($sqlIns)->execute([':nome' => $nome]);
+    
+        return $this->db->lastInsertId();
+    }
 }

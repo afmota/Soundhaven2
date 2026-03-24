@@ -50,15 +50,20 @@
                         </select>
                     </div>
                     <div class="edit-field-group">
-                        <label>GRAVADORA</label>
-                        <select name="gravadora_id" id="edicaoGravadora">
-                            <option value="">Selecione...</option>
+                        <div class="label-with-action">
+                            <label>GRAVADORA</label>
+                            </div>
+                        <input type="text" name="gravadora_nome" id="edicaoGravadora" 
+                               class="input-edicao" 
+                               list="listaSugestoesGravadoras" 
+                               value="<?= htmlspecialchars($album['gravadora_nome'] ?? '') ?>" 
+                               placeholder="Busque ou digite uma nova...">
+                                                
+                        <datalist id="listaSugestoesGravadoras">
                             <?php foreach ($gravadoras as $grav): ?>
-                            <option value="<?= $grav['gravadora_id'] ?>" <?= (isset($album['gravadora_id']) && $grav['gravadora_id'] == $album['gravadora_id']) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($grav['nome']) ?>
-                            </option>
+                                <option value="<?= htmlspecialchars($grav['nome']) ?>" data-id="<?= $grav['gravadora_id'] ?>">
                             <?php endforeach; ?>
-                        </select>
+                        </datalist>
                     </div>
                 </div>
 

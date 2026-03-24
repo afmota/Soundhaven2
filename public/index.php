@@ -1,13 +1,22 @@
 <?php
 ob_start();
 require_once __DIR__ . '/../autoload.php';
+require_once __DIR__ . '/../src/Config/Database.php'; // Certifique-se que este arquivo define $pdo
 
 use App\Controllers\LojaController;
 use App\Controllers\ColecaoController;
 
-$route = $_GET['url'] ?? 'loja';
+$route = $_GET['url'] ?? 'dashboard';
+$db = new \App\Config\Database(); 
+$pdo = $db->getConnection();
 
 switch ($route) {
+    case 'dashboard':
+        // Use o plural "Controllers" se for esse o nome da sua pasta
+        $controller = new App\Controllers\DashboardController($pdo);
+        $controller->index();
+        break;
+
     case 'loja':
         $controller = new LojaController();
         $controller->index();
