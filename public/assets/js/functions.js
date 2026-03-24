@@ -136,3 +136,37 @@ function processarAdicaoTag(input) {
     const parent = input.closest('.search-tag-container');
     if (parent) parent.style.display = 'none';
 }
+
+/**
+ * Inicializa componentes globais (Menu de Perfil, etc.)
+ */
+function inicializarComponentesGlobais() {
+    const avatarTrigger = document.getElementById('avatarTrigger');
+    const dropdown = document.getElementById('myDropdown');
+
+    if (avatarTrigger && dropdown) {
+        avatarTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle('show');
+        });
+    }
+
+    // Fechar ao clicar fora (Dropdowns e Modais genéricos)
+    window.addEventListener('click', (e) => {
+        // Dropdown de perfil
+        if (dropdown && !dropdown.contains(e.target) && !avatarTrigger.contains(e.target)) {
+            dropdown.classList.remove('show');
+        }
+
+        // Se você tiver modais globais identificados por classe, pode limpar aqui também
+        const modais = document.querySelectorAll('.modal'); // Supondo que seus modais usem a classe .modal
+        modais.forEach(modal => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    });
+}
+
+// Chama a inicialização global sempre que o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', inicializarComponentesGlobais);

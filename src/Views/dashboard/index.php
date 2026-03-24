@@ -16,7 +16,7 @@
 
 <div class="dashboard-header-section container">
     <div class="dashboard-title">
-        SoundHaven <span class="dashboard-album-count">| <?= $total_albuns ?> Álbuns</span>
+        SoundHaven <span class="dashboard-album-count">| Total de Álbuns: <?= $total_albuns ?> </span>
     </div>
 </div>
 

@@ -1,6 +1,6 @@
 <header class="main-header">
     <div class="nav-content">
-        <a href="?url=loja" class="header-logo-container">
+        <a href="?url=dashboard" class="header-logo-container">
             <img src="assets/images/SoundHaven.png" alt="Logo SoundHaven" class="header-logo-img">
             <div class="header-logo-text">
                 <span class="logo-main-title">SoundHaven</span>
@@ -9,10 +9,6 @@
         </a>
         
         <div class="header-right-menu">
-            <a href="?url=album/novo" class="btn-adicionar-album">
-                <i class="fas fa-plus-circle"></i> Adicionar Álbum
-            </a>
-
             <div class="profile-dropdown-container" id="profileDropdown">
                 <div class="profile-avatar-trigger" id="avatarTrigger"> 
                     <img src="assets/images/default-avatar.png" alt="Perfil" class="profile-avatar">

@@ -36,7 +36,13 @@ body {
     z-index: 1000;
 }
 
-.nav-content { width: 80vw; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+.nav-content { 
+    width: 60vw;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
 .header-logo-container { display: flex; align-items: center; text-decoration: none; gap: 12px; }
 .header-logo-img { width: 38px; height: 38px; }
@@ -47,27 +53,25 @@ body {
 
 .header-right-menu { display: flex; align-items: center; gap: 20px; }
 
-.btn-adicionar-album {
-    background: transparent;
-    border: 1px solid var(--border-light);
-    color: var(--border-light);
-    padding: 7px 14px;
-    border-radius: 20px;
-    text-decoration: none;
-    font-size: 0.8em;
-    font-weight: 600;
-    transition: 0.3s;
+.profile-dropdown-container {
+    position: relative; /* O menu agora vai se guiar por este container */
+    display: inline-block; /* Faz o container ter apenas a largura do conteúdo (avatar + seta) */
 }
 
-.btn-adicionar-album:hover {
-    border-color: var(--text-primary);
-    background: var(--border-light);
-    color: var(--bg-color);
-    transform: translateY(-2px); /* Adicionado: feedback visual */
+.profile-avatar-trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    position: relative;
 }
-
-.profile-avatar-trigger { display: flex; align-items: center; gap: 8px; cursor: pointer; }
-.profile-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border-color); }
+.profile-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--border-color);
+}
 
 .dropdown-arrow {
     color: var(--text-secondary);
@@ -77,7 +81,10 @@ body {
 .dropdown-menu {
     display: none;
     position: absolute;
-    right: 0; top: 40px;
+    right: 0;
+    top: 100%;
+    margin-top: 8px;
+    z-index: 9999;
     background: var(--card-bg);
     border: 1px solid var(--border-color);
     border-radius: 6px;
@@ -85,7 +92,9 @@ body {
     box-shadow: 0 8px 16px rgba(0,0,0,0.4);
 }
 
-.dropdown-menu.show { display: block; }
+.dropdown-menu.show {
+    display: block !important;
+}
 
 .dropdown-menu ul {
     list-style: none;

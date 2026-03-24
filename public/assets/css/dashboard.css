@@ -31,26 +31,26 @@ body {
 }
 
 .container {
-    max-width: 1280px;
+    max-width: 60vw;
     margin: 0 auto;
-    padding-top: 100px;
+    padding-top: 50px;
     padding-bottom: 0px;
 }
 
 .dashboard-header-section {
-    padding-top: 100px; 
-    margin-bottom: 20px;
+    padding-top: 25px; 
+    margin-bottom: 10px;
 }
 
 .dashboard-title {
     font-size: 1.8em; 
-    font-weight: 300; 
+    font-weight: 500; 
     color: var(--cor-texto-principal);
 }
 
 .dashboard-album-count {
     font-weight: 600; 
-    font-size: 1.8em; 
+    font-size: 1em; 
 }
 
 .metric-grid {
@@ -58,6 +58,7 @@ body {
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 16px; 
     margin-bottom: 30px;
+    padding-top: 30px;
 }
 
 .card {
@@ -112,13 +113,14 @@ body {
 }
 
 .span-card-container {
-    margin-bottom: 30px;
+    margin-bottom: 10px;
 }
 
 .span-card {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 10px;
 }
 
 .span-details {
@@ -167,6 +169,7 @@ body {
 
 .recent-albums-title {
     color: #fff;
+    margin-top: 0px;
     margin-bottom: 20px;
     border-bottom: 2px solid #374151;
     padding-bottom: 10px;
@@ -235,6 +238,54 @@ body {
 .anniversary-album-item:hover {
     background-color: rgba(31, 41, 55, 0.8);
     cursor: pointer;
+}
+
+.album-cover-sm {
+    width: 75px; 
+    height: 75px;
+    background: linear-gradient(to bottom right, #facc15, #f97316); 
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.album-cover-sm img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.album-cover-sm .fa-music {
+    font-size: 1.5em; 
+}
+
+.anniversary-album-item h4 {
+    font-weight: 600;
+    color: white;
+    margin-bottom: 2px;
+    line-height: 1.2;
+}
+
+.anniversary-album-item p {
+    font-size: 0.875em; 
+    color: var(--cor-texto-secundario);
+    line-height: 1.2;
+}
+
+.anniversary-info-tag {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75em; 
+    color: var(--cor-destaque); 
+    font-weight: 500;
+}
+
+.anniversary-info-tag i {
+    font-size: 0.75em;
 }
 
 /*
@@ -946,54 +997,6 @@ input:focus, select:focus {
 /* ========================================= */
 /* 3. CARD ANIVERSÁRIO                      */
 /* ========================================= 
-
-.album-cover-sm {
-    width: 48px; 
-    height: 48px;
-    background: linear-gradient(to bottom right, #facc15, #f97316); 
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    overflow: hidden;
-}
-
-.album-cover-sm img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.album-cover-sm .fa-music {
-    font-size: 1.5em; 
-}
-
-.anniversary-album-item h4 {
-    font-weight: 600;
-    color: white;
-    margin-bottom: 2px;
-    line-height: 1.2;
-}
-
-.anniversary-album-item p {
-    font-size: 0.875em; 
-    color: var(--cor-texto-secundario);
-    line-height: 1.2;
-}
-
-.anniversary-info-tag {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 0.75em; 
-    color: var(--cor-destaque); 
-    font-weight: 500;
-}
-
-.anniversary-info-tag i {
-    font-size: 0.75em;
-}
 
 /* MEDIA QUERIES (Dashboard) 
 @media (max-width: 900px) {

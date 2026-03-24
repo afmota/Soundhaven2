@@ -51,15 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Abrir Inclusão (botão no Header)
-    const btnNovoAlbum = document.querySelector('.btn-adicionar-album');
-    if (btnNovoAlbum) {
-        btnNovoAlbum.addEventListener('click', (e) => {
-            e.preventDefault(); // Impede o navegador de seguir o link ?url=album/novo
-            openCreateModal();
-        });
-    }
-
     // --- 3. MENU DE PERFIL ---
     const avatarTrigger = document.getElementById('avatarTrigger');
     const dropdown = document.getElementById('myDropdown');

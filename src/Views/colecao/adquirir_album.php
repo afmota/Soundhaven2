@@ -48,22 +48,25 @@
                             <?php endforeach; ?>
                         </select>
                     </div>
-                <div class="edit-field-group">
-                    <div class="label-with-action">
-                        <label>GRAVADORA</label>
-                        </div>
-                    <input type="text" name="gravadora_nome" id="edicaoGravadora" 
-                           class="input-edicao" 
-                           list="listaSugestoesGravadoras" 
-                           value="<?= htmlspecialchars($album['gravadora_nome'] ?? '') ?>" 
-                           placeholder="Busque ou digite uma nova...">
-                                            
-                    <datalist id="listaSugestoesGravadoras">
-                        <?php foreach ($gravadoras as $grav): ?>
-                            <option value="<?= htmlspecialchars($grav['nome']) ?>" data-id="<?= $grav['gravadora_id'] ?>">
-                        <?php endforeach; ?>
-                    </datalist>
-                </div>
+<div class="edit-field-group">
+    <label>GRAVADORA</label>
+    
+    <input type="text" 
+           id="edicaoGravadoraNome" 
+           class="input-edicao" 
+           list="listaSugestoesGravadoras" 
+           value="<?= htmlspecialchars($album['gravadora_nome'] ?? '') ?>" 
+           placeholder="Busque ou digite...">
+
+    <input type="hidden" name="gravadora_id" id="edicaoGravadoraId" 
+           value="<?= htmlspecialchars($album['gravadora_id'] ?? '') ?>">
+                            
+    <datalist id="listaSugestoesGravadoras">
+        <?php foreach ($gravadoras as $grav): ?>
+            <option value="<?= htmlspecialchars($grav['nome']) ?>" data-id="<?= $grav['gravadora_id'] ?>">
+        <?php endforeach; ?>
+    </datalist>
+</div>
                 </div>
 
                 <div class="edit-modal-row">

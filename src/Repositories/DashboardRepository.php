@@ -43,7 +43,7 @@ class DashboardRepository {
         $sql = "SELECT a.album_id as id, a.titulo, art.nome as artista_nome, a.capa_url,
                        (YEAR(CURDATE()) - YEAR(a.data_lancamento)) as anos_lancamento,
                        (YEAR(CURDATE()) - YEAR(m.data_aquisicao)) as anos_aquisicao,
-                       (DAY(a.data_lancamento) = DAY(CURDATE()) AND MONTH(a.data_lancamento) = MONTH(CURDATE())) as eh_niver_lancamento
+                       (DAY(a.data_lancamento) = DAY(CURDATE()) AND MONTH(a.data_lancamento) = MONTH(CURDATE())) as eh_aniversario_lancamento
                 FROM tb_albuns a
                 JOIN tb_artistas art ON a.artista_id = art.artista_id
                 JOIN tb_midias m ON a.album_id = m.album_id

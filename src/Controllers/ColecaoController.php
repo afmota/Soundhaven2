@@ -80,23 +80,21 @@ class ColecaoController {
     }
 
     public function exibirFormularioInclusao() {
-        // Pega o ID que veio na URL (caso o usuário clique em um álbum da loja para incluir)
         $album_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
-        // 1. Busca os dicionários idênticos à edição
         $artistas = $this->service->buscarTodosArtistas();
         $gravadoras = $this->service->buscarTodasGravadoras();
         $formatos = $this->service->buscarTodosFormatos();
-
-        // Busca as sugestões de gêneros/estilos
         $sugestoes = $this->service->listarTodasSugestoes(); 
 
-        // 2. Inicializa o array vazio para não dar erro de "undefined variable" na View
-        // Mas se veio um ID na URL, guardamos ele aqui para o HTML saber
-        $album = $album_id ? ['album_id' => $album_id] : []; 
-        $faixas = []; 
+        // MUDANÇA AQUI: Se temos um ID, buscamos os dados REAIS do álbum
+        if ($album_id) {
+            $album = $this->service->buscarPorId($album_id);
+        } else {
+            $album = []; 
+        }
 
-        // 3. Renderiza a View
+        $faixas = []; 
         require_once __DIR__ . '/../Views/colecao/adquirir_album.php';
     }
 
