@@ -11,10 +11,13 @@ class DashboardController {
     }
 
     public function index() {
-        // 1. Remova o $_SESSION daqui. O Repository vai buscar tudo do banco.
+        // Busca as métricas e as últimas aquisições
         $stats = $this->repository->buscarDadosGerais(); 
         $ultimos = $this->repository->buscarUltimasAquisicoes(6);
-
+        
+        // NOVO: Busca os álbuns que fazem aniversário hoje (Lançamento ou Aquisição)
+        $aniversariantes = $this->repository->buscarAniversariantesDoDia();
+    
         $viewData = [
             'total_albuns'     => $stats['total_albuns'] ?? 0,
             'total_lps'        => $stats['total_lps'] ?? 0,
@@ -22,9 +25,10 @@ class DashboardController {
             'total_artistas'   => $stats['total_artistas'] ?? 0,
             'total_gravadoras' => $stats['total_gravadoras'] ?? 0,
             'total_anos'       => $stats['total_anos'] ?? 0,
-            'ultimos_albuns'   => $ultimos
+            'ultimos_albuns'   => $ultimos,
+            'aniversariantes'  => $aniversariantes // Passa a lista para a View
         ];
-
+    
         $this->render('dashboard/index', $viewData);
     }
 

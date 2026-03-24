@@ -88,6 +88,41 @@
     </div>
 </div>
 
+<?php if (!empty($aniversariantes)): ?>
+<div class="anniversary-section container">
+    <div class="card anniversary-card">
+        <div class="anniversary-title">
+            <i class="fas fa-cake-candles"></i> Comemorando Hoje!
+        </div>
+        
+        <?php foreach ($aniversariantes as $niver): ?>
+            <a href="index.php?url=editar_album&midia_id=<?= $niver['id'] ?>" class="anniversary-album-item">
+                <div class="album-cover-sm">
+                    <?php if ($niver['capa_url']): ?>
+                        <img src="<?= $niver['capa_url'] ?>" alt="Capa">
+                    <?php else: ?>
+                        <i class="fas fa-music"></i>
+                    <?php endif; ?>
+                </div>
+                <div>
+                    <h4><?= htmlspecialchars($niver['titulo']) ?></h4>
+                    <p><?= htmlspecialchars($niver['artista_nome']) ?></p>
+                    
+                    <div class="anniversary-info-tag">
+                        <i class="fas fa-star"></i>
+                        <?php if ($niver['eh_aniversario_lancamento']): ?>
+                            <?= $niver['anos_lancamento'] ?> anos de lançamento!
+                        <?php else: ?>
+                            <?= $niver['anos_aquisicao'] ?> anos na sua estante!
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </a>
+        <?php endforeach; ?>
+    </div>
+</div>
+<?php endif; ?>
+
 <div class="recent-albums-section container">
     <h2 class="recent-albums-title" style="color: #fff; margin-bottom: 20px;">Últimas Aquisições</h2>
     <div class="recent-albums-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
