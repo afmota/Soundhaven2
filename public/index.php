@@ -1,7 +1,7 @@
 <?php
 ob_start();
 require_once __DIR__ . '/../autoload.php';
-require_once __DIR__ . '/../src/Config/Database.php'; // Certifique-se que este arquivo define $pdo
+require_once __DIR__ . '/../src/Config/Database.php'; 
 
 use App\Controllers\LojaController;
 use App\Controllers\ColecaoController;
@@ -12,7 +12,6 @@ $pdo = $db->getConnection();
 
 switch ($route) {
     case 'dashboard':
-        // Use o plural "Controllers" se for esse o nome da sua pasta
         $controller = new App\Controllers\DashboardController($pdo);
         $controller->index();
         break;
@@ -25,6 +24,12 @@ switch ($route) {
     case 'colecao':
         $controller = new ColecaoController();
         $controller->index();
+        break;
+
+    // NOVA ROTA AQUI
+    case 'registrar_audicao':
+        $controller = new ColecaoController();
+        $controller->registrarAudicao();
         break;
 
     case 'buscar_faixas':
@@ -55,14 +60,12 @@ switch ($route) {
 
     case 'adquirir_album':
         $controller = new App\Controllers\ColecaoController();
-        $controller->exibirFormularioInclusao(); // Deixa o Controller resolver!
+        $controller->exibirFormularioInclusao(); 
         break;
 
     case 'obter_detalhes_album':
         $service = new App\Services\ColecaoService();
         $controller = new App\Controllers\ColecaoController($service);
-        
-        // Este método DEVE existir no seu Controller e dar um echo json_encode()
         $controller->obterDetalhesPorId(); 
         break;
 

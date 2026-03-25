@@ -502,3 +502,35 @@
     justify-content: flex-end;
     gap: 10px;
 }
+
+/* Posicionamento da Tag de Audição */
+.btn-ouvir-tag {
+    position: absolute;
+    left: 10px;
+    bottom: 95px; /* Ajuste esse valor conforme a altura da sua 'album-info' */
+    background: rgba(0, 0, 0, 0.6); /* Fundo escuro semi-transparente */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%; /* Faz um círculo perfeito */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(4px); /* Efeito de vidro borrado, fica chique! */
+}
+
+.btn-ouvir-tag:hover {
+    background: #338d33; /* Sua cor de sucesso/save ao passar o mouse */
+    transform: scale(1.1);
+    border-color: #fff;
+}
+
+/* Estilo para quando já foi clicado (feedback visual) */
+.btn-ouvir-tag.checked {
+    background: #338d33;
+    color: #fff;
+}

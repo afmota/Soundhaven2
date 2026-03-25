@@ -21,17 +21,17 @@ class DashboardRepository {
         return $this->db->query($sql)->fetch(\PDO::FETCH_ASSOC);
     }
 
-    public function buscarUltimasAquisicoes($limit = 6) {
+    public function buscarUltimasAquisicoes($limit = 5) {
         // YEAR(data_lancamento) resolve a sua necessidade de exibir apenas o ano
         $sql = "SELECT a.album_id as id, a.titulo, art.nome as artista_nome, 
-                       g.nome as gravadora_nome, YEAR(a.data_lancamento) as ano_lancamento, 
+                       g.nome as gravadora_nome, YEAR(a.data_lancamento) as ano_lancamento,
                        a.capa_url, f.descricao as formato_descricao
                 FROM tb_albuns a
                 JOIN tb_artistas art ON a.artista_id = art.artista_id
                 JOIN tb_midias m ON a.album_id = m.album_id
                 JOIN tb_gravadoras g ON m.gravadora_id = g.gravadora_id
                 JOIN tb_formatos f ON m.formato_id = f.formato_id
-                ORDER BY m.midia_id DESC LIMIT :limit";
+                ORDER BY m.data_aquisicao DESC LIMIT :limit";
 
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);

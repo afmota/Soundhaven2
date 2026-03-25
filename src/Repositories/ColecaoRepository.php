@@ -405,4 +405,13 @@ public function buscarDetalhesMidia($midiaId) {
     
         return $this->db->lastInsertId();
     }
+
+    public function registrarExecucao($midiaId) {
+        $sql = "UPDATE tb_midias 
+                SET data_ultima_execucao = NOW() 
+                WHERE midia_id = :id";
+                
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([':id' => (int)$midiaId]);
+    }
 }

@@ -13,7 +13,7 @@ class DashboardController {
     public function index() {
         // Busca as métricas e as últimas aquisições
         $stats = $this->repository->buscarDadosGerais(); 
-        $ultimos = $this->repository->buscarUltimasAquisicoes(6);
+        $ultimos = $this->repository->buscarUltimasAquisicoes(5);
         
         // NOVO: Busca os álbuns que fazem aniversário hoje (Lançamento ou Aquisição)
         $aniversariantes = $this->repository->buscarAniversariantesDoDia();

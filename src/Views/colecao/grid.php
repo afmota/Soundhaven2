@@ -23,13 +23,19 @@
                 </p>
             <?php else: ?>
                 <?php foreach ($albuns as $album): ?>
-                    <article class="album-card" data-album='<?= htmlspecialchars(json_encode($album), ENT_QUOTES, 'UTF-8') ?>'>
+                    <article class="album-card" data-album='<?= htmlspecialchars(json_encode($album), ENT_QUOTES, 'UTF-8') ?>' style="position: relative;">
                         
                         <span class="format-tag" style="background-color: <?= $album['formato_cor'] ?> !important;">
                             <?= htmlspecialchars($album['formato_nome']) ?>
                         </span>
 
                         <img loading="lazy" src="<?= htmlspecialchars($album['capa_url'] ?: 'assets/images/placeholder.jpg') ?>" alt="Capa">
+
+                        <button class="btn-ouvir-tag" 
+                                data-midia-id="<?= $album['midia_id'] ?>" 
+                                title="Marcar como ouvido hoje">
+                            <i class="fas fa-headphones"></i>
+                        </button>
                         
                         <div class="album-info">
                             <span class="album-title"><?= htmlspecialchars($album['titulo']) ?></span>

@@ -76,6 +76,8 @@ body {
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.5);
 }
 
+.metric-card { height: 75px;}
+
 .metric-card-content {
     display: flex;
     align-items: center;
@@ -193,6 +195,7 @@ body {
     background-color: var(--cor-fundo-card); 
     border-radius: 12px;
     border: 1px solid var(--cor-borda);
+    height: 300px;
 }
 
 .album-card-modern:hover {

@@ -106,11 +106,9 @@
                     <input type="text" name="numero_catalogo" id="inputCatalogo" 
                            class="input-edicao" value="<?= htmlspecialchars($album['numero_catalogo'] ?? '') ?>" 
                            placeholder="Ex: 88875120972">
-                                            
-                    <input type="hidden" name="discogs_id" id="inputDiscogsId" value="<?= $album['discogs_id'] ?? '' ?>">
                 </div>
 
-                <input type="hidden" name="discogs_id" id="inputDiscogsId" value="<?= $album['discogs_id'] ?? '' ?>">                
+                <input type="hidden" name="discogs_id" id="inputDiscogsId" value="<?= $album['discogs_id'] ?? '' ?>">        
 
                 <div class="edit-field-group" style="margin-top: 20px;">
                     <label>OBSERVAÇÕES / HISTÓRIA DO ITEM</label>

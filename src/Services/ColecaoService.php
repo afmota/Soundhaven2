@@ -142,4 +142,8 @@ class ColecaoService {
             return false;
         }
     }
+
+    public function marcarComoOuvido($midiaId) {
+        return $this->repository->registrarExecucao($midiaId);
+    }
 }

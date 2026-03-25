@@ -119,4 +119,36 @@ document.addEventListener('DOMContentLoaded', () => {
     window.onclick = e => {
         if (e.target === modal) modal.style.display = 'none';
     };
+
+
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const botoesOuvir = document.querySelectorAll('.btn-ouvir-tag');
+
+    botoesOuvir.forEach(botao => {
+        botao.addEventListener('click', function(e) {
+            e.stopPropagation(); 
+            e.preventDefault(); // Evita qualquer comportamento estranho do botão
+            
+            const midiaId = this.getAttribute('data-midia-id');
+            const btn = this;
+
+            // Feedback visual imediato: adiciona a classe que definimos no CSS
+            btn.classList.add('checked');
+
+            fetch(`index.php?url=registrar_audicao&id=${midiaId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        alert('Erro ao registrar audição.');
+                        btn.classList.remove('checked');
+                    }
+                })
+                .catch(err => {
+                    console.error('Erro:', err);
+                    btn.classList.remove('checked');
+                });
+        });
+    });
 });
