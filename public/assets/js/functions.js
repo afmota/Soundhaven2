@@ -1,5 +1,41 @@
-// assets/js/comum.js
+// assets/js/functions.js
 
+/**
+ * 1. SINCRONIZAÇÃO DE GRAVADORA (ID VS NOME)
+ * Esta lógica roda em todas as páginas, mas só age se encontrar os campos.
+ * Evita que erros de elementos nulos quebrem o menu do avatar e outros scripts.
+ */
+document.addEventListener('input', function(e) {
+    // Detecta se o input que sofreu alteração é o de gravadora
+    // Aceita tanto o ID 'edicaoGravadora' quanto 'edicaoGravadoraNome'
+    if (e.target && (e.target.id === 'edicaoGravadora' || e.target.id === 'edicaoGravadoraNome')) {
+        
+        const inputNome = e.target;
+        const nomeDigitado = inputNome.value;
+        
+        // Busca o hidden e o datalist (ajustado para os IDs que você usa)
+        const inputHidden = document.getElementById('idGravadoraHidden') || document.getElementById('edicaoGravadoraId');
+        const datalist = document.getElementById('listaSugestoesGravadoras');
+        
+        if (inputHidden && datalist) {
+            // Procura no datalist se o nome bate com alguma opção
+            const opcao = Array.from(datalist.options).find(opt => opt.value === nomeDigitado);
+
+            if (opcao) {
+                // Se achou na lista, pega o ID que está no data-id
+                inputHidden.value = opcao.getAttribute('data-id');
+            } else {
+                // Se é nome novo, limpamos o ID para o Service criar a nova
+                inputHidden.value = '';
+            }
+            console.log("Sync Gravadora - ID:", inputHidden.value, "| Nome:", nomeDigitado);
+        }
+    }
+});
+
+/**
+ * 2. UTILITÁRIOS DE TEMPO E RENDERIZAÇÃO
+ */
 const formatarTempo = segundos => {
     if (!segundos) return '0:00';
     const min = Math.floor(segundos / 60);
@@ -7,14 +43,11 @@ const formatarTempo = segundos => {
     return `${min}:${seg.toString().padStart(2, '0')}`;
 };
 
-/**
- * Função para renderizar faixas em formato de TABELA (Grid da Coleção)
- */
 function renderizarFaixas(faixas, containerId = 'corpoTabelaFaixas') {
     const corpoTabela = document.getElementById(containerId);
     if (!corpoTabela) return;
 
-    corpoTabela.innerHTML = ''; // Limpa o "Carregando..."
+    corpoTabela.innerHTML = ''; 
     
     if (!faixas || faixas.length === 0) {
         corpoTabela.innerHTML = '<tr><td colspan="3" class="text-center">Nenhuma faixa cadastrada.</td></tr>';
@@ -23,8 +56,6 @@ function renderizarFaixas(faixas, containerId = 'corpoTabelaFaixas') {
 
     faixas.forEach(f => {
         const tr = document.createElement('tr');
-        // Mantemos as classes col-pos, col-titulo para o seu CSS original funcionar
-        
         const pos = f.numero_faixa || f.position || '-';
         const titulo = f.titulo || f.title || 'Sem título';
         const duracao = f.duracao || f.duration || '--:--';
@@ -38,20 +69,13 @@ function renderizarFaixas(faixas, containerId = 'corpoTabelaFaixas') {
     });
 }
 
-// assets/js/functions.js
-
 /**
- * Função Universal para inserir linha de faixa na tabela de álbuns
- * @param {string} numero - Posição da faixa
- * @param {string} titulo - Nome da música
- * @param {string} duracao - Tempo (HH:MM:SS)
- * @param {string} containerId - O ID do corpo da tabela (ex: 'corpoListaFaixas')
+ * 3. FORMULÁRIOS: FAIXAS E TAGS
  */
 function inserirLinhaNaTabela(numero, titulo, duracao, containerId = 'corpoListaFaixas') {
     const corpo = document.getElementById(containerId);
     if (!corpo) return;
 
-    // Usamos o contador global 'faixaIndex' que deve estar nos arquivos de página
     const novaLinha = document.createElement('div');
     novaLinha.className = 'faixa-item';
 
@@ -64,15 +88,11 @@ function inserirLinhaNaTabela(numero, titulo, duracao, containerId = 'corpoLista
     `;
 
     corpo.appendChild(novaLinha);
-    faixaIndex++; // Incrementa o índice global
+    faixaIndex++; 
 }
 
-/**
- * Inicializa o comportamento de Tags e Máscaras de tempo
- * Pode ser chamada no DOMContentLoaded de qualquer página de formulário
- */
 function inicializarComportamentosFormulario() {
-    // 1. Gerenciamento de Remoção de Tags (Delegação de evento)
+    // Remoção de Tags
     const containersTags = ['containerGeneros', 'containerEstilos', 'containerProdutores'];
     containersTags.forEach(id => {
         const container = document.getElementById(id);
@@ -81,14 +101,13 @@ function inicializarComportamentosFormulario() {
                 if (e.target.classList.contains('remove-tag')) {
                     const tag = e.target.closest('.tag-item');
                     tag.style.opacity = '0';
-                    tag.style.transform = 'scale(0.8)';
                     setTimeout(() => tag.remove(), 200);
                 }
             });
         }
     });
 
-    // 2. Exibir/Esconder caixas de busca de tags
+    // Botões de Adicionar Tag
     document.querySelectorAll('.btn-add-tag').forEach(btn => {
         btn.onclick = function() {
             const target = this.getAttribute('data-target'); 
@@ -104,7 +123,7 @@ function inicializarComportamentosFormulario() {
         };
     });
 
-    // 3. Adição de Tags via Enter ou Change (Datalist)
+    // Inputs de busca de Tags
     document.querySelectorAll('.input-search-tag').forEach(input => {
         input.onkeypress = function(e) {
             if (e.key === 'Enter') {
@@ -138,7 +157,7 @@ function processarAdicaoTag(input) {
 }
 
 /**
- * Inicializa componentes globais (Menu de Perfil, etc.)
+ * 4. COMPONENTES GLOBAIS (AVATAR, DROPDOWNS)
  */
 function inicializarComponentesGlobais() {
     const avatarTrigger = document.getElementById('avatarTrigger');
@@ -151,22 +170,14 @@ function inicializarComponentesGlobais() {
         });
     }
 
-    // Fechar ao clicar fora (Dropdowns e Modais genéricos)
     window.addEventListener('click', (e) => {
-        // Dropdown de perfil
-        if (dropdown && !dropdown.contains(e.target) && !avatarTrigger.contains(e.target)) {
-            dropdown.classList.remove('show');
-        }
-
-        // Se você tiver modais globais identificados por classe, pode limpar aqui também
-        const modais = document.querySelectorAll('.modal'); // Supondo que seus modais usem a classe .modal
-        modais.forEach(modal => {
-            if (e.target === modal) {
-                modal.style.display = 'none';
+        if (dropdown && dropdown.classList.contains('show')) {
+            if (!dropdown.contains(e.target) && !avatarTrigger.contains(e.target)) {
+                dropdown.classList.remove('show');
             }
-        });
+        }
     });
 }
 
-// Chama a inicialização global sempre que o DOM estiver pronto
+// Inicializa o que é global
 document.addEventListener('DOMContentLoaded', inicializarComponentesGlobais);

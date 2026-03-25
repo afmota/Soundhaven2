@@ -52,13 +52,18 @@
                     <div class="edit-field-group">
                         <div class="label-with-action">
                             <label>GRAVADORA</label>
-                            </div>
-                        <input type="text" name="gravadora_nome" id="edicaoGravadora" 
-                               class="input-edicao" 
-                               list="listaSugestoesGravadoras" 
-                               value="<?= htmlspecialchars($album['gravadora_nome'] ?? '') ?>" 
-                               placeholder="Busque ou digite uma nova...">
-                                                
+                        </div>
+                        
+                        <input type="hidden" name="gravadora_id" id="idGravadoraHidden" value="<?= $album['gravadora_id'] ?? '' ?>">
+
+                        <input type="text" 
+                            name="gravadora_nome" 
+                            id="edicaoGravadora" 
+                            class="input-edicao" 
+                            list="listaSugestoesGravadoras" 
+                            value="<?= htmlspecialchars($album['gravadora_nome'] ?? '') ?>" 
+                            placeholder="Busque ou digite uma nova...">
+                                                            
                         <datalist id="listaSugestoesGravadoras">
                             <?php foreach ($gravadoras as $grav): ?>
                                 <option value="<?= htmlspecialchars($grav['nome']) ?>" data-id="<?= $grav['gravadora_id'] ?>">

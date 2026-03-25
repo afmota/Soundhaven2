@@ -72,11 +72,21 @@ class ColecaoService {
         ];
     }
 
+    /**
+     * ATUALIZAR ÁLBUM - Agora com tratamento de gravadora dinâmica
+     */
     public function atualizarAlbum($midiaId, $dados) {
         try {
             $this->repository->iniciarTransacao();
 
-            // 1. Dados Básicos (Título, Preço, etc.)
+            // --- TRATAMENTO DA GRAVADORA DINÂMICA NA EDIÇÃO ---
+            // Se o usuário digitou um nome, garantimos o ID (busca ou cria)
+            if (!empty($dados['gravadora_nome'])) {
+                $idGravadora = $this->repository->buscarOuCriarGravadora($dados['gravadora_nome']);
+                $dados['gravadora_id'] = $idGravadora;
+            }
+
+            // 1. Dados Básicos (Título, Preço, e agora com gravadora_id correto)
             $this->repository->updateDadosBasicos($midiaId, $dados['album_id'], $dados);
 
             // 2. Tags N:N (Gêneros, Estilos, Produtores)
@@ -92,17 +102,18 @@ class ColecaoService {
 
         } catch (\Exception $e) {
             $this->repository->cancelarTransacao();
-            //error_log("Erro Fatal no Soundhaven2: " . $e->getMessage());
-            //return false;
+            error_log("Erro no atualizarAlbum: " . $e->getMessage());
             die("Erro no Service: " . $e->getMessage());
         }
     }
 
     public function buscarPorId($id) {
-        // A responsabilidade de saber o SQL é do Repository
         return $this->repository->buscarDetalhesAlbum($id);
     }
 
+    /**
+     * INSERIR NOVO ÁLBUM - Mantido com a lógica de gravadora dinâmica
+     */
     public function inserirNovoAlbumNaColecao($dados) {
         try {
             $this->repository->iniciarTransacao();
@@ -110,21 +121,17 @@ class ColecaoService {
             $albumId = (int)$dados['album_id'];
 
             // --- TRATAMENTO DA GRAVADORA DINÂMICA ---
-            // Se veio um nome de gravadora, precisamos de um ID
             if (!empty($dados['gravadora_nome'])) {
-                // Este método novo no Repo cuida de achar ou criar
                 $idGravadora = $this->repository->buscarOuCriarGravadora($dados['gravadora_nome']);
-
-                // SOBRESCREVEMOS o gravadora_id no array de dados para o Repo usar
                 $dados['gravadora_id'] = $idGravadora;
             }
 
-            // 1. Sincroniza Tags do Álbum (Gêneros, etc)
+            // 1. Sincroniza Tags do Álbum
             $this->repository->salvarGeneros($albumId, $dados['generos'] ?? []);
             $this->repository->salvarEstilos($albumId, $dados['estilos'] ?? []);
             $this->repository->salvarProdutores($albumId, $dados['produtores'] ?? []);
 
-            // 2. Insere a Mídia usando o $dados['gravadora_id'] que acabamos de garantir
+            // 2. Insere a Mídia
             $midiaId = $this->repository->inserirNovaMidia($dados);
 
             // 3. Faixas e Status

@@ -5,7 +5,7 @@ let faixaIndex = 0;
 
 document.addEventListener("DOMContentLoaded", async () => {
     // --- 1. ATIVAÇÃO DOS COMPORTAMENTOS COMUNS ---
-    // Esta função (do functions.js) liga os botões de Gêneros, Estilos, Produtores e Máscaras
+    // Aqui o functions.js entra em ação, inclusive com a nova lógica de Gravadora
     if (typeof inicializarComportamentosFormulario === 'function') {
         inicializarComportamentosFormulario();
     }
@@ -22,13 +22,25 @@ document.addEventListener("DOMContentLoaded", async () => {
             const album = await response.json();
 
             if (!album.error) {
+                // Título e Capa
                 document.getElementById('edicaoTitulo').value = album.titulo || '';
                 document.getElementById('edicaoCapaUrl').value = album.capa_url || '';
-                document.getElementById('edicaoImg').src = album.capa_url || '';
+                document.getElementById('edicaoImg').src = album.capa_url || 'assets/images/placeholder.jpg';
                 
-                if (album.artista_id) document.getElementById('edicaoArtista').value = album.artista_id;
-                if (album.gravadora_id) document.getElementById('edicaoGravadora').value = album.gravadora_id;
+                // Artista (Select)
+                const campoArtista = document.getElementById('edicaoArtista');
+                if (campoArtista) campoArtista.value = album.artista_id || '';
 
+                // --- GRAVADORA ---
+                // Preenchemos o Nome e o ID. O functions.js cuidará de manter o ID 
+                // sincronizado se o usuário mudar o nome depois.
+                const inputGravNome = document.getElementById('edicaoGravadoraNome');
+                const inputGravId = document.getElementById('edicaoGravadoraId');
+                
+                if (inputGravNome) inputGravNome.value = album.gravadora_nome || '';
+                if (inputGravId) inputGravId.value = album.gravadora_id || '';
+
+                // Data de Lançamento
                 const campoData = document.querySelector('input[name="data_lancamento"]');
                 if (campoData) campoData.value = album.data_lancamento || '';
             }
@@ -101,8 +113,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // --- 5. REMOÇÃO DE FAIXAS E MÁSCARA DE TEMPO (DELEGAÇÃO) ---
-    // Centralizamos aqui para evitar conflitos com faixas criadas dinamicamente
+    // --- 5. DELEGAÇÃO DE EVENTOS (REMOÇÃO E MÁSCARA) ---
+    // Centralizamos aqui as ações repetitivas das faixas
     corpoTabela.addEventListener('click', (e) => {
         if (e.target.closest('.btn-remove-faixa')) {
             const linha = e.target.closest('.faixa-item');
