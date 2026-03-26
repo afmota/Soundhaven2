@@ -6,6 +6,7 @@
     <title>SoundHaven - Dashboard</title>
    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/header.css">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/dashboard.css">
 
@@ -127,7 +128,7 @@
     <h2 class="recent-albums-title" style="color: #fff; margin-bottom: 20px;">Últimas Aquisições</h2>
     <div class="recent-albums-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
         <?php foreach ($ultimos_albuns as $album): ?>
-            <div class="card album-card-modern" style="background: var(--cor-bg-card); padding: 15px; border-radius: 8px;">
+            <div class="album-card-modern card" style="padding: 15px; border-radius: 8px;">
                 <img src="<?= $album['capa_url'] ?>" style="width: 100%; border-radius: 4px; margin-bottom: 10px;">
                 <h4 style="color: #fff; margin: 0;"><?= htmlspecialchars($album['titulo']) ?></h4>
                 <p style="color: var(--cor-texto-secundario); font-size: 0.8em;"><?= htmlspecialchars($album['artista_nome']) ?> (<?= $album['ano_lancamento'] ?>)</p>
