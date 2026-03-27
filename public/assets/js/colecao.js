@@ -1,7 +1,8 @@
+// assets/js/colecao.js
+
 document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('modalDetalhesColecao');
     const cards = document.querySelectorAll('.album-card');
-    const closeBtn = modal.querySelector('.modal-close'); // Sincronizado com seu CSS
     const btnEditar = document.getElementById('btnEditarColecao');
     const btnDescartar = document.getElementById('btnDescartarColecao');
     const cacheFaixas = {};
@@ -34,14 +35,12 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const carregarFaixas = async midiaId => {
-        // 1. Verifique se o ID no seu HTML é 'corpoTabelaFaixas' ou 'corpoListaFaixas'
         const ID_CONTAINER = 'corpoTabelaFaixas'; 
         const corpoTabela = document.getElementById(ID_CONTAINER);
         
         if (!corpoTabela) return;
     
         if (cacheFaixas[midiaId]) {
-            // Passamos o ID correto para a função global
             renderizarFaixas(cacheFaixas[midiaId], ID_CONTAINER);
             return;
         }
@@ -54,7 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             cacheFaixas[midiaId] = faixas;
         
-            // CHAMA A FUNÇÃO PASSANDO O ID DO CONTAINER
             if (typeof renderizarFaixas === "function") {
                 renderizarFaixas(faixas, ID_CONTAINER);
             } else {
@@ -67,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // Evento de clique nos cards da Coleção
     cards.forEach(card => {
         card.addEventListener('click', () => {
             const album = JSON.parse(card.dataset.album);
@@ -78,16 +77,23 @@ document.addEventListener('DOMContentLoaded', () => {
             setTxt('detalheCatalogo', album.numero_catalogo);
             setTxt('detalhePreco', formatarMoeda(album.preco));
             setTxt('detalheObservacoes', album.observacoes);
+            
             const lanc = album.data_lancamento ? new Date(album.data_lancamento + 'T12:00:00').toLocaleDateString('pt-BR') : 'N/D';
             setTxt('detalheLancamento', lanc);
+            
             const aquis = album.data_aquisicao ? new Date(album.data_aquisicao + 'T12:00:00').toLocaleDateString('pt-BR') : 'N/D';
             setTxt('detalheAquisicao', aquis);
+            
             const tag = document.getElementById('detalheFormatoTag');
-            tag.textContent = album.formato_nome;
-            tag.style.backgroundColor = album.formato_cor;
+            if (tag) {
+                tag.textContent = album.formato_nome;
+                tag.style.backgroundColor = album.formato_cor;
+            }
+
             renderizarTags('containerTagsGeneros', album.generos);
             renderizarTags('containerTagsEstilos', album.estilos);
             renderizarTags('containerTagsProdutores', album.produtores);
+            
             carregarFaixas(album.midia_id);
             modal.style.display = 'block';
         });
@@ -110,31 +116,20 @@ document.addEventListener('DOMContentLoaded', () => {
             else alert(data.error || 'Erro ao descartar');
         } catch (e) { console.error(e); }
     };
-
-    // FUNÇÕES DE FECHAMENTO
-    if (closeBtn) {
-        closeBtn.onclick = () => modal.style.display = 'none';
-    }
-
-    window.onclick = e => {
-        if (e.target === modal) modal.style.display = 'none';
-    };
-
-
 });
 
+// Lógica de "Marcar como Ouvido"
 document.addEventListener('DOMContentLoaded', function() {
     const botoesOuvir = document.querySelectorAll('.btn-ouvir-tag');
 
     botoesOuvir.forEach(botao => {
         botao.addEventListener('click', function(e) {
             e.stopPropagation(); 
-            e.preventDefault(); // Evita qualquer comportamento estranho do botão
+            e.preventDefault(); 
             
             const midiaId = this.getAttribute('data-midia-id');
             const btn = this;
 
-            // Feedback visual imediato: adiciona a classe que definimos no CSS
             btn.classList.add('checked');
 
             fetch(`index.php?url=registrar_audicao&id=${midiaId}`)

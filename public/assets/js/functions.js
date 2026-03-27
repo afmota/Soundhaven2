@@ -2,30 +2,23 @@
 
 /**
  * 1. SINCRONIZAÇÃO DE GRAVADORA (ID VS NOME)
- * Esta lógica roda em todas as páginas, mas só age se encontrar os campos.
- * Evita que erros de elementos nulos quebrem o menu do avatar e outros scripts.
+ * Esta lógica roda em todas as páginas via delegação, mas só age se encontrar os campos.
  */
 document.addEventListener('input', function(e) {
-    // Detecta se o input que sofreu alteração é o de gravadora
-    // Aceita tanto o ID 'edicaoGravadora' quanto 'edicaoGravadoraNome'
     if (e.target && (e.target.id === 'edicaoGravadora' || e.target.id === 'edicaoGravadoraNome')) {
         
         const inputNome = e.target;
         const nomeDigitado = inputNome.value;
         
-        // Busca o hidden e o datalist (ajustado para os IDs que você usa)
         const inputHidden = document.getElementById('idGravadoraHidden') || document.getElementById('edicaoGravadoraId');
         const datalist = document.getElementById('listaSugestoesGravadoras');
         
         if (inputHidden && datalist) {
-            // Procura no datalist se o nome bate com alguma opção
             const opcao = Array.from(datalist.options).find(opt => opt.value === nomeDigitado);
 
             if (opcao) {
-                // Se achou na lista, pega o ID que está no data-id
                 inputHidden.value = opcao.getAttribute('data-id');
             } else {
-                // Se é nome novo, limpamos o ID para o Service criar a nova
                 inputHidden.value = '';
             }
             console.log("Sync Gravadora - ID:", inputHidden.value, "| Nome:", nomeDigitado);
@@ -92,7 +85,6 @@ function inserirLinhaNaTabela(numero, titulo, duracao, containerId = 'corpoLista
 }
 
 function inicializarComportamentosFormulario() {
-    // Remoção de Tags
     const containersTags = ['containerGeneros', 'containerEstilos', 'containerProdutores'];
     containersTags.forEach(id => {
         const container = document.getElementById(id);
@@ -107,7 +99,6 @@ function inicializarComportamentosFormulario() {
         }
     });
 
-    // Botões de Adicionar Tag
     document.querySelectorAll('.btn-add-tag').forEach(btn => {
         btn.onclick = function() {
             const target = this.getAttribute('data-target'); 
@@ -123,7 +114,6 @@ function inicializarComportamentosFormulario() {
         };
     });
 
-    // Inputs de busca de Tags
     document.querySelectorAll('.input-search-tag').forEach(input => {
         input.onkeypress = function(e) {
             if (e.key === 'Enter') {
@@ -157,7 +147,7 @@ function processarAdicaoTag(input) {
 }
 
 /**
- * 4. COMPONENTES GLOBAIS (AVATAR, DROPDOWNS)
+ * 4. COMPONENTES GLOBAIS (AVATAR, DROPDOWNS, MODAIS)
  */
 function inicializarComponentesGlobais() {
     const avatarTrigger = document.getElementById('avatarTrigger');
@@ -170,14 +160,24 @@ function inicializarComponentesGlobais() {
         });
     }
 
+    // Gerenciamento Universal de Cliques (Dropdown e Fechamento de Modal)
     window.addEventListener('click', (e) => {
+        // Fecha dropdown do avatar
         if (dropdown && dropdown.classList.contains('show')) {
             if (!dropdown.contains(e.target) && !avatarTrigger.contains(e.target)) {
                 dropdown.classList.remove('show');
             }
         }
+
+        // Fecha Modal de Detalhes (Universal)
+        const modal = document.getElementById('modalDetalhesColecao');
+        if (modal && modal.style.display === 'block') {
+            const closeBtn = modal.querySelector('.modal-close');
+            if (e.target === modal || e.target === closeBtn) {
+                modal.style.display = 'none';
+            }
+        }
     });
 }
 
-// Inicializa o que é global
 document.addEventListener('DOMContentLoaded', inicializarComponentesGlobais);

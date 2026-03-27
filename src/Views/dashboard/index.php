@@ -9,8 +9,7 @@
     <link rel="stylesheet" href="assets/css/header.css">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/dashboard.css">
-
-</head>
+    </head>
 <body>
 
 <?php require_once __DIR__ . '/../partials/header.php'; ?>
@@ -97,7 +96,9 @@
         </div>
         
         <?php foreach ($aniversariantes as $niver): ?>
-            <a href="index.php?url=editar_album&midia_id=<?= $niver['id'] ?>" class="anniversary-album-item">
+            <div class="anniversary-album-item abrir-modal-detalhes" 
+                 style="cursor: pointer;"
+                 data-album='<?= json_encode($niver) ?>'>
                 <div class="album-cover-sm">
                     <?php if ($niver['capa_url']): ?>
                         <img src="<?= $niver['capa_url'] ?>" alt="Capa">
@@ -118,7 +119,7 @@
                         <?php endif; ?>
                     </div>
                 </div>
-            </a>
+            </div>
         <?php endforeach; ?>
     </div>
 </div>
@@ -137,6 +138,12 @@
     </div>
 </div>
 
+<?php require_once __DIR__ . '/../partials/modal_detalhes_colecao.php'; ?>
+
 <?php require_once __DIR__ . '/../partials/footer.php'; ?>
+
+<script src="assets/js/functions.js"></script>
+<script src="assets/js/dashboard.js"></script>
+
 </body>
 </html>
