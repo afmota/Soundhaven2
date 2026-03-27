@@ -51,19 +51,29 @@ body {
 
 /* O Card Base (Sem cores de destaque) */
 .album-card {
-    background: var(--card-bg);
+    background: linear-gradient(to bottom right, var(--card-bg), var(--bg-color));
     border-radius: 6px;
     overflow: hidden;
     transition: all 0.3s ease;
     cursor: pointer;
     position: relative;
     border: 1px solid transparent;
+    padding: 15px;
+    border-radius: 8px;
 }
+
+.album-card:hover .format-tag {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
 
 .album-card img {
     width: 100%;
     aspect-ratio: 1 / 1;
     object-fit: cover;
+    border-radius: 5px;
 }
 
 .album-info {
@@ -75,7 +85,7 @@ body {
 .album-title {
     font-weight: bold;
     font-size: 0.95rem;
-    color: #fff;
+    color: var(--text-primary);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -154,8 +164,6 @@ body {
     font-size: 0.8em;
     border-radius: 4px;
 }
-
-.album-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 2px; }
 
 .album-info {
     margin-top: 10px;
@@ -333,4 +341,10 @@ body {
     border-top: 1px solid var(--border-color);
     margin: 25px 0;
     width: 100%;
+}
+
+.label-tag {
+    font-size: 0.75em;
+    font-style: italic;
+    color: var(--text-secondary);
 }

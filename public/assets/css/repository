@@ -1,3 +1,5 @@
+.album-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 2px; }
+
 /* ==========================================================================
    VARIÁVEIS GLOBAIS
    ========================================================================== */
@@ -34,7 +36,7 @@
 /* ==========================================================================
    GRID DE CARDS
    ==========================================================================*/
-   .album-card {
+.album-card {
     position: relative;
     background: var(--bg-card);
     transition: all 0.3s ease;
@@ -61,37 +63,6 @@
 .artist-name {
     color: #b0b0b0;
     font-style: italic;
-}
-
-.acquisition-year {
-    color: var(--accent-colecao) !important;
-    font-weight: 900;
-    font-size: .95rem;
-    display: block;
-    margin-top: var(--space-xs);
-}
-
-/* tag formato */
-.format-tag {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: .7rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    color: #121212 !important;
-    background: var(--accent-colecao); /* Adicionado: fundo para legibilidade */
-    opacity: 0;
-    transform: translateY(-5px);
-    transition: all .3s ease;
-    box-shadow: 0 4px 10px rgba(0,0,0,.5);
-}
-
-.album-card:hover .format-tag {
-    opacity: 1;
-    transform: translateY(0);
 }
 
 /* PAGINAÇÃO */
@@ -503,37 +474,6 @@
     gap: 10px;
 }
 
-/* Posicionamento da Tag de Audição */
-.btn-ouvir-tag {
-    position: absolute;
-    left: 10px;
-    bottom: 95px; /* Ajuste esse valor conforme a altura da sua 'album-info' */
-    background: rgba(0, 0, 0, 0.6); /* Fundo escuro semi-transparente */
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #fff;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%; /* Faz um círculo perfeito */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 10;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(4px); /* Efeito de vidro borrado, fica chique! */
-}
-
-.btn-ouvir-tag:hover {
-    background: #338d33; /* Sua cor de sucesso/save ao passar o mouse */
-    transform: scale(1.1);
-    border-color: #fff;
-}
-
-/* Estilo para quando já foi clicado (feedback visual) */
-.btn-ouvir-tag.checked {
-    background: #338d33;
-    color: #fff;
-}
 
 
 

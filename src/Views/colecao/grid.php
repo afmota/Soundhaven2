@@ -24,7 +24,7 @@
                 </p>
             <?php else: ?>
                 <?php foreach ($albuns as $album): ?>
-                    <article class="album-card" data-album='<?= htmlspecialchars(json_encode($album), ENT_QUOTES, 'UTF-8') ?>' style="position: relative;">
+                    <article class="album-card" data-album='<?= htmlspecialchars(json_encode($album), ENT_QUOTES, 'UTF-8') ?>'>
                         
                         <span class="format-tag" style="background-color: <?= $album['formato_cor'] ?> !important;">
                             <?= htmlspecialchars($album['formato_nome']) ?>
