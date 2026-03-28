@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SoundHaven - Editar Álbum</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/header.css">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/colecao.css">
 </head>
@@ -12,7 +13,7 @@
     <?php include __DIR__ . '/../partials/header.php'; ?>
 
     <div class="modal-content">
-        <h2 id="edicaoHeaderTitle" style="color:var(--accent-colecao); margin-top:0; margin-bottom: 20px;">
+        <h2 id="edicaoHeaderTitle" style="color:var(--border-light); margin-top:0; margin-bottom: 20px;">
             Editar: <?= htmlspecialchars($album['titulo'] ?? '') ?>
         </h2>
 
@@ -24,7 +25,7 @@
             <div id="edicaoPaginaBody">
                 <div class="edit-modal-header-row">
                     <img id="edicaoImg" class="edit-modal-capa" src="<?= htmlspecialchars($album['capa_url'] ?? '') ?>" alt="Capa Edição">
-                    <div class="edit-field-group">
+                    <div class="edit-field-group" style="margin-bottom: 0;">
                         <label>URL DA CAPA</label>
                         <input type="text" name="capa_url" id="edicaoCapaUrl" value="<?= htmlspecialchars($album['capa_url'] ?? '') ?>">
                     </div>

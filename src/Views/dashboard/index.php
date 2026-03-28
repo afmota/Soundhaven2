@@ -9,16 +9,11 @@
     <link rel="stylesheet" href="assets/css/header.css">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/colecao.css">
     </head>
 <body>
 
 <?php require_once __DIR__ . '/../partials/header.php'; ?>
-
-<div class="dashboard-header-section container">
-    <div class="dashboard-title">
-        SoundHaven <span class="dashboard-album-count">| Total de Álbuns: <?= $total_albuns ?> </span>
-    </div>
-</div>
 
 <div class="metric-grid container">
     <div class="card metric-card">

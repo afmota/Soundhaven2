@@ -67,8 +67,6 @@ body {
     transform: translateY(0);
 }
 
-
-
 .album-card img {
     width: 100%;
     aspect-ratio: 1 / 1;
@@ -288,8 +286,8 @@ body {
 }
 
 .edit-modal-capa {
-    width: 120px;
-    height: 120px;
+    width: 180px;
+    height: 180px;
     object-fit: cover;
     border-radius: 4px;
     border: 1px solid var(--border-color);
@@ -311,7 +309,7 @@ body {
 .input-edicao {
     width: 100%;
     padding: 12px;
-    background: #121212;
+    background: var(--bg-color);
     border: 1px solid var(--border-color);
     color: var(--text-primary);
     border-radius: 4px;
