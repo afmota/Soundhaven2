@@ -34,7 +34,7 @@ class ColecaoRepository {
                 INNER JOIN tb_gravadoras tg ON tm.gravadora_id = tg.gravadora_id
                 INNER JOIN tb_formatos tf ON tm.formato_id = tf.formato_id
                 WHERE tm.ativo = 1
-                ORDER BY tm.data_aquisicao DESC
+                ORDER BY tm.midia_id DESC
                 LIMIT :limit OFFSET :offset";    
                 $stmt = $this->db->prepare($sql);
         

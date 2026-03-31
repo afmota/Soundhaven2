@@ -20,7 +20,7 @@
         <div class="metric-card-content">
             <div>
                 <div class="metric-value"><?= $total_albuns ?></div>
-                <div class="metric-label">Total na Estante</div>
+                <div class="metric-label">Total de Álbuns</div>
             </div>
             <div class="icon-container cor-1"><i class="fas fa-compact-disc"></i></div>
         </div>
