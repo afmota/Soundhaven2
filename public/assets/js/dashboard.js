@@ -13,6 +13,70 @@ document.addEventListener('DOMContentLoaded', () => {
             exibirDetalhesNoModal(album);
         });
     });
+
+    // 1. Localiza o container que guarda os dados
+    const container = document.getElementById('containerChartTopArtistas');
+    
+    if (container && container.dataset.artistas) {
+        try {
+            // 2. Faz o parse do JSON que está no atributo data-artistas
+            const dadosTopArtistas = JSON.parse(container.dataset.artistas);
+            
+            if (dadosTopArtistas.length > 0) {
+                const ctx = document.getElementById('chartTopArtistas').getContext('2d');
+                
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: dadosTopArtistas.map(item => item.artista),
+datasets: [{
+    label: 'Álbuns',
+    data: dadosTopArtistas.map(item => item.total),
+    // Trocamos a cor única pelo seu array de cores personalizadas
+    backgroundColor: [
+        '#8b5cf6', // Roxo
+        '#f59e0b', // Laranja
+        '#3b82f6', // Azul
+        '#10b981', // Verde
+        '#ef4444'  // Vermelho
+    ],
+    borderColor: [
+        '#8b5cf6',
+        '#f59e0b',
+        '#3b82f6',
+        '#10b981',
+        '#ef4444'
+    ],
+    borderWidth: 1,
+    borderRadius: 5,
+    barThickness: 20 // Opcional: ajusta a espessura para ficar mais elegante
+}]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                ticks: { color: '#aaa', stepSize: 1 }
+                            },
+                            y: {
+                                grid: { display: false },
+                                ticks: { color: '#fff' }
+                            }
+                        }
+                    }
+                });
+            }
+        } catch (e) {
+            console.error("Erro ao processar dados do gráfico:", e);
+        }
+    }
 });
 
 // Função para centralizar o preenchimento (pode mover para o functions.js depois)

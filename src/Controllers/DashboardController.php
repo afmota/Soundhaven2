@@ -15,8 +15,11 @@ class DashboardController {
         $stats = $this->repository->buscarDadosGerais(); 
         $ultimos = $this->repository->buscarUltimasAquisicoes(5);
         
-        // NOVO: Busca os álbuns que fazem aniversário hoje (Lançamento ou Aquisição)
+        // Busca os álbuns que fazem aniversário hoje
         $aniversariantes = $this->repository->buscarAniversariantesDoDia();
+
+        // ADICIONADO: Busca o Top 5 Artistas para o gráfico
+        $topArtistas = $this->repository->buscarTopArtistas(5);
     
         $viewData = [
             'total_albuns'     => $stats['total_albuns'] ?? 0,
@@ -26,7 +29,8 @@ class DashboardController {
             'total_gravadoras' => $stats['total_gravadoras'] ?? 0,
             'total_anos'       => $stats['total_anos'] ?? 0,
             'ultimos_albuns'   => $ultimos,
-            'aniversariantes'  => $aniversariantes // Passa a lista para a View
+            'aniversariantes'  => $aniversariantes,
+            'top_artistas'     => $topArtistas // <-- ESSA LINHA RECHEIA O CARD
         ];
     
         $this->render('dashboard/index', $viewData);
@@ -34,8 +38,6 @@ class DashboardController {
 
     private function render($view, $data) {
         extract($data);
-        // 1. Mudamos de ../../ para ../ para subir apenas para a pasta 'src'
-        // 2. Mudamos 'views' para 'Views' (respeitando o Case Sensitive)
         require_once __DIR__ . "/../Views/{$view}.php";
     }
 }

@@ -289,3 +289,27 @@ body {
     font-size: 0.75em;
 }
 
+.charts-section {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding-top: 10px;
+}
+
+.chart-card {
+    padding: 20px;
+    background: var(--cor-background-card); /* ou #2a2a2a */
+    border-radius: 8px;
+}
+
+.chart-title {
+    color: #fff;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chart-title i {
+    color: var(--border-light); /* Aquela cor verde/azul que você usa */
+}

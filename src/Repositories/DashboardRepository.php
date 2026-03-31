@@ -52,4 +52,22 @@ class DashboardRepository {
         
         return $this->db->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
     }
+
+    public function buscarTopArtistas($limit = 5) {
+        $sql = "SELECT
+                    art.nome as artista,
+                    COUNT(m.midia_id) AS total
+                FROM tb_midias m
+                INNER JOIN tb_albuns a ON m.album_id = a.album_id
+                INNER JOIN tb_artistas art ON a.artista_id = art.artista_id
+                WHERE art.nome <> 'Vários Artistas'
+                GROUP BY art.artista_id, art.nome
+                ORDER BY total DESC 
+                LIMIT :limit";
+    
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }

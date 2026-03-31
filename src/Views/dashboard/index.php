@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/dashboard.css">
     <link rel="stylesheet" href="assets/css/colecao.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     </head>
 <body>
 
@@ -63,6 +65,18 @@
                 <div class="metric-label">Gravadoras</div>
             </div>
             <div class="icon-container cor-5"><i class="fas fa-users"></i></div>
+        </div>
+    </div>
+</div>
+
+<div class="charts-section container">
+    <div class="card chart-card">
+        <h3 class="chart-title"><i class="fas fa-trophy"></i> Top 5 Artistas</h3>
+        <div id="containerChartTopArtistas" 
+             class="chart-container" 
+             style="position: relative; height:250px;"
+             data-artistas='<?= json_encode($top_artistas) ?>'>
+            <canvas id="chartTopArtistas"></canvas>
         </div>
     </div>
 </div>
