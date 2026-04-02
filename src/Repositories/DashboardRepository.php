@@ -70,6 +70,7 @@ class DashboardRepository {
 
     public function buscarTopArtistas($limit = 5) {
         $sql = "SELECT
+                    art.artista_id,
                     art.nome as artista,
                     COUNT(m.midia_id) AS total
                 FROM tb_midias m

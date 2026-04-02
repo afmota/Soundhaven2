@@ -11,8 +11,15 @@ class ColecaoController {
     }
 
     public function index() {
+        // Captura a página atual
         $pagina = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
-        $dados = $this->service->getGridColecao($pagina);
+        
+        // Captura os filtros da URL (titulo, artista_id, tipo_id, situacao_id, etc.)
+        $filtros = $_GET;
+        
+        // Passamos a página e o array de filtros para o Service
+        $dados = $this->service->getGridColecao($pagina, $filtros);
+        
         extract($dados);
         include __DIR__ . '/../Views/colecao/grid.php';
     }

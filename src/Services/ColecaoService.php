@@ -11,13 +11,14 @@ class ColecaoService {
         $this->repository = new ColecaoRepository();
     }
 
-    public function getGridColecao($pagina) {
+    public function getGridColecao($pagina, $filtros = []) {
 
         $limit = 25;
         $offset = ($pagina - 1) * $limit;
 
-        $itens = $this->repository->buscarParaGrid($limit, $offset);
-        $totalRegistros = $this->repository->contarTotal();
+        // Repassamos os filtros para a busca dos itens e para a contagem total
+        $itens = $this->repository->buscarParaGrid($limit, $offset, $filtros);
+        $totalRegistros = $this->repository->contarTotal($filtros);
 
         $totalPaginas = ceil($totalRegistros / $limit) ?: 1;
 
@@ -26,13 +27,20 @@ class ColecaoService {
         $inicioPagina = max(1, $pagina - $maxLinks);
         $fimPagina = min($totalPaginas, $pagina + $maxLinks);
 
+        // Retornamos também os filtros para que a View possa manter os estados nos inputs
         return [
             'albuns' => $itens,
             'paginaAtual' => $pagina,
             'totalPaginas' => $totalPaginas,
             'inicioPagina' => $inicioPagina,
             'fimPagina' => $fimPagina,
-            'totalRegistros' => $totalRegistros
+            'totalRegistros' => $totalRegistros,
+            'filters' => $filtros,
+            // Adicionamos os dados necessários para popular os selects do sidebar
+            'artistas' => $this->buscarTodosArtistas(),
+            'gravadoras' => $this->buscarTodasGravadoras(),
+            'tipos' => $this->buscarTodosTipos(),
+            'situacoes' => $this->repository->getAllSituacoes() 
         ];
     }
 
@@ -80,21 +88,20 @@ class ColecaoService {
             $this->repository->iniciarTransacao();
 
             // --- TRATAMENTO DA GRAVADORA DINÂMICA NA EDIÇÃO ---
-            // Se o usuário digitou um nome, garantimos o ID (busca ou cria)
             if (!empty($dados['gravadora_nome'])) {
                 $idGravadora = $this->repository->buscarOuCriarGravadora($dados['gravadora_nome']);
                 $dados['gravadora_id'] = $idGravadora;
             }
 
-            // 1. Dados Básicos (Título, Preço, e agora com gravadora_id correto)
+            // 1. Dados Básicos
             $this->repository->updateDadosBasicos($midiaId, $dados['album_id'], $dados);
 
-            // 2. Tags N:N (Gêneros, Estilos, Produtores)
+            // 2. Tags N:N
             $this->repository->salvarGeneros($dados['album_id'], $dados['generos'] ?? []);
             $this->repository->salvarEstilos($dados['album_id'], $dados['estilos'] ?? []);
             $this->repository->salvarProdutores($dados['album_id'], $dados['produtores'] ?? []);
 
-            // 3. O Chefão Final: As FAIXAS
+            // 3. Faixas
             $this->repository->salvarFaixas($midiaId, $dados['faixas'] ?? []);
 
             $this->repository->confirmarTransacao();

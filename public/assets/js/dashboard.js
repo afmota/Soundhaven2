@@ -85,6 +85,20 @@ document.addEventListener('DOMContentLoaded', () => {
                         indexAxis: 'y',
                         responsive: true,
                         maintainAspectRatio: false,
+                        // Adicionando o evento de clique nas barras do gráfico
+                        onClick: (evt, elements) => {
+                            if (elements.length > 0) {
+                                const index = elements[0].index;
+                                const artistaSelecionado = dadosTopArtistas[index];
+                                
+                                // Redireciona para a coleção passando o artista_id
+                                // Usamos artista_id se disponível, ou id como fallback
+                                const id = artistaSelecionado.artista_id || artistaSelecionado.id;
+                                if (id) {
+                                    window.location.href = `index.php?url=colecao&artista_id=${id}`;
+                                }
+                            }
+                        },
                         plugins: {
                             legend: { display: false }
                         },
