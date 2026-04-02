@@ -79,12 +79,13 @@ datasets: [{
     }
 });
 
-// Função para centralizar o preenchimento (pode mover para o functions.js depois)
 function exibirDetalhesNoModal(album) {
     const modal = document.getElementById('modalDetalhesColecao');
     if(!modal) return;
 
-    modal.setAttribute('data-current-midia-id', album.id || album.midia_id);
+    // Seta o ID da mídia para os botões de Editar/Descartar funcionarem
+    modal.setAttribute('data-current-midia-id', album.midia_id || album.id);
+
     document.getElementById('detalheCapa').src = album.capa_url || 'assets/images/placeholder.jpg';
     
     const setTxt = (id, text) => { if(document.getElementById(id)) document.getElementById(id).textContent = text || 'N/D'; };
@@ -95,7 +96,12 @@ function exibirDetalhesNoModal(album) {
     setTxt('detalheCatalogo', album.numero_catalogo);
     setTxt('detalheObservacoes', album.observacoes);
     
-    // Formatação de Preço (puxando do niver pode vir diferente)
+    // Datas formatadas
+    const formatarData = (dataStr) => dataStr ? new Date(dataStr + 'T12:00:00').toLocaleDateString('pt-BR') : 'N/D';
+    setTxt('detalheLancamento', formatarData(album.data_lancamento));
+    setTxt('detalheAquisicao', formatarData(album.data_aquisicao));
+
+    // Preço
     const preco = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(album.preco || 0);
     setTxt('detalhePreco', preco);
 
@@ -106,9 +112,27 @@ function exibirDetalhesNoModal(album) {
         tag.style.backgroundColor = album.formato_cor || '#666';
     }
 
-    // Carregar faixas (usando a função do functions.js que você já tem)
+    // Tags (Gêneros, Estilos, Produtores)
+    const renderTags = (containerId, str) => {
+        const c = document.getElementById(containerId);
+        if(!c) return;
+        c.innerHTML = '';
+        if(!str) { c.innerHTML = '<span class="no-data">N/D</span>'; return; }
+        str.split('|').forEach(t => {
+            const s = document.createElement('span');
+            s.className = 'tag-item';
+            s.textContent = t.trim();
+            c.appendChild(s);
+        });
+    };
+
+    renderTags('containerTagsGeneros', album.generos);
+    renderTags('containerTagsEstilos', album.estilos);
+    renderTags('containerTagsProdutores', album.produtores);
+
+    // Carregar faixas (a função deve estar global ou acessível)
     if (typeof carregarFaixas === 'function') {
-        carregarFaixas(album.id || album.midia_id);
+        carregarFaixas(album.midia_id || album.id);
     }
 
     modal.style.display = 'block';

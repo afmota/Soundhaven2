@@ -140,10 +140,15 @@
     <h2 class="recent-albums-title" style="color: #fff; margin-bottom: 20px;">Últimas Aquisições</h2>
     <div class="recent-albums-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
         <?php foreach ($ultimos_albuns as $album): ?>
-            <div class="album-card-modern card" style="padding: 15px; border-radius: 8px;">
+            <div class="album-card-modern card abrir-modal-detalhes" 
+                style="padding: 15px; border-radius: 8px; cursor: pointer;"
+                data-album='<?= json_encode($album) ?>'>
+                
                 <img src="<?= $album['capa_url'] ?>" style="width: 100%; border-radius: 4px; margin-bottom: 10px;">
                 <h4 style="color: #fff; margin: 0;"><?= htmlspecialchars($album['titulo']) ?></h4>
-                <p style="color: var(--cor-texto-secundario); font-size: 0.8em;"><?= htmlspecialchars($album['artista_nome']) ?> (<?= $album['ano_lancamento'] ?>)</p>
+                <p style="color: var(--cor-texto-secundario); font-size: 0.8em;">
+                    <?= htmlspecialchars($album['artista_nome']) ?> (<?= $album['ano_lancamento'] ?>)
+                </p>
             </div>
         <?php endforeach; ?>
     </div>
@@ -154,6 +159,7 @@
 <?php require_once __DIR__ . '/../partials/footer.php'; ?>
 
 <script src="assets/js/functions.js"></script>
+<script src="assets/js/colecao.js"></script>
 <script src="assets/js/dashboard.js"></script>
 
 </body>
