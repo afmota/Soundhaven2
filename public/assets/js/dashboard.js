@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     const itensNiver = document.querySelectorAll('.abrir-modal-detalhes');
     const modal = document.getElementById('modalDetalhesColecao');
+    const btnEditar = document.getElementById('btnEditarColecao');
+    const btnDescartar = document.getElementById('btnDescartarColecao');
 
     itensNiver.forEach(item => {
         item.addEventListener('click', () => {
@@ -13,6 +15,33 @@ document.addEventListener('DOMContentLoaded', () => {
             exibirDetalhesNoModal(album);
         });
     });
+
+    // Lógica dos botões do Modal dentro do Dashboard
+    if (btnEditar) {
+        btnEditar.onclick = () => {
+            const midiaId = modal.getAttribute('data-current-midia-id');
+            if (midiaId) window.location.href = `index.php?url=editar_album&midia_id=${midiaId}`;
+        };
+    }
+
+    if (btnDescartar) {
+        btnDescartar.onclick = async () => {
+            const midiaId = modal.getAttribute('data-current-midia-id');
+            if (!midiaId || !confirm('Remover este álbum da coleção?')) return;
+            
+            const formData = new URLSearchParams();
+            formData.append('midia_id', midiaId);
+            
+            try {
+                const res = await fetch('index.php?url=descartar_album', { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.success) location.reload();
+                else alert(data.error || 'Erro ao descartar');
+            } catch (e) {
+                console.error("Erro ao descartar álbum no dashboard:", e);
+            }
+        };
+    }
 
     // 1. Localiza o container que guarda os dados
     const container = document.getElementById('containerChartTopArtistas');
@@ -29,28 +58,28 @@ document.addEventListener('DOMContentLoaded', () => {
                     type: 'bar',
                     data: {
                         labels: dadosTopArtistas.map(item => item.artista),
-datasets: [{
-    label: 'Álbuns',
-    data: dadosTopArtistas.map(item => item.total),
-    // Trocamos a cor única pelo seu array de cores personalizadas
-    backgroundColor: [
-        '#8b5cf6', // Roxo
-        '#f59e0b', // Laranja
-        '#3b82f6', // Azul
-        '#10b981', // Verde
-        '#ef4444'  // Vermelho
-    ],
-    borderColor: [
-        '#8b5cf6',
-        '#f59e0b',
-        '#3b82f6',
-        '#10b981',
-        '#ef4444'
-    ],
-    borderWidth: 1,
-    borderRadius: 5,
-    barThickness: 20 // Opcional: ajusta a espessura para ficar mais elegante
-}]
+                        datasets: [{
+                            label: 'Álbuns',
+                            data: dadosTopArtistas.map(item => item.total),
+                            // Trocamos a cor única pelo seu array de cores personalizadas
+                            backgroundColor: [
+                                '#8b5cf6', // Roxo
+                                '#f59e0b', // Laranja
+                                '#3b82f6', // Azul
+                                '#10b981', // Verde
+                                '#ef4444'  // Vermelho
+                            ],
+                            borderColor: [
+                                '#8b5cf6',
+                                '#f59e0b',
+                                '#3b82f6',
+                                '#10b981',
+                                '#ef4444'
+                            ],
+                            borderWidth: 1,
+                            borderRadius: 5,
+                            barThickness: 20 // Opcional: ajusta a espessura para ficar mais elegante
+                        }]
                     },
                     options: {
                         indexAxis: 'y',

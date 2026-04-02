@@ -5,8 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const cards = document.querySelectorAll('.album-card');
     const btnEditar = document.getElementById('btnEditarColecao');
     const btnDescartar = document.getElementById('btnDescartarColecao');
-    const cacheFaixas = {};
 
+    // Funções utilitárias locais
     const formatarMoeda = valor =>
         new Intl.NumberFormat('pt-BR', {
             style: 'currency',
@@ -34,42 +34,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    const carregarFaixas = async midiaId => {
-        const ID_CONTAINER = 'corpoTabelaFaixas'; 
-        const corpoTabela = document.getElementById(ID_CONTAINER);
-        
-        if (!corpoTabela) return;
-    
-        if (cacheFaixas[midiaId]) {
-            renderizarFaixas(cacheFaixas[midiaId], ID_CONTAINER);
-            return;
-        }
-    
-        corpoTabela.innerHTML = '<tr><td colspan="3">Carregando faixas...</td></tr>';
-    
-        try {
-            const res = await fetch(`index.php?url=buscar_faixas&midia_id=${midiaId}`);
-            const faixas = await res.json();
-            
-            cacheFaixas[midiaId] = faixas;
-        
-            if (typeof renderizarFaixas === "function") {
-                renderizarFaixas(faixas, ID_CONTAINER);
-            } else {
-                console.error("A função renderizarFaixas não foi encontrada no functions.js");
-            }
-        
-        } catch (e) {
-            corpoTabela.innerHTML = '<tr><td colspan="3">Erro ao carregar faixas</td></tr>';
-            console.error("Erro no fetch das faixas:", e);
-        }
-    };
+    /**
+     * NOTA: A função carregarFaixas foi movida para o functions.js 
+     * para permitir o uso compartilhado com o Dashboard.
+     */
 
     // Evento de clique nos cards da Coleção
     cards.forEach(card => {
         card.addEventListener('click', () => {
             const album = JSON.parse(card.dataset.album);
+            
+            // Define o ID da mídia no modal para ações de edição/descarte
             modal.setAttribute('data-current-midia-id', album.midia_id);
+            
             document.getElementById('detalheCapa').src = album.capa_url || 'assets/images/placeholder.jpg';
             setTxt('detalheTitulo', album.titulo);
             setTxt('detalheArtista', album.artista_nome);
@@ -90,32 +67,47 @@ document.addEventListener('DOMContentLoaded', () => {
                 tag.style.backgroundColor = album.formato_cor;
             }
 
+            // CORRIGIDO: Agora todos usam 'renderizarTags' (nome definido na linha 21)
             renderizarTags('containerTagsGeneros', album.generos);
             renderizarTags('containerTagsEstilos', album.estilos);
             renderizarTags('containerTagsProdutores', album.produtores);
             
-            carregarFaixas(album.midia_id);
+            // Chama a função global do functions.js
+            if (typeof carregarFaixas === 'function') {
+                carregarFaixas(album.midia_id);
+            }
+            
             modal.style.display = 'block';
         });
     });
 
-    btnEditar.onclick = () => {
-        const midiaId = modal.getAttribute('data-current-midia-id');
-        if (midiaId) window.location.href = `index.php?url=editar_album&midia_id=${midiaId}`;
-    };
+    // Ação do botão Editar
+    if (btnEditar) {
+        btnEditar.onclick = () => {
+            const midiaId = modal.getAttribute('data-current-midia-id');
+            if (midiaId) window.location.href = `index.php?url=editar_album&midia_id=${midiaId}`;
+        };
+    }
 
-    btnDescartar.onclick = async () => {
-        const midiaId = modal.getAttribute('data-current-midia-id');
-        if (!midiaId || !confirm('Remover este álbum da coleção?')) return;
-        const formData = new URLSearchParams();
-        formData.append('midia_id', midiaId);
-        try {
-            const res = await fetch('index.php?url=descartar_album', { method: 'POST', body: formData });
-            const data = await res.json();
-            if (data.success) location.reload();
-            else alert(data.error || 'Erro ao descartar');
-        } catch (e) { console.error(e); }
-    };
+    // Ação do botão Descartar
+    if (btnDescartar) {
+        btnDescartar.onclick = async () => {
+            const midiaId = modal.getAttribute('data-current-midia-id');
+            if (!midiaId || !confirm('Remover este álbum da coleção?')) return;
+            
+            const formData = new URLSearchParams();
+            formData.append('midia_id', midiaId);
+            
+            try {
+                const res = await fetch('index.php?url=descartar_album', { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.success) location.reload();
+                else alert(data.error || 'Erro ao descartar');
+            } catch (e) { 
+                console.error("Erro ao descartar álbum:", e); 
+            }
+        };
+    }
 });
 
 // Lógica de "Marcar como Ouvido"

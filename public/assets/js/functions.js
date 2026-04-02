@@ -36,6 +36,38 @@ const formatarTempo = segundos => {
     return `${min}:${seg.toString().padStart(2, '0')}`;
 };
 
+// Cache global para evitar requisições repetidas ao trocar de álbuns no dashboard/coleção
+const cacheFaixasGeral = {};
+
+/**
+ * Busca as faixas via AJAX e popula a tabela do modal
+ */
+async function carregarFaixas(midiaId) {
+    const ID_CONTAINER = 'corpoTabelaFaixas'; 
+    const corpoTabela = document.getElementById(ID_CONTAINER);
+    
+    if (!corpoTabela) return;
+
+    // Se já buscamos esse álbum antes, usa o cache
+    if (cacheFaixasGeral[midiaId]) {
+        renderizarFaixas(cacheFaixasGeral[midiaId], ID_CONTAINER);
+        return;
+    }
+
+    corpoTabela.innerHTML = '<tr><td colspan="3" class="text-center">Carregando faixas...</td></tr>';
+
+    try {
+        const res = await fetch(`index.php?url=buscar_faixas&midia_id=${midiaId}`);
+        const faixas = await res.json();
+        
+        cacheFaixasGeral[midiaId] = faixas;
+        renderizarFaixas(faixas, ID_CONTAINER);
+    } catch (e) {
+        corpoTabela.innerHTML = '<tr><td colspan="3" class="text-center">Erro ao carregar faixas</td></tr>';
+        console.error("Erro no fetch das faixas:", e);
+    }
+}
+
 function renderizarFaixas(faixas, containerId = 'corpoTabelaFaixas') {
     const corpoTabela = document.getElementById(containerId);
     if (!corpoTabela) return;
