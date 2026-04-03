@@ -5,25 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SoundHaven - Artistas</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css"/>
     <link rel="stylesheet" href="assets/css/header.css">
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/loja.css"> 
-    <style>
-        /* Ajuste específico para fotos de artistas (geralmente verticais ou circulares) */
-        .artist-card img {
-            aspect-ratio: 1/1;
-            object-fit: cover;
-            border-radius: 8px 8px 0 0;
-        }
-        .artist-origin {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            margin-top: 4px;
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/artistas.css"> 
 </head>
 <body>
 
@@ -40,12 +25,12 @@
                 </p>
             <?php else: ?>
                 <?php foreach ($artistas as $artista): ?>
-                    <article class="album-card artist-card" 
-                             onclick="window.location.href='?controller=colecao&artista_id=<?= $artista['artista_id'] ?>'"
-                             style="cursor: pointer;">
+                    <article class="album-card artist-card js-open-artista-modal" 
+                            data-artista='<?= htmlspecialchars(json_encode($artista), ENT_QUOTES, 'UTF-8') ?>'
+                            style="cursor: pointer;">
                         
                         <img src="<?= htmlspecialchars($artista['imagem_url'] ?: 'assets/images/placeholder_artist.jpg') ?>" 
-                             alt="<?= htmlspecialchars($artista['nome']) ?>">
+                            alt="<?= htmlspecialchars($artista['nome']) ?>">
                         
                         <div class="album-info">
                             <span class="album-title"><?= htmlspecialchars($artista['nome']) ?></span>
@@ -68,11 +53,9 @@
     </div>
 
     <?php include __DIR__ . '/../partials/sidebar_filtros.php'; ?>
+    <?php include __DIR__ . '/../partials/modal_detalhes_artista.php'; ?>
 </div>
 
-<script>
-    // Se quiser adicionar algum efeito específico para a página de artistas
-    console.log("Grid de artistas carregado.");
-</script>
+<script src="assets/js/artistas.js"></script>
 </body>
 </html>

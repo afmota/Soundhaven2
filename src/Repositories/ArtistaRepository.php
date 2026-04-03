@@ -17,7 +17,7 @@ class ArtistaRepository {
         $sql = "SELECT DISTINCT 
                     art.*, 
                     p.nome AS pais_nome, 
-                    p.codigo_iso,
+                    p.codigo_iso AS codigo_iso,
                     g.descricao AS genero_nome
                 FROM tb_artistas art
                 INNER JOIN tb_albuns alb ON art.artista_id = alb.artista_id
