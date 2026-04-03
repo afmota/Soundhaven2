@@ -36,7 +36,11 @@
                             <span class="album-title"><?= htmlspecialchars($artista['nome']) ?></span>
                             
                             <span class="artist-origin">
-                                <i class="fa-solid fa-earth-americas"></i>
+                                <?php if (!empty($artista['codigo_iso'])): ?>
+                                    <span class="fi fi-<?= strtolower($artista['codigo_iso']) ?>"></span>
+                                <?php else: ?>
+                                    <i class="fa-solid fa-earth-americas"></i>
+                                <?php endif; ?>
                                 <?= htmlspecialchars($artista['pais_nome'] ?: 'Origem não informada') ?>
                             </span>
 

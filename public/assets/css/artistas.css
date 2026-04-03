@@ -29,10 +29,24 @@
     color: var(--text-secondary);
 }
 
+/* Estilo universal para as bandeiras do SoundHaven */
 .fi {
-    display: inline-block !important;
-    width: 20px !important;
-    height: 15px !important;
-    margin-right: 10px;
+    display: inline-block;
+    width: 1.33em;
     line-height: 1em;
+    vertical-align: middle;
+    border-radius: 2px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+/* Ajuste específico para o card (grid) */
+.artist-origin .fi {
+    margin-right: 6px;
+    width: 18px; 
+}
+
+/* Ajuste específico para o modal (título) */
+#detalhePaisArtista .fi {
+    margin-right: 10px;
+    width: 24px;
 }
