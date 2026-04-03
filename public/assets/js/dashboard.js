@@ -120,6 +120,73 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("Erro ao processar dados do gráfico:", e);
         }
     }
+
+    // --- Gráfico Top 5 Gravadoras ---
+    const containerGravadoras = document.getElementById('containerChartTopGravadoras');
+
+    if (containerGravadoras && containerGravadoras.dataset.gravadoras) {
+        try {
+            const dadosTopGravadoras = JSON.parse(containerGravadoras.dataset.gravadoras);
+
+            if (dadosTopGravadoras.length > 0) {
+                const ctxGravadoras = document.getElementById('chartTopGravadoras').getContext('2d');
+
+                new Chart(ctxGravadoras, {
+                    type: 'bar',
+                    data: {
+                        labels: dadosTopGravadoras.map(item => item.gravadora),
+                        datasets: [{
+                            label: 'Mídias',
+                            data: dadosTopGravadoras.map(item => item.total),
+                            backgroundColor: [
+                                '#3b82f6', // Azul
+                                '#10b981', // Verde
+                                '#f59e0b', // Laranja
+                                '#8b5cf6', // Roxo
+                                '#ef4444'  // Vermelho
+                            ],
+                            borderWidth: 0,
+                            borderRadius: 5,
+                            barThickness: 20
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y', // Mantém o estilo horizontal
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        onClick: (evt, elements) => {
+                            if (elements.length > 0) {
+                                const index = elements[0].index;
+                                const gravadoraSelecionada = dadosTopGravadoras[index];
+                                const id = gravadoraSelecionada.gravadora_id;
+                                
+                                if (id) {
+                                    // Redireciona para a coleção filtrando pela gravadora
+                                    window.location.href = `index.php?url=colecao&gravadora_id=${id}`;
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                ticks: { color: '#aaa', stepSize: 1 }
+                            },
+                            y: {
+                                grid: { display: false },
+                                ticks: { color: '#fff' }
+                            }
+                        }
+                    }
+                });
+            }
+        } catch (e) {
+            console.error("Erro ao processar dados das gravadoras:", e);
+        }
+    }
 });
 
 function exibirDetalhesNoModal(album) {

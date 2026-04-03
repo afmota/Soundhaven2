@@ -73,12 +73,22 @@
 
 <div class="charts-section container">
     <div class="card chart-card">
-        <h3 class="chart-title"><i class="fas fa-trophy"></i> Top 5 Artistas</h3>
+        <h3 class="chart-title"><i class="fas fa-building"></i> Top 5 Artistas</h3>
         <div id="containerChartTopArtistas" 
              class="chart-container" 
-             style="position: relative; height:250px;"
+             style="position: relative; height:180px;"
              data-artistas='<?= json_encode($top_artistas) ?>'>
             <canvas id="chartTopArtistas"></canvas>
+        </div>
+    </div>
+
+    <div class="card chart-card">
+        <h3 class="chart-title"><i class="fas fa-compact-disc"></i> Top 5 Gravadoras</h3>
+        <div id="containerChartTopGravadoras" 
+             class="chart-container" 
+             style="position: relative; height:180px;"
+             data-gravadoras='<?= json_encode($top_gravadoras) ?>'>
+            <canvas id="chartTopGravadoras"></canvas>
         </div>
     </div>
 </div>

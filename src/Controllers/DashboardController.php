@@ -20,6 +20,7 @@ class DashboardController {
 
         // ADICIONADO: Busca o Top 5 Artistas para o gráfico
         $topArtistas = $this->repository->buscarTopArtistas(5);
+        $top_gravadoras = $this->repository->buscarTopGravadoras(5);
     
         $viewData = [
             'total_albuns'     => $stats['total_albuns'] ?? 0,
@@ -30,7 +31,8 @@ class DashboardController {
             'total_anos'       => $stats['total_anos'] ?? 0,
             'ultimos_albuns'   => $ultimos,
             'aniversariantes'  => $aniversariantes,
-            'top_artistas'     => $topArtistas // <-- ESSA LINHA RECHEIA O CARD
+            'top_artistas'     => $topArtistas,
+            'top_gravadoras'   => $top_gravadoras
         ];
     
         $this->render('dashboard/index', $viewData);

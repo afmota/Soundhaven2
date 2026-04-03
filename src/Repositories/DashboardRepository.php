@@ -86,4 +86,21 @@ class DashboardRepository {
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
+
+    public function buscarTopGravadoras($limit = 5) {
+        $sql = "SELECT
+                    tg.gravadora_id,
+                    tg.nome AS gravadora,
+                    COUNT(tm.gravadora_id) AS total
+                FROM tb_midias AS tm
+                INNER JOIN tb_gravadoras AS tg ON tm.gravadora_id = tg.gravadora_id
+                GROUP BY tg.gravadora_id, tg.nome
+                ORDER BY total DESC
+                LIMIT :limit";
+    
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }
