@@ -120,4 +120,19 @@ class DashboardRepository {
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
+
+    public function buscarTotalPorFormato() {
+        $sql = "SELECT 
+                    tf.descricao AS formato, 
+                    COUNT(tm.midia_id) AS total
+                FROM tb_midias tm
+                INNER JOIN tb_formatos tf ON tm.formato_id = tf.formato_id
+                GROUP BY tf.formato_id, tf.descricao
+                ORDER BY total DESC";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }

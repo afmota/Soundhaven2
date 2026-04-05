@@ -101,6 +101,22 @@
             <canvas id="chartTopProdutores"></canvas>
         </div>
     </div>
+
+<div class="card chart-card">
+    <h3 class="chart-title"><i class="fas fa-compact-disc"></i> Formatos</h3>
+    <div id="containerChartFormatos" 
+         class="chart-container" 
+         style="position: relative; height:180px;"
+         data-formatos='<?= htmlspecialchars(json_encode($dados_formatos), ENT_QUOTES, 'UTF-8') ?>'>
+        
+        <canvas id="chartFormatos"></canvas>
+        
+        <div class="chart-center-text">
+            <span style="display: block; font-size: 1.5rem; font-weight: bold; color: #fff;"><?= $total_albuns ?></span>
+            <span style="font-size: 0.7rem; color: #aaa; text-transform: uppercase;">Total</span>
+        </div>
+    </div>
+</div>
 </div>
 
 <div class="span-card-container container">

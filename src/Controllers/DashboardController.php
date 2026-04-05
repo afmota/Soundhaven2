@@ -22,6 +22,7 @@ class DashboardController {
         $topArtistas = $this->repository->buscarTopArtistas(5);
         $top_gravadoras = $this->repository->buscarTopGravadoras(5);
         $top_produtores = $this->repository->buscarTopProdutores(5);
+        $dados_formatos = $this->repository->buscarTotalPorFormato();
 
         $viewData = [
             'total_albuns'     => $stats['total_albuns'] ?? 0,
@@ -34,7 +35,8 @@ class DashboardController {
             'aniversariantes'  => $aniversariantes,
             'top_artistas'     => $topArtistas,
             'top_gravadoras'   => $top_gravadoras,
-            'top_produtores'   => $top_produtores
+            'top_produtores'   => $top_produtores,
+            'dados_formatos'   => $dados_formatos
         ];
    
         $this->render('dashboard/index', $viewData);

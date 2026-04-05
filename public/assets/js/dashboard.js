@@ -254,6 +254,47 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("Erro ao processar dados dos produtores:", e);
         }
     }
+
+    const containerFormatos = document.getElementById('containerChartFormatos');
+    if (containerFormatos) {
+        const dadosRaw = JSON.parse(containerFormatos.dataset.formatos);
+        
+        // Mapeia os labels (CD, LP) e os valores (quantidades)
+        const labels = dadosRaw.map(item => item.formato);
+        const valores = dadosRaw.map(item => item.total);
+
+        new Chart(document.getElementById('chartFormatos'), {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: valores,
+                    backgroundColor: ['#3c3cff', '#338d33'], // Azul para CD, Verde para LP
+                    borderWidth: 0,
+                    hoverOffset: 5
+                }]
+            },
+            options: {
+                cutout: '75%', // Define o tamanho do buraco central
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            color: '#fff',
+                            font: { size: 10 },
+                            padding: 10,
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        enabled: true
+                    }
+                },
+                maintainAspectRatio: false
+            }
+        });
+    }
 });
 
 function exibirDetalhesNoModal(album) {
