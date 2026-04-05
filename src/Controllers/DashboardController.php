@@ -12,16 +12,17 @@ class DashboardController {
 
     public function index() {
         // Busca as métricas e as últimas aquisições
-        $stats = $this->repository->buscarDadosGerais(); 
+        $stats = $this->repository->buscarDadosGerais();
         $ultimos = $this->repository->buscarUltimasAquisicoes(5);
-        
+
         // Busca os álbuns que fazem aniversário hoje
         $aniversariantes = $this->repository->buscarAniversariantesDoDia();
 
         // ADICIONADO: Busca o Top 5 Artistas para o gráfico
         $topArtistas = $this->repository->buscarTopArtistas(5);
         $top_gravadoras = $this->repository->buscarTopGravadoras(5);
-    
+        $top_produtores = $this->repository->buscarTopProdutores(5);
+
         $viewData = [
             'total_albuns'     => $stats['total_albuns'] ?? 0,
             'total_lps'        => $stats['total_lps'] ?? 0,
@@ -32,9 +33,10 @@ class DashboardController {
             'ultimos_albuns'   => $ultimos,
             'aniversariantes'  => $aniversariantes,
             'top_artistas'     => $topArtistas,
-            'top_gravadoras'   => $top_gravadoras
+            'top_gravadoras'   => $top_gravadoras,
+            'top_produtores'   => $top_produtores
         ];
-    
+   
         $this->render('dashboard/index', $viewData);
     }
 

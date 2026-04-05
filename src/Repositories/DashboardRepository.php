@@ -103,4 +103,21 @@ class DashboardRepository {
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
+
+    public function buscarTopProdutores($limit = 5) {
+        $sql = "SELECT
+                    tap.produtor_id,
+                    tp.nome as produtor,
+                    COUNT(tap.produtor_id) as total
+                FROM tb_album_produtores tap
+                INNER JOIN tb_produtores tp ON tap.produtor_id = tp.produtor_id
+                GROUP BY tap.produtor_id, tp.nome
+                ORDER BY total DESC
+                LIMIT  :limit";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }

@@ -291,18 +291,19 @@ body {
 
 /* Container que agrupa os dois gráficos */
 .charts-section {
-    display: flex;       /* Ativa o modo lado a lado */
-    flex-wrap: wrap;    /* Se a tela for pequena (celular), ele quebra a linha */
-    gap: 0px;          /* Espaço entre os dois cards */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
     margin-top: 0px;
-    align-items: stretch; /* Garante que os cards tenham a mesma altura */
+    align-items: stretch;
     padding-top: 10px;
+    width: 100%; /* Força o container a usar todo o espaço disponível */
 }
 
 /* Ajuste nos cards para dividirem o espaço */
 .charts-section .chart-card {
-    flex: 1;            /* Cada um ocupa metade do espaço disponível */
-    min-width: 350px;   /* Largura mínima para não esmagar o gráfico */
+    flex: 1 1 0;            /* Cada um ocupa metade do espaço disponível */
+    min-width: 300px;   /* Largura mínima para não esmagar o gráfico */
 }
 
 .chart-card {
@@ -329,19 +330,4 @@ body {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     cursor: pointer;
     transition: all 0.2s ease;
-}
-
-/* Container que agrupa os dois gráficos */
-.charts-section {
-    display: flex;       /* Ativa o modo lado a lado */
-    flex-wrap: wrap;    /* Se a tela for pequena (celular), ele quebra a linha */
-    gap: 20px;          /* Espaço entre os dois cards */
-    margin-top: 20px;
-    align-items: stretch; /* Garante que os cards tenham a mesma altura */
-}
-
-/* Ajuste nos cards para dividirem o espaço */
-.charts-section .chart-card {
-    flex: 1;            /* Cada um ocupa metade do espaço disponível */
-    min-width: 350px;   /* Largura mínima para não esmagar o gráfico */
 }

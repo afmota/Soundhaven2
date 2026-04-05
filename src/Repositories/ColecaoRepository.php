@@ -59,6 +59,16 @@ class ColecaoRepository {
             $params[':titulo'] = '%' . $filtros['titulo'] . '%';
         }
 
+        if (!empty($filtros['produtor_id'])) {
+            // Como é uma relação N:N, usamos um EXISTS para filtrar álbuns que tenham esse produtor
+            $sql .= " AND EXISTS (
+                SELECT 1 FROM tb_album_produtores tap 
+                WHERE tap.album_id = ta.album_id 
+                AND tap.produtor_id = :produtor_id
+            )";
+            $params[':produtor_id'] = (int)$filtros['produtor_id'];
+        }
+
         $sql .= " ORDER BY tm.midia_id DESC LIMIT :limit OFFSET :offset";
 
         $stmt = $this->db->prepare($sql);

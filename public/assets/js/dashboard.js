@@ -187,6 +187,73 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("Erro ao processar dados das gravadoras:", e);
         }
     }
+
+    // --- Gráfico Top 5 Produtores ---
+    const containerProdutores = document.getElementById('containerChartTopProdutores');
+
+    if (containerProdutores && containerProdutores.dataset.produtores) {
+        try {
+            const dadosTopProdutores = JSON.parse(containerProdutores.dataset.produtores);
+
+            if (dadosTopProdutores.length > 0) {
+                const ctxProdutores = document.getElementById('chartTopProdutores').getContext('2d');
+
+                new Chart(ctxProdutores, {
+                    type: 'bar',
+                    data: {
+                        labels: dadosTopProdutores.map(item => item.produtor),
+                        datasets: [{
+                            label: 'Mídias',
+                            data: dadosTopProdutores.map(item => item.total),
+                            backgroundColor: [
+                                '#ef4444',  // Vermelho
+                                '#f59e0b', // Laranja
+                                '#10b981', // Verde
+                                '#3b82f6', // Azul
+                                '#8b5cf6' // Roxo
+                            ],
+                            borderWidth: 0,
+                            borderRadius: 5,
+                            barThickness: 20
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y', // Mantém o estilo horizontal
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        onClick: (evt, elements) => {
+                            if (elements.length > 0) {
+                                const index = elements[0].index;
+                                const produtorSelecionado = dadosTopProdutores[index];
+                                const id = produtorSelecionado.produtor_id;
+                               
+                                if (id) {
+                                    // Redireciona passando o parâmetro produtor_id
+                                    window.location.href = `index.php?url=colecao&produtor_id=${id}`;
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                ticks: { color: '#aaa', stepSize: 1 }
+                            },
+                            y: {
+                                grid: { display: false },
+                                ticks: { color: '#fff' }
+                            }
+                        }
+                    }
+                });
+            }
+        } catch (e) {
+            console.error("Erro ao processar dados dos produtores:", e);
+        }
+    }
 });
 
 function exibirDetalhesNoModal(album) {
