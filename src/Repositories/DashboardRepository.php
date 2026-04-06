@@ -135,4 +135,19 @@ class DashboardRepository {
         
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
+
+    public function buscarDistribuicaoPorAno() {
+        $sql = "SELECT 
+                    YEAR(ta.data_lancamento) as ano, 
+                    COUNT(*) as total 
+                FROM tb_midias tm
+                INNER JOIN tb_albuns ta ON tm.album_id = ta.album_id
+                WHERE tm.ativo = 1 AND ta.data_lancamento IS NOT NULL
+                GROUP BY ano 
+                ORDER BY ano ASC";
+                
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }

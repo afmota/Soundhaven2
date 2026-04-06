@@ -74,6 +74,11 @@ class ColecaoRepository {
             $params[':formato_id'] = (int)$filtros['formato_id'];
         }
 
+        if (!empty($filtros['ano'])) {
+            $sql .= " AND YEAR(ta.data_lancamento) = :ano";
+            $params[':ano'] = (int)$filtros['ano'];
+        }        
+
         $sql .= " ORDER BY tm.midia_id DESC LIMIT :limit OFFSET :offset";
 
         $stmt = $this->db->prepare($sql);
@@ -121,6 +126,11 @@ class ColecaoRepository {
         if (!empty($filtros['formato_id'])) {
             $sql .= " AND tm.formato_id = :formato_id";
             $params[':formato_id'] = (int)$filtros['formato_id'];
+        }
+
+        if (!empty($filtros['ano'])) {
+            $sql .= " AND YEAR(ta.data_lancamento) = :ano";
+            $params[':ano'] = (int)$filtros['ano'];
         }
 
         $stmt = $this->db->prepare($sql);

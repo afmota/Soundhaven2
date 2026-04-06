@@ -308,6 +308,88 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // --- Lógica do Modal de Abrangência (Linha do Tempo) ---
+    const btnAnos = document.getElementById('btnAbrirModalAnos');
+    const modalAnos = document.getElementById('modalLinhaTempo');
+    const closeAnos = document.querySelector('.close-modal-anos');
+    let chartAnosInstance = null;
+
+    if (btnAnos && modalAnos) {
+        // Usando addEventListener para garantir que não sobrescreva outros cliques
+        btnAnos.addEventListener('click', function() {
+            console.log("Clique detectado! Abrindo modal...");
+            
+            modalAnos.style.display = 'block';
+            
+            const dadosRaw = this.dataset.anos;
+            if (!dadosRaw) {
+                console.error("Dados 'data-anos' não encontrados no card.");
+                return;
+            }
+
+            const dadosAnos = JSON.parse(dadosRaw);
+            const canvas = document.getElementById('chartLinhaTempo');
+            
+            if (!canvas) {
+                console.error("Canvas 'chartLinhaTempo' não encontrado dentro do modal!");
+                return;
+            }
+
+            const ctx = canvas.getContext('2d');
+
+            if (chartAnosInstance) chartAnosInstance.destroy();
+
+            chartAnosInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: dadosAnos.map(d => d.ano),
+                    datasets: [{
+                        label: 'Álbuns',
+                        data: dadosAnos.map(d => d.total),
+                        backgroundColor: '#3b82f6',
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    onClick: (evt, elements) => {
+                        if (elements.length > 0) {
+                            const index = elements[0].index;
+                            const ano = dadosAnos[index].ano;
+                            window.location.href = `index.php?url=colecao&ano=${ano}`;
+                        }
+                    },
+                    scales: {
+                        y: { 
+                            beginAtZero: true, 
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: '#aaa', stepSize: 1 } 
+                        },
+                        x: { 
+                            grid: { display: false },
+                            ticks: { color: '#fff' } 
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        });
+    } else {
+        console.error("Erro: btnAnos ou modalAnos não encontrados no DOM.", { btnAnos, modalAnos });
+    }
+
+    // Fechar Modal
+    if (closeAnos) {
+        closeAnos.onclick = () => modalAnos.style.display = 'none';
+    }
+
+    window.addEventListener('click', (e) => {
+        if (modalAnos && e.target == modalAnos) modalAnos.style.display = 'none';
+    });
 });
 
 function exibirDetalhesNoModal(album) {
