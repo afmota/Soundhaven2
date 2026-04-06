@@ -276,6 +276,20 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             options: {
                 cutout: '75%', // Define o tamanho do buraco central
+                maintainAspectRatio: false,
+                // Implementação do clique para filtrar a coleção
+                onClick: (evt, elements) => {
+                    if (elements.length > 0) {
+                        const index = elements[0].index;
+                        const formatoNome = labels[index];
+
+                        // Mapeamento de ID baseado no nome do formato
+                        // Vinil/LP costuma ser 1, CD costuma ser 2 no seu banco
+                        let formatoId = (formatoNome === 'LP' || formatoNome === 'Vinil') ? 1 : 2;
+
+                        window.location.href = `index.php?url=colecao&formato_id=${formatoId}`;
+                    }
+                },
                 plugins: {
                     legend: {
                         display: true,
@@ -290,8 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     tooltip: {
                         enabled: true
                     }
-                },
-                maintainAspectRatio: false
+                }
             }
         });
     }

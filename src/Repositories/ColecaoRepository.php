@@ -69,6 +69,11 @@ class ColecaoRepository {
             $params[':produtor_id'] = (int)$filtros['produtor_id'];
         }
 
+        if (!empty($filtros['formato_id'])) {
+            $sql .= " AND tm.formato_id = :formato_id";
+            $params[':formato_id'] = (int)$filtros['formato_id'];
+        }
+
         $sql .= " ORDER BY tm.midia_id DESC LIMIT :limit OFFSET :offset";
 
         $stmt = $this->db->prepare($sql);
@@ -111,6 +116,11 @@ class ColecaoRepository {
         if (!empty($filtros['titulo'])) {
             $sql .= " AND ta.titulo LIKE :titulo";
             $params[':titulo'] = '%' . $filtros['titulo'] . '%';
+        }
+
+        if (!empty($filtros['formato_id'])) {
+            $sql .= " AND tm.formato_id = :formato_id";
+            $params[':formato_id'] = (int)$filtros['formato_id'];
         }
 
         $stmt = $this->db->prepare($sql);

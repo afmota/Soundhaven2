@@ -31,23 +31,27 @@
     </div>
 
     <div class="card metric-card">
-        <div class="metric-card-content">
-            <div>
-                <div class="metric-value"><?= $total_lps ?></div>
-                <div class="metric-label">Vinil (LPs)</div>
+        <a href="index.php?url=colecao&formato_id=1" style="text-decoration: none; color: inherit; display: block; width: 100%;">
+            <div class="metric-card-content">
+                <div>
+                    <div class="metric-value"><?= $total_lps ?></div>
+                    <div class="metric-label">Vinil (LPs)</div>
+                </div>
+                <div class="icon-container cor-2"><i class="fas fa-record-vinyl"></i></div>
             </div>
-            <div class="icon-container cor-2"><i class="fas fa-record-vinyl"></i></div>
-        </div>
+        </a>
     </div>
 
     <div class="card metric-card">
-        <div class="metric-card-content">
-            <div>
-                <div class="metric-value"><?= $total_cds ?></div>
-                <div class="metric-label">Compact Discs</div>
+        <a href="index.php?url=colecao&formato_id=2" style="text-decoration: none; color: inherit; display: block; width: 100%;">
+            <div class="metric-card-content">
+                <div>
+                    <div class="metric-value"><?= $total_cds ?></div>
+                    <div class="metric-label">Compact Discs</div>
+                </div>
+                <div class="icon-container cor-3"><i class="fas fa-compact-disc"></i></div>
             </div>
-            <div class="icon-container cor-3"><i class="fas fa-compact-disc"></i></div>
-        </div>
+        </a>
     </div>
 
     <div class="card metric-card">
