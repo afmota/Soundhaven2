@@ -55,13 +55,33 @@ class DashboardRepository {
     }
 
     public function buscarAniversariantesDoDia() {
-        $sql = "SELECT a.album_id as id, a.titulo, art.nome as artista_nome, a.capa_url,
-                       (YEAR(CURDATE()) - YEAR(a.data_lancamento)) as anos_lancamento,
-                       (YEAR(CURDATE()) - YEAR(m.data_aquisicao)) as anos_aquisicao,
-                       (DAY(a.data_lancamento) = DAY(CURDATE()) AND MONTH(a.data_lancamento) = MONTH(CURDATE())) as eh_aniversario_lancamento
+        $sql = "SELECT 
+                    a.album_id as id, 
+                    m.midia_id, 
+                    a.titulo, 
+                    art.nome as artista_nome, 
+                    g.nome as gravadora_nome,
+                    a.capa_url,
+                    a.data_lancamento,
+                    m.data_aquisicao,
+                    m.numero_catalogo,
+                    m.preco,
+                    m.observacoes,
+                    f.descricao as formato_nome,
+                    f.cor_hex as formato_cor,
+                    -- Cálculo dos anos para o card
+                    (YEAR(CURDATE()) - YEAR(a.data_lancamento)) as anos_lancamento,
+                    (YEAR(CURDATE()) - YEAR(m.data_aquisicao)) as anos_aquisicao,
+                    (DAY(a.data_lancamento) = DAY(CURDATE()) AND MONTH(a.data_lancamento) = MONTH(CURDATE())) as eh_aniversario_lancamento,
+                    -- Subqueries para as tags (essenciais para o modal não virar N/D)
+                    (SELECT GROUP_CONCAT(tg.descricao SEPARATOR '|') FROM tb_album_generos tga JOIN tb_generos tg ON tga.genero_id = tg.genero_id WHERE tga.album_id = a.album_id) as generos,
+                    (SELECT GROUP_CONCAT(te.descricao SEPARATOR '|') FROM tb_album_estilos tea JOIN tb_estilos te ON tea.estilo_id = te.estilo_id WHERE tea.album_id = a.album_id) as estilos,
+                    (SELECT GROUP_CONCAT(tp.nome SEPARATOR '|') FROM tb_album_produtores tpa JOIN tb_produtores tp ON tpa.produtor_id = tp.produtor_id WHERE tpa.album_id = a.album_id) as produtores
                 FROM tb_albuns a
                 JOIN tb_artistas art ON a.artista_id = art.artista_id
                 JOIN tb_midias m ON a.album_id = m.album_id
+                JOIN tb_gravadoras g ON m.gravadora_id = g.gravadora_id
+                JOIN tb_formatos f ON m.formato_id = f.formato_id
                 WHERE (DAY(a.data_lancamento) = DAY(CURDATE()) AND MONTH(a.data_lancamento) = MONTH(CURDATE()))
                    OR (DAY(m.data_aquisicao) = DAY(CURDATE()) AND MONTH(m.data_aquisicao) = MONTH(CURDATE()))";
         
