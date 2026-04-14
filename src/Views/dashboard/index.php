@@ -150,8 +150,8 @@
         
         <?php foreach ($aniversariantes as $niver): ?>
             <div class="anniversary-album-item abrir-modal-detalhes" 
-                 style="cursor: pointer;"
-                 data-album='<?= json_encode($niver) ?>'>
+                style="cursor: pointer;"
+                data-album='<?= htmlspecialchars(json_encode($niver), ENT_QUOTES, 'UTF-8') ?>'>
                 <div class="album-cover-sm">
                     <?php if ($niver['capa_url']): ?>
                         <img src="<?= $niver['capa_url'] ?>" alt="Capa">
