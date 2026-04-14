@@ -80,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // MODAL DE DETALHES
 function openModal(album) {
+    // 1. Preenchimento visual (o que já funcionava e não mexe no fluxo)
     document.getElementById('modalTitle').innerText = album.titulo;
     document.getElementById('modalArtist').innerText = album.artista_nome;
     document.getElementById('modalLabel').innerText = album.gravadora_nome || 'N/D';
@@ -88,9 +89,28 @@ function openModal(album) {
     document.getElementById('modalStatus').innerText = album.situacao_desc || 'N/D';
     document.getElementById('modalType').innerText = album.tipo_desc || 'N/D';
     
+    // 2. Prepara o ID de descarte (que você disse que funciona)
     const deleteIdField = document.getElementById('deleteId');
     if (deleteIdField) deleteIdField.value = album.album_id;
 
+    // 3. A CHINELADA: Redirecionamento forçado e isolado
+    const btn = document.getElementById('btnAdquirirDireto');
+    if (btn) {
+        // Removemos qualquer comportamento antigo
+        btn.onclick = null; 
+        
+        // Definimos o novo comportamento NA HORA
+        btn.onclick = function(e) {
+            // Impede que o clique "vaze" para o resto da página (mata a propagação)
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Vai direto para o alvo
+            window.location.href = `index.php?url=adquirir_album&id=${album.album_id}`;
+        };
+    }
+
+    // Exibe o modal
     document.getElementById('albumModal').style.display = "block";
 }
 
