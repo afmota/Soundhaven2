@@ -381,6 +381,80 @@ footer {
     text-align: right;
 }
 
+.years-value {
+    font-size: 2em; 
+    font-weight: 700;
+    color: var(--cor-destaque); 
+    line-height: 1;
+}
+
+.years-label {
+    color: var(--text-secondary);
+    font-size: 0.875em;
+}
+
+.anniversary-section {
+    margin-bottom: 30px;
+    padding-top: 25px;
+}
+
+.anniversary-card {
+    border: 1px solid rgba(251, 191, 36, 0.3); 
+    padding: 16px 24px;
+    height: auto;
+}
+
+.anniversary-title {
+    display: flex;
+    align-items: center;
+    gap: 8px; 
+    font-size: 1.25em; 
+    font-weight: 700;
+    color: var(--cor-destaque); 
+    margin-bottom: 15px;
+}
+
+.anniversary-title i {
+    font-size: 1em;
+}
+
+.anniversary-album-item {
+    display: flex;
+    align-items: center;
+    gap: 16px; 
+    padding: 12px; 
+    background-color: rgba(31, 41, 55, 0.5); 
+    border-radius: 8px;
+    transition: background-color 0.2s;
+    text-decoration: none; 
+}
+
+.anniversary-album-item:hover {
+    background-color: rgba(31, 41, 55, 0.8);
+    cursor: pointer;
+}
+
+.recent-albums-section {
+    margin-bottom: 40px;
+    padding-top: 10px;
+}
+
+.recent-albums-title {
+    color: #fff;
+    margin-top: 0px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #374151;
+    padding-bottom: 10px;
+    font-weight: 600;
+    font-size: 1.5em;
+}
+
+.recent-albums-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
 /*****************************************************************************/
 /*                               MEDIA QUERIES                               */
 /*****************************************************************************/
