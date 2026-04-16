@@ -55,7 +55,7 @@
                             <div class="metric-value"><?= $total_artistas ?></div>
                             <div class="metric-label">Artistas Distintos</div>
                         </div>
-                        <div class="icon-container cor-5"><i class="fas fa-users"></i></div>
+                        <div class="icon-container cor-4"><i class="fas fa-users"></i></div>
                     </div>
                 </div>
                 <div class="card metric-card">
@@ -169,15 +169,12 @@
                 <h2 class="recent-albums-title" style="color: #fff; margin-bottom: 20px;">Últimas Aquisições</h2>
                 <div class="recent-albums-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
                     <?php foreach ($ultimos_albuns as $album): ?>
-                    <div class="album-card-modern card abrir-modal-detalhes"
-                        style="padding: 15px; border-radius: 8px; cursor: pointer;"
-                        data-album="<?= htmlspecialchars(json_encode($album), ENT_QUOTES, 'UTF-8') ?>">
-            
-                        <img src="<?= $album['capa_url'] ?>" style="width: 100%; border-radius: 4px; margin-bottom: 10px;">
-                        <h4 style="color: #fff; margin: 0;"><?= htmlspecialchars($album['titulo']) ?></h4>
-                        <p style="color: var(--cor-texto-secundario); font-size: 0.8em;">
-                            <?= htmlspecialchars($album['artista_nome']) ?> (<?= $album['ano_lancamento'] ?>)
-                        </p>
+                    <div class="card album-card-modern abrir-modal-detalhes" ...>
+                        <img src="<?= $album['capa_url'] ?>" alt="Capa">
+                        <div class="album-card-info">
+                            <h4><?= htmlspecialchars($album['titulo']) ?></h4>
+                            <p><?= htmlspecialchars($album['artista_nome']) ?></p>
+                        </div>
                     </div>
                     <?php endforeach; ?>
                 </div>

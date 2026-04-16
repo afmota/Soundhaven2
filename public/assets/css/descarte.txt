@@ -1,0 +1,272 @@
+.metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px; 
+    margin-bottom: 20px;
+    padding-top: 20px;
+}
+
+.metric-card { height: 75px;}
+
+.metric-card-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.metric-card:first-child:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.metric-value {
+    font-size: 2.2em;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 5px;
+    line-height: 1; 
+}
+
+.metric-label {
+    color: var(--text-secondary);
+    font-size: 0.7em;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.icon-container {
+    padding: 15px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px var(--card-shadow);
+}
+
+.icon-container i {
+    color: var(--text-primary);
+    font-size: 1.25em; 
+}
+
+.container {
+    max-width: 60vw;
+    margin: 0 auto;
+    padding-top: 50px;
+    padding-bottom: 0px;
+}
+
+.charts-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 10px;
+    align-items: stretch;
+    width: 100%;
+    padding-top: 10px;
+}
+
+.charts-section .chart-card {
+    flex: 1 1 calc(24.024%); 
+    max-width: calc(24.024%);
+    min-width: 10px;
+    padding: 15px;
+    background: var(--cor-background-card);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-center-text {
+    position: absolute;
+    top: 75px; 
+    left: 50%;
+    transform: translate(-50%, -40%); 
+    text-align: center;
+    line-height: 1.2;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.chart-card {
+    padding: 20px;
+    background: var(--cor-background-card);
+    border-radius: 8px;
+}
+
+.center-value {
+    display: block;
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.center-label {
+    display: block;
+    font-size: 0.65rem;
+    color: #aaa;
+    text-transform: uppercase;
+    margin-top: 2px;
+}
+
+.chart-title {
+    color: #fff;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chart-title i {
+    color: var(--border-light);
+}
+
+.chart-container {
+    flex-grow: 1;
+    min-height: 180px;
+}
+
+.anniversary-section {
+    margin-bottom: 30px;
+    padding-top: 25px;
+}
+
+.anniversary-card {
+    border: 1px solid rgba(251, 191, 36, 0.3); 
+    padding: 16px 24px;
+    height: auto;
+}
+
+.anniversary-title {
+    display: flex;
+    align-items: center;
+    gap: 8px; 
+    font-size: 1.25em; 
+    font-weight: 700;
+    color: var(--cor-destaque); 
+    margin-bottom: 15px;
+}
+
+.anniversary-title i {
+    font-size: 1em;
+}
+
+.anniversary-album-item {
+    display: flex;
+    align-items: center;
+    gap: 16px; 
+    padding: 12px; 
+    background-color: rgba(31, 41, 55, 0.5); 
+    border-radius: 8px;
+    transition: background-color 0.2s;
+    text-decoration: none; 
+}
+
+.anniversary-album-item:hover {
+    background-color: rgba(31, 41, 55, 0.8);
+    cursor: pointer;
+}
+
+.anniversary-album-item h4 {
+    font-weight: 600;
+    color: white;
+    margin-bottom: 2px;
+    line-height: 1.2;
+}
+
+.anniversary-album-item p {
+    font-size: 0.875em; 
+    color: var(--text-secondary);
+    line-height: 1.2;
+}
+
+.anniversary-info-tag {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75em; 
+    color: var(--cor-destaque); 
+    font-weight: 500;
+}
+
+.anniversary-info-tag i {
+    font-size: 0.75em;
+}
+
+.recent-albums-section {
+    margin-bottom: 40px;
+    padding-top: 10px;
+}
+
+.recent-albums-title {
+    color: #fff;
+    margin-top: 0px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #374151;
+    padding-bottom: 10px;
+    font-weight: 600;
+    font-size: 1.5em;
+}
+
+.recent-albums-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.album-card-modern {
+    background: linear-gradient(to bottom right, var(--card-bg), var(--bg-color));
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 6px var(--card-shadow); 
+    border-radius: 12px;
+    display: block; 
+    text-decoration: none;
+    padding: 0; 
+    position: relative;
+    transform: none; 
+    transition: transform 0.3s, box-shadow 0.3s;
+    height: 300px;
+}
+
+.album-card-modern:hover {
+    transform: scale(1.05); 
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.6);
+}
+
+.album-card-modern:hover .album-image {
+    transform: scale(1.08); 
+}
+
+.album-card-modern:hover .btn-edit-album {
+    opacity: 1; 
+}
+
+.album-card-modern:hover .album-title-h3 {
+    color: var(--cor-destaque); 
+}
+
+.album-cover-sm {
+    width: 75px; 
+    height: 75px;
+    background: linear-gradient(to bottom right, #facc15, #f97316); 
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.album-cover-sm img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.album-cover-sm .fa-music {
+    font-size: 1.5em; 
+}
+

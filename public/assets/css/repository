@@ -155,10 +155,6 @@ a:hover {
     transition: transform 0.3s;
 }
 
-.album-card-modern:hover .album-image {
-    transform: scale(1.08); 
-}
-
 /* Placeholder (sem capa) */
 .album-placeholder {
     width: 100%;
@@ -210,10 +206,6 @@ a:hover {
     line-height: 1; 
 }
 
-.album-card-modern:hover .btn-edit-album {
-    opacity: 1; 
-}
-
 .btn-edit-album:hover {
     background-color: rgba(0, 0, 0, 0.7);
 }
@@ -236,10 +228,6 @@ a:hover {
     overflow: hidden;
     text-overflow: ellipsis;
     transition: color 0.3s;
-}
-
-.album-card-modern:hover .album-title-h3 {
-    color: var(--cor-destaque); 
 }
 
 .album-info-line {

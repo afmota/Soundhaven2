@@ -36,7 +36,7 @@
     /* --- SOMBRAS --- */
     --card-shadow: rgba(0, 0, 0, 0.4);
 
-    --cor-destaque: #facc15;
+    --cor-destaque: #ffe600;
 }
 
 * {
@@ -44,13 +44,6 @@
     padding: 0;
     box-sizing: border-box; /* Isso mantém o tamanho dos elementos sob controle */
 }
-
-.cor-1 { background: linear-gradient(to right, #8b5cf6, #ec4899); } 
-.cor-2 { background: linear-gradient(to right, #f59e0b, #f97316); } 
-.cor-3 { background: linear-gradient(to right, #3b82f6, #06b6d4); } 
-.cor-4 { background: linear-gradient(to right, #10b981, #059669); } 
-.cor-5 { background: linear-gradient(to right, #ef4444, #f43f5e); } 
-.cor-6 { background: linear-gradient(to right, #6366f1, #8b5cf6); } 
 
 body {
     font-family: var(--font-main);
@@ -60,16 +53,12 @@ body {
 }
 
 .page-wrapper {
-    width: 100%;
-    min-height: 100vh;
+    display: grid; 
+    grid-template-columns: 1fr 60vw 1fr; 
+    min-height: 100vh; 
     background-color: var(--bg-color);
-    display: block;
-}
-
-.content {
-    width: 60vw;      /* O seu centro fixo */
-    margin: 0 auto;   /* Centraliza automaticamente (as margens de 20% nascem aqui) */
-    padding: 40px 0;  /* Respiro no topo e rodapé */
+    /* Garante que o conteúdo não cole no header fixo */
+    padding-top: 20px; 
 }
 
 .card {
@@ -88,16 +77,11 @@ body {
 }
 
 .card:hover {
-    transform: translateY(-5px); /* Um pouquinho mais de movimento para o efeito luz */
+    transform: translateY(-3px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.5);
     
-    /* A mágica acontece aqui: */
-    /* 1ª sombra: a sombra preta padrão para profundidade */
-    /* 2ª sombra: o brilho neon (glow) usando sua cor de destaque */
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6), 
-                0 0 15px var(--accent-color); 
-    
-    /* Opcional: mudar a borda para a cor de destaque também ajuda no efeito */
-    border-color: var(--accent-color);
+    /* Realce a borda no hover usando sua variável de marca */
+    border-color: var(--accent-color); 
 }
 
 /*****************************************************************************/
@@ -113,11 +97,6 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-}
-
-.content-main {
-    grid-column: 2; 
-    width: 100%; /* Ocupa os 60vw inteiros da coluna 2 */
 }
 
 .nav-content { 
@@ -256,113 +235,122 @@ footer {
 /*                                  DASHBOARD                                */
 /*****************************************************************************/
 
-/* 1. GRID DE MÉTRICAS */
+/* Cores dos Ícones */
+.cor-1 { background: linear-gradient(to right, #8b5cf6, #ec4899); } 
+.cor-2 { background: linear-gradient(to right, #f59e0b, #f97316); } 
+.cor-3 { background: linear-gradient(to right, #3b82f6, #06b6d4); } 
+.cor-4 { background: linear-gradient(to right, #10b981, #059669); } 
+.cor-5 { background: linear-gradient(to right, #ef4444, #f43f5e); } 
+.cor-6 { background: linear-gradient(to right, #6366f1, #8b5cf6); } 
+
 .metric-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 16px;
-    margin-bottom: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px; 
+    margin-bottom: 20px;
+    padding-top: 20px;
 }
 
-.metric-card { 
-    height: 85px; 
-    padding: 15px !important; /* Sobrescreve os 24px globais para o dashboard */
-}
+.metric-card { height: 75px;}
 
 .metric-card-content {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 100%;
 }
 
 .metric-value {
-    font-size: 1.8em;
+    font-size: 2.2em;
     font-weight: 700;
-    line-height: 1;
     color: var(--text-primary);
+    margin-bottom: 5px;
+    line-height: 1; 
 }
 
 .metric-label {
     color: var(--text-secondary);
-    font-size: 0.65em;
+    font-size: 0.7em;
+    font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
 }
 
 .icon-container {
-    width: 45px;
-    height: 45px;
+    padding: 15px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 4px var(--card-shadow);
 }
 
-/* 2. SEÇÃO DE GRÁFICOS (Fim do calc maluco) */
+.icon-container i {
+    color: var(--text-primary);
+    font-size: 1.25em; 
+}
+
+.container {
+    max-width: 60vw;
+    margin: 0 auto;
+    padding-top: 50px;
+    padding-bottom: 0px;
+}
+
 .charts-section {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 colunas iguais e perfeitas */
-    gap: 16px;
-    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px; /* Reduzi levemente o gap para ganhar respiro lateral */
     margin-top: 10px;
-    padding: 10px 0;
+    align-items: stretch;
+    width: 100%;
+    padding-top: 10px;
 }
 
 .charts-section .chart-card {
-    /* Remova o flex: 1 1 e o max-width: calc(...) */
-    width: 100%; 
-    min-width: 0; /* CRUCIAL: No CSS Grid, isso impede que o card estique o grid */
-    padding: 15px;
-    background: var(--card-bg);
+    flex: 1 1 calc(21.2%); 
+    max-width: calc(21.2%);
+    min-width: 10px; /* Largura mínima menor para não forçar a quebra cedo demais */
+    padding: 15px;    /* Reduzi um pouco o padding interno para o gráfico respirar */
+    background: var(--cor-background-card);
     border-radius: 8px;
     display: flex;
     flex-direction: column;
 }
 
+.chart-card {
+    padding: 20px;
+    background: var(--cor-background-card); /* ou #2a2a2a */
+    border-radius: 8px;
+}
+
+.chart-title {
+    color: #fff;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chart-title i {
+    color: var(--border-light); /* Aquela cor verde/azul que você usa */
+}
+
 .chart-container {
-    width: 100%;
-    position: relative; /* Necessário para o Chart.js se basear no tamanho do card */
     flex-grow: 1;
     min-height: 180px;
 }
 
-/* Em telas menores, o grid de gráficos vira 2x2 */
-@media (max-width: 1400px) {
-    .charts-section { grid-template-columns: repeat(2, 1fr); }
+.span-card-container {
+    margin-bottom: 10px;
+    padding-top: 25px;
 }
 
-.chart-title {
-    font-size: 0.9em;
-    margin-bottom: 15px;
-    color: var(--text-primary);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.chart-title i { color: var(--cor-destaque); }
-
-.chart-center-text {
-    position: absolute;
-    top: 75px; 
-    left: 50%;
-    transform: translate(-50%, -40%); 
-    text-align: center;
-    line-height: 1.2;
-    pointer-events: none;
-    z-index: 5;
-}
-
-/* 3. CARD DE ABRANGÊNCIA (Span Card) */
 .span-card {
-    flex-direction: row;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 30px !important;
-    margin-bottom: 30px;
+    padding: 10px;
 }
 
 .span-details {
@@ -374,11 +362,6 @@ footer {
     color: var(--cor-destaque); 
     font-size: 2em;
     margin-right: 15px;
-}
-
-.span-card-container {
-    margin-bottom: 10px;
-    padding-top: 25px;
 }
 
 .span-title {
@@ -398,59 +381,6 @@ footer {
     text-align: right;
 }
 
-.years-value {
-    font-size: 2em; 
-    font-weight: 700;
-    color: var(--cor-destaque); 
-    line-height: 1;
-}
-
-.years-label {
-    color: var(--text-secondary);
-    font-size: 0.875em;
-}
-
-/* 4. ANIVERSÁRIOS */
-.anniversary-card {
-    border: 1px dashed var(--accent-color); /* Estilo de destaque */
-    background: rgba(212, 0, 255, 0.05); /* Leve tom de roxo no fundo */
-    margin-bottom: 30px;
-}
-
-.anniversary-album-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 12px;
-    background: var(--bg-hover);
-    border-radius: 8px;
-    margin-top: 10px;
-}
-
-/* 5. ÚLTIMAS AQUISIÇÕES */
-.recent-albums-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 20px;
-}
-
-/* Reaproveitando a classe .card global e apenas estendendo */
-.album-card-modern {
-    padding: 0 !important; /* Imagem encosta no topo */
-    overflow: hidden;
-    height: auto; 
-}
-
-.album-card-modern img {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-}
-
-.album-card-info {
-    padding: 12px;
-}
-
 /*****************************************************************************/
 /*                               MEDIA QUERIES                               */
 /*****************************************************************************/
@@ -459,11 +389,5 @@ footer {
 @media (max-width: 1200px) {
     .page-wrapper {
         grid-template-columns: 1fr 90vw 1fr; /* Dá mais espaço para o conteúdo */
-    }
-}
-
-@media (max-width: 1200px) {
-    .content {
-        width: 90vw; /* Se a tela for pequena, o centro expande */
     }
 }

@@ -1,0 +1,234 @@
+/* ========================================== */
+/* ESTILOS GERAIS E LAYOUT PADRÃO (DARK MODE) */
+/* ========================================== */
+:root {
+    /* Paleta Dark Mode */
+    --cor-borda-input: #313131;
+    --cor-fundo-input: #2b2828;
+    --cor-destaque: #facc15; /* Yellow-400 */
+    --card-border-radius: 8px;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+.dashboard-header-section {
+    padding-top: 10px; 
+    margin-bottom: 10px;
+}
+
+.dashboard-title {
+    font-size: 1.8em; 
+    font-weight: 500; 
+    color: var(--text-primary);
+}
+
+.dashboard-album-count {
+    font-weight: 600; 
+    font-size: 1em; 
+}
+
+.years-value {
+    font-size: 2em; 
+    font-weight: 700;
+    color: var(--cor-destaque); 
+    line-height: 1;
+}
+
+.years-label {
+    color: var(--text-secondary);
+    font-size: 0.875em;
+}
+
+.recent-albums-section {
+    margin-bottom: 40px;
+    padding-top: 10px;
+}
+
+.recent-albums-title {
+    color: #fff;
+    margin-top: 0px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #374151;
+    padding-bottom: 10px;
+    font-weight: 600;
+    font-size: 1.5em;
+}
+
+.recent-albums-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.album-card-modern {
+    background: linear-gradient(to bottom right, var(--card-bg), var(--bg-color));
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 6px var(--card-shadow); 
+    border-radius: 12px;
+    display: block; 
+    text-decoration: none;
+    padding: 0; 
+    position: relative;
+    transform: none; 
+    transition: transform 0.3s, box-shadow 0.3s;
+    height: 300px;
+}
+
+.album-card-modern:hover {
+    transform: scale(1.05); 
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.6);
+}
+
+.anniversary-section {
+    margin-bottom: 30px;
+    padding-top: 25px;
+}
+
+.anniversary-card {
+    border: 1px solid rgba(251, 191, 36, 0.3); 
+    padding: 16px 24px;
+    height: auto;
+}
+
+.anniversary-title {
+    display: flex;
+    align-items: center;
+    gap: 8px; 
+    font-size: 1.25em; 
+    font-weight: 700;
+    color: var(--cor-destaque); 
+    margin-bottom: 15px;
+}
+
+.anniversary-title i {
+    font-size: 1em;
+}
+
+.anniversary-album-item {
+    display: flex;
+    align-items: center;
+    gap: 16px; 
+    padding: 12px; 
+    background-color: rgba(31, 41, 55, 0.5); 
+    border-radius: 8px;
+    transition: background-color 0.2s;
+    text-decoration: none; 
+}
+
+.anniversary-album-item:hover {
+    background-color: rgba(31, 41, 55, 0.8);
+    cursor: pointer;
+}
+
+.album-cover-sm {
+    width: 75px; 
+    height: 75px;
+    background: linear-gradient(to bottom right, #facc15, #f97316); 
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.album-cover-sm img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.album-cover-sm .fa-music {
+    font-size: 1.5em; 
+}
+
+.anniversary-album-item h4 {
+    font-weight: 600;
+    color: white;
+    margin-bottom: 2px;
+    line-height: 1.2;
+}
+
+.anniversary-album-item p {
+    font-size: 0.875em; 
+    color: var(--text-secondary);
+    line-height: 1.2;
+}
+
+.anniversary-info-tag {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75em; 
+    color: var(--cor-destaque); 
+    font-weight: 500;
+}
+
+.anniversary-info-tag i {
+    font-size: 0.75em;
+}
+
+/* Container que agrupa os dois gráficos */
+/* Ajuste nos cards para dividirem o espaço */
+.metric-card:first-child:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.chart-center-text {
+    position: absolute;
+    top: 75px; 
+    left: 50%;
+    transform: translate(-50%, -40%); 
+    text-align: center;
+    line-height: 1.2;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.center-value {
+    display: block;
+    font-size: 1.6rem; /* Ajuste conforme o tamanho do seu card */
+    font-weight: bold;
+    color: #fff;
+}
+
+.center-label {
+    display: block;
+    font-size: 0.65rem;
+    color: #aaa;
+    text-transform: uppercase;
+    margin-top: 2px;
+}
+
+.modal-dashboard {
+    position: fixed;
+    z-index: 10000; /* Garante que fique acima de tudo */
+    left: 0; top: 0; width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.85);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content-dashboard {
+    background-color: #1e1e1e; /* Cor escura do seu tema */
+    margin: 5% auto;
+    padding: 20px;
+    width: 90%;
+    max-width: 900px;
+    border-radius: 12px;
+    border: 1px solid #333;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+}
