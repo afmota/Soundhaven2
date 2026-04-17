@@ -451,6 +451,70 @@ footer {
     padding: 12px;
 }
 
+/* Modal Linha do Tempo */
+
+.modal-dashboard {
+    position: fixed; /* Fixa na janela do navegador */
+    z-index: 10000; 
+    left: 0; 
+    top: 0; 
+    width: 100vw; /* Largura total da visão */
+    height: 100vh; /* Altura total da visão */
+    background-color: rgba(15, 23, 42, 0.9); 
+    backdrop-filter: blur(8px);
+    display: none; /* Deixe o JS controlar */
+}
+
+.modal-content-dashboard {
+    background-color: var(--card-bg);
+    padding: 30px;
+    width: 95%;
+    max-width: 900px;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 0 20px var(--accent-color); /* O nosso Glow! */
+    
+    /* Centralização em relação à JANELA (Viewport) */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.modal-header h3 {
+    color: var(--text-primary);
+    font-size: 1.4em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-header h3 i {
+    color: var(--accent-color);
+}
+
+.close-modal-anos {
+    cursor: pointer;
+    font-size: 24px;
+    color: var(--text-secondary);
+    transition: color 0.2s;
+}
+
+.close-modal-anos:hover {
+    color: var(--action-destructive); /* Fica vermelho ao passar o mouse */
+}
+
 /*****************************************************************************/
 /*                               MEDIA QUERIES                               */
 /*****************************************************************************/
@@ -467,3 +531,9 @@ footer {
         width: 90vw; /* Se a tela for pequena, o centro expande */
     }
 }
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: translate(-50%, -60%); }
+    to { opacity: 1; transform: translate(-50%, -50%); }
+}
+
