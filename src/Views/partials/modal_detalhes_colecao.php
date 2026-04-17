@@ -39,10 +39,11 @@
                     <span id="detalhePreco"></span>
                 </div>
             </div>
-        </div> <hr class="modal-divider">
+        </div>
+        
+        <hr class="modal-divider">
 
         <div class="modal-metadata-section">
-            
             <div class="genres-styles-row">
                 <div class="info-item">
                     <label>Gêneros</label>
@@ -63,7 +64,9 @@
                 <label>Observações</label>
                 <p id="detalheObservacoes" class="obs-text"></p>
             </div>
-        </div> <hr class="modal-divider">
+        </div>
+        
+        <hr class="modal-divider">
 
         <div id="containerFaixas" class="tracklist-section">
             <div class="tracklist-header">

@@ -5,18 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SoundHaven - Coleção</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="assets/css/header.css">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body class="colecao-module">
 
 <?php include __DIR__ . '/../partials/header.php'; ?>
 
-<div class="page-wrapper">
-    <div class="spacer-left"></div>
-
-    <div class="main-section">
-        <main class="store-grid">
+<page-wrapper>
+    <main class="content">
+        <div class="store-grid">
             <?php if (empty($albuns)): ?>
                 <p style="grid-column: span 5; text-align: center; color: var(--text-secondary); padding: 50px;">
                     Sua coleção ainda está vazia. Adquira álbuns na loja para vê-los aqui!
@@ -31,8 +28,7 @@
 
                         <img loading="lazy" src="<?= htmlspecialchars($album['capa_url'] ?: 'assets/images/placeholder.jpg') ?>" alt="Capa">
 
-                        <button class="btn-ouvir-tag" 
-                                data-midia-id="<?= $album['midia_id'] ?>" 
+                        <button class="btn-ouvir-tag" data-midia-id="<?= $album['midia_id'] ?>" 
                                 title="Marcar como ouvido hoje">
                             <i class="fas fa-headphones"></i>
                         </button>
@@ -52,13 +48,13 @@
                     </article>
                 <?php endforeach; ?>
             <?php endif; ?>
-        </main>
+        </div>
 
         <?php include __DIR__ . '/../partials/paginacao.php';?>
-    </div>
+    </main>
 
     <?php include __DIR__ . '/../partials/sidebar_filtros.php'; ?>
-</div>
+</page-wrapper>
 
 <?php include __DIR__ . '/../partials/modal_detalhes_colecao.php'; ?>
 
