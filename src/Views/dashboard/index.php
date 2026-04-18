@@ -166,10 +166,12 @@
             </div>
             <?php endif; ?>
             <div class="recent-albums-section container">
-                <h2 class="recent-albums-title" style="color: #fff; margin-bottom: 20px;">Últimas Aquisições</h2>
-                <div class="recent-albums-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                <h2 class="recent-albums-title">Últimas Aquisições</h2>
+                <div class="recent-albums-grid">
                     <?php foreach ($ultimos_albuns as $album): ?>
-                    <div class="card album-card-modern abrir-modal-detalhes" ...>
+                    <div class="card album-card-modern abrir-modal-detalhes" 
+                        style="cursor: pointer;"
+                        data-album='<?= htmlspecialchars(json_encode($album), ENT_QUOTES, 'UTF-8') ?>'>
                         <img src="<?= $album['capa_url'] ?>" alt="Capa">
                         <div class="album-card-info">
                             <h4><?= htmlspecialchars($album['titulo']) ?></h4>
@@ -179,10 +181,10 @@
                     <?php endforeach; ?>
                 </div>
             </div>
-            <?php require_once __DIR__ . '/../partials/modal_detalhes_colecao.php'; ?>
-            <?php include __DIR__ . '/../partials/modal_linha_tempo.php'; ?>
-            <?php require_once __DIR__ . '/../partials/footer.php'; ?>
         </main>
+        <?php require_once __DIR__ . '/../partials/modal_detalhes_colecao.php'; ?>
+        <?php include __DIR__ . '/../partials/modal_linha_tempo.php'; ?>
+        <?php require_once __DIR__ . '/../partials/footer.php'; ?>
     </page-wrapper>
 
     <script src="assets/js/functions.js"></script>

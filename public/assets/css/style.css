@@ -279,6 +279,13 @@ footer {
 /*                                  DASHBOARD                                */
 /*****************************************************************************/
 
+.container {
+    max-width: 60vw;
+    margin: 0 auto;
+    padding-top: 10px;
+    padding-bottom: 0px;
+}
+
 /* 1. GRID DE MÉTRICAS */
 .metric-grid {
     display: grid;
@@ -324,11 +331,15 @@ footer {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-/* 2. SEÇÃO DE GRÁFICOS (Fim do calc maluco) */
+.icon-container i {
+    color: var(--text-primary);
+    font-size: 1.25em; 
+}
+
+/* 2. SEÇÃO DE GRÁFICOS */
 .charts-section {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    /* 4 colunas iguais e perfeitas */
     gap: 16px;
     width: 100%;
     margin-top: 10px;
@@ -336,10 +347,8 @@ footer {
 }
 
 .charts-section .chart-card {
-    /* Remova o flex: 1 1 e o max-width: calc(...) */
     width: 100%;
     min-width: 0;
-    /* CRUCIAL: No CSS Grid, isso impede que o card estique o grid */
     padding: 15px;
     background: var(--card-bg);
     border-radius: 8px;
@@ -442,12 +451,32 @@ footer {
 }
 
 /* 4. ANIVERSÁRIOS */
-.anniversary-card {
-    border: 1px dashed var(--accent-color);
-    /* Estilo de destaque */
-    background: rgba(212, 0, 255, 0.05);
-    /* Leve tom de roxo no fundo */
+.anniversary-section {
     margin-bottom: 30px;
+    padding-top: 25px;
+}
+
+.anniversary-card {
+    /*flex-direction: row;*/
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px !important;
+    margin-bottom: 30px;
+}
+
+.anniversary-title {
+    display: flex;
+    align-items: center;
+    gap: 8px; 
+    font-size: 1.25em; 
+    font-weight: 700;
+    color: var(--cor-destaque); 
+    margin-bottom: 15px;
+}
+
+.anniversary-title i {
+    font-size: 1em;
 }
 
 .anniversary-album-item {
@@ -455,12 +484,82 @@ footer {
     align-items: center;
     gap: 15px;
     padding: 12px;
-    background: var(--bg-hover);
+    /*background: var(--bg-hover);*/
     border-radius: 8px;
     margin-top: 10px;
+    transition: background-color 0.1s;
+    text-decoration: none; 
+}
+
+.anniversary-album-item:hover {
+    background-color: var(--bg-hover);
+    cursor: pointer;
+}
+
+.anniversary-album-item h4 {
+    font-weight: 600;
+    color: white;
+    margin-bottom: 2px;
+    line-height: 1.2;
+}
+
+.anniversary-album-item p {
+    font-size: 0.875em; 
+    color: var(--text-secondary);
+    line-height: 1.2;
+}
+
+.album-cover-sm {
+    width: 75px; 
+    height: 75px;
+    /*background: linear-gradient(to bottom right, #facc15, #f97316); */
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.album-cover-sm img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.album-cover-sm .fa-music {
+    font-size: 1.5em; 
+}
+
+.anniversary-info-tag {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75em; 
+    color: var(--cor-destaque); 
+    font-weight: 500;
+}
+
+.anniversary-info-tag i {
+    font-size: 0.75em;
 }
 
 /* 5. ÚLTIMAS AQUISIÇÕES */
+.recent-albums-section {
+    margin-bottom: 40px;
+    padding-top: 10px;
+}
+
+.recent-albums-title {
+    color: var(--text-primary);
+    margin-top: 0px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    font-weight: 600;
+    font-size: 1.5em;
+}
+
 .recent-albums-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -470,7 +569,6 @@ footer {
 /* Reaproveitando a classe .card global e apenas estendendo */
 .album-card-modern {
     padding: 0 !important;
-    /* Imagem encosta no topo */
     overflow: hidden;
     height: auto;
 }
@@ -951,6 +1049,28 @@ footer {
     .content {
         width: 90vw;
         /* Se a tela for pequena, o centro expande */
+    }
+}
+
+@media (max-width: 900px) {
+    .metric-grid {
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .metric-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .span-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .span-value-area {
+        text-align: left;
+        margin-top: 15px;
     }
 }
 
