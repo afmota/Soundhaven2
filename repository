@@ -734,40 +734,6 @@ input:focus, select:focus {
     flex-direction: column;
 }
 
-.sidebar-filters {
-    grid-column: 3;
-    width: 250px;
-    margin-left: 20px;
-    background: var(--card-bg);
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-    position: sticky;
-    top: 20px;
-}
-
-.filter-group { margin-bottom: 15px; }
-.filter-group label {
-    display: block;
-    font-size: 0.75em;
-    color: var(--text-secondary);
-    margin-bottom: 5px;
-    text-transform: uppercase;
-    font-weight: bold;
-}
-
-.filter-group input, .filter-group select {
-    width: 100%;
-    padding: 10px;
-    background: #121212;
-    border: 1px solid var(--border-color);
-    color: var(--text-primary);
-    border-radius: 4px;
-    font-size: 0.9em;
-    box-sizing: border-box;
-}
-
-.btn-search { width: 100%; background: var(--action-positive); color: #000; margin-bottom: 10px; }
 .btn-clear { 
     width: 100%; 
     background: transparent; 
@@ -867,13 +833,6 @@ input:focus, select:focus {
     width: 100%;
 }
 
-
-.sidebar-filters h3 {
-    margin: 0 0 20px 0;
-    font-size: 1.1em;
-    color: var(--border-light);
-    text-align: center;
-}
 
 .tag-item {
     background: rgba(255,255,255,.05);
@@ -1044,13 +1003,6 @@ input:focus, select:focus {
 
 
 
-.sidebar-filters h3 {
-    margin: 0 0 20px 0;
-    font-size: 1.1em;
-    color: var(--accent-color);
-    text-align: center;
-}
-
 .release-year {
     font-size: 0.75em;
     color: var(--text-secondary);
@@ -1217,12 +1169,6 @@ input:focus, select:focus {
 #detalhePaisArtista .fi {
     margin-right: 10px;
     width: 24px;
-}
-
-@media (max-width: 768px) {
-    .store-grid-container {
-        grid-template-columns: repeat(2, 1fr);
-    }
 }
 
 .store-grid-container {

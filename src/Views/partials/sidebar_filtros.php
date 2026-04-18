@@ -44,7 +44,7 @@
             </select>
         </div>
 
-        <button type="submit" class="btn btn-search" style="background-color: var(--action-positive); color: #fff;">
+        <button type="submit" class="btn btn-search">
             <i class="fa-solid fa-magnifying-glass"></i> Filtrar
         </button>
         <a href="?url=loja" class="btn btn-clear">

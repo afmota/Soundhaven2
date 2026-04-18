@@ -13,7 +13,7 @@
 <body>
     <?php require_once __DIR__ . '/../partials/header.php'; ?>
 
-    <page-wrapper>
+    <div class="page-wrapper">
         <main class="content">
             <div class="metric-grid container">
                 <div class="card metric-card">
@@ -185,7 +185,7 @@
         <?php require_once __DIR__ . '/../partials/modal_detalhes_colecao.php'; ?>
         <?php include __DIR__ . '/../partials/modal_linha_tempo.php'; ?>
         <?php require_once __DIR__ . '/../partials/footer.php'; ?>
-    </page-wrapper>
+    </div>
 
     <script src="assets/js/functions.js"></script>
     <script src="assets/js/colecao.js"></script>

@@ -571,6 +571,7 @@ footer {
     padding: 0 !important;
     overflow: hidden;
     height: auto;
+    position: relative;
 }
 
 .album-card-modern img {
@@ -699,11 +700,13 @@ footer {
     font-weight: 800;
     text-transform: uppercase;
     color: #121212 !important;
-    background: var(--border-light); /* Adicionado: fundo para legibilidade */
-    opacity: 0;
+    background: var(--accent-color);
+    opacity: 1;
     transform: translateY(-5px);
     transition: all .3s ease;
     box-shadow: 0 4px 10px rgba(0,0,0,.5);
+    z-index: 20;
+    pointer-events: none;
 }
 
 .album-card img {
@@ -764,6 +767,7 @@ footer {
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+
 .artist-name { 
     font-size: 0.8em; 
     font-style: italic;
@@ -1032,6 +1036,55 @@ footer {
 .btn-edit:hover { background: var(--action-neutral-hover); }
 .btn-delete { background: var(--action-destructive); }
 .btn-delete:hover { background-color: var(--action-destructive-hover); }
+.btn-search { width: 100%; background: var(--action-neutral); color: #000; margin-bottom: 10px; }
+.btn-search:hover { background: var(--action-neutral-hover); color: var(--text-primary); }
+.btn-clear { width: 100%; background: var(--action-destructive); color: var(--text-secondary); }
+.btn-clear:hover { width: 100%; background: var(--action-destructive-hover); color: var(--text-primary); }
+
+
+/*****************************************************************************/
+/*                                  FILTROS                                  */
+/*****************************************************************************/
+
+.sidebar-filters {
+    grid-column: 3;
+    width: 250px;
+    margin-left: 20px;
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    position: sticky;
+    top: 20px;
+}
+
+.sidebar-filters h3 {
+    margin: 0 0 20px 0;
+    font-size: 1.1em;
+    color: var(--accent-color);
+    text-align: center;
+}
+
+.filter-group { margin-bottom: 15px; }
+.filter-group label {
+    display: block;
+    font-size: 0.75em;
+    color: var(--text-secondary);
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.filter-group input, .filter-group select {
+    width: 100%;
+    padding: 10px;
+    background: #121212;
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: 4px;
+    font-size: 0.9em;
+    box-sizing: border-box;
+}
 
 /*****************************************************************************/
 /*                               MEDIA QUERIES                               */
@@ -1085,3 +1138,4 @@ footer {
         transform: translate(-50%, -50%);
     }
 }
+
