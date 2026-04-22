@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SoundHaven - Adquirir Álbum</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/header.css">
+    <link rel="stylesheet" href="assets/css/adquirir_album.css">
 </head>
 <body class="colecao-module">
     <?php include __DIR__ . '/../partials/header.php'; ?>
 
-    <div class="modal-content">
-        <h2 id="edicaoHeaderTitle" style="color:var(--border-light); margin-top:0; margin-bottom: 0px;">
+    <div class="content">
+        <h2 id="edicaoHeaderTitle">
             Adicionar à Coleção: <?= htmlspecialchars($album['titulo'] ?? 'Novo Item') ?>
         </h2>
 
@@ -239,5 +240,6 @@
 
     <script src="assets/js/functions.js"></script>
     <script src="assets/js/adquirir_album.js"></script>
+    <?php include __DIR__ . '/../partials/footer.php'; ?>
 </body>
 </html>
