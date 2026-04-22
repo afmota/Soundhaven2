@@ -9,26 +9,26 @@
     --border-hover: #475569;
 
     --text-primary: #F1F5F9;
-    /*--text-secondary: #94A3B8;
+    --text-secondary: #94A3B8;
     --text-muted: #64748B;
 
     --action-positive: #10B981;
     --action-positive-hover: #059669;
-    --action-destructive: #EF4444;
-    --action-destructive-hover: #DC2626;
+    /*--action-destructive: #EF4444;
+    --action-destructive-hover: #DC2626;*/
     --action-neutral: #3B82F6;
-    --action-neutral-hover: #2563EB;*/
+    --action-neutral-hover: #2563EB;
 
     --accent-color: #D400FF;
     --accent-hover: #A800CC;
 
     --card-shadow: rgba(0, 0, 0, 0.4);
 
-    /*--cor-destaque: #facc15;
+    /*--cor-destaque: #facc15;*/
 
     --space-xs: 3px;
     --space-sm: 5px;
-    --space-lg: 13px;*/
+    --space-lg: 13px;
 }
 
 * {
@@ -50,7 +50,7 @@ body {
     display: block;
     width: 100%;
     min-height: 100vh;
-    padding: 0 20px;
+    padding: 0 20px 30px 20px;
 }
 
 .spacer-left {
@@ -165,3 +165,161 @@ body {
     border-color: var(--accent-hover);
 }
 
+.modal { 
+    display: none; 
+    position: fixed; 
+    z-index: 1000; 
+    left: 0; 
+    top: 0; 
+    width: 100%; 
+    height: 100%; 
+    background: rgba(0, 0, 0, 0.63); 
+    backdrop-filter: blur(5px); 
+    overflow-y: auto; /* Permite rolar a tela se o modal for comprido */
+    padding: 20px 0;   /* Espaço para o modal não encostar nas bordas */
+}
+
+.modal-content {
+    background: var(--card-bg);
+    margin: 2% auto;
+    padding: 30px;
+    border: 1px solid var(--accent-color);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6), 
+                0 0 15px var(--accent-color);
+    width: 800px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--text-secondary);
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.modal-close:hover {
+    color: var(--text-primary);
+}
+
+.modal-body-grid {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: var(--space-lg);
+    align-items: start;
+    line-height: 1.1;
+}
+
+.modal-capa {
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    position: relative;
+}
+
+.modal-capa img {
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+    box-shadow: 0 10px 25px rgba(0,0,0,.5);
+}
+
+.modal-info-tecnica {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    margin-bottom: 3px;
+}
+
+#detalheNomeArtista {
+    color: var(--accent-color) !important;
+    text-transform: uppercase;
+    font-size: 1.3rem !important;
+    font-weight: bold;
+    letter-spacing: .5px;
+}
+
+#detalhePaisArtista {
+    color: var(--text-primary) !important;
+    font-style: italic;
+    font-size: 1rem !important;
+}
+
+.info-row-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    border-bottom: 1px solid var(--border-color);
+    padding-top: var(--space-xs);
+    padding-bottom: var(--space-xs);
+}
+
+.info-item label {
+    display: block;
+    font-size: .65rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: .5px;
+    margin-bottom: 4px;
+}
+
+.info-item span {
+    font-size: .9rem;
+    color: #ddd;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.mt-15 {
+    margin-top: 15px;
+}
+
+.obs-text {
+    margin: 0;
+    background: var(--bg-color);
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: .85rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    border-left: 3px solid var(--accent-color);
+    min-height: 40px;
+}
+
+.modal-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end; 
+}
+
+.btn { 
+    display: inline-flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 8px; 
+    padding: 10px; 
+    border-radius: 4px;
+    cursor: pointer; 
+    font-weight: bold; 
+    width: 130px; 
+    border: none; 
+    color: var(--text-primary) !important; /* Garantindo cor do texto */
+    transition: all 0.2s ease; /* Transição global */
+}
+
+.btn-edit { background: var(--action-positive); }
+.btn-edit:hover { background: var(--action-positive-hover); }
+.btn-primary { background: var(--action-neutral); }
+.btn-primary:hover { background-color: var(--action-neutral-hover); }

@@ -55,10 +55,10 @@
         <?php include __DIR__ . '/../partials/paginacao.php';?>
     </div>
 
-    <?php include __DIR__ . '/../partials/sidebar_filtros.php'; ?>
     <?php include __DIR__ . '/../partials/modal_detalhes_artista.php'; ?>
 </div>
 
+<?php include __DIR__ . '/../partials/footer.php'; ?>
 <script src="assets/js/artistas.js"></script>
 </body>
 </html>

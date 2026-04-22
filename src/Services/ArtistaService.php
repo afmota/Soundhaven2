@@ -10,8 +10,8 @@ class ArtistaService {
         $this->repository = new ArtistaRepository();
     }
 
-    public function getGridArtistas($pagina) {
-        $limit = 24; // Múltiplo de 2, 3, 4 e 6 para facilitar o grid responsivo
+public function getGridArtistas($pagina) {
+        $limit = 25; 
         $offset = ($pagina - 1) * $limit;
 
         $artistas = $this->repository->buscarArtistasComAlbuns($limit, $offset);
@@ -22,7 +22,9 @@ class ArtistaService {
             'artistas' => $artistas,
             'paginaAtual' => $pagina,
             'totalPaginas' => $totalPaginas,
-            'totalRegistros' => $totalRegistros
+            'totalRegistros' => $totalRegistros,
+            'fimPagina' => $totalPaginas,
+            'inicioPagina' => 1 // Geralmente o início do range é 1
         ];
     }
 }
