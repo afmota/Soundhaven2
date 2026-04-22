@@ -139,3 +139,33 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+
+// --- Lógica de Filtros por Pills ---
+document.addEventListener('DOMContentLoaded', () => {
+    const pills = document.querySelectorAll('.pill');
+    
+    pills.forEach(pill => {
+        pill.addEventListener('click', function() {
+            // Remove a classe 'active' de todas as pills
+            document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+            // Adiciona no clicado
+            this.classList.add('active');
+            
+            const filtroSelecionado = this.getAttribute('data-filter');
+            const todosOsCards = document.querySelectorAll('.album-card');
+            
+            todosOsCards.forEach(card => {
+                // Pega os dados do atributo data-album que você já tem no HTML
+                const album = JSON.parse(card.dataset.album);
+                
+                // Se for 'all', mostra tudo; senão, compara o ID
+                if (filtroSelecionado === 'all' || album.tipo_id == filtroSelecionado) {
+                    card.style.display = 'flex'; // ou 'block', o que o seu CSS pedir
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+});

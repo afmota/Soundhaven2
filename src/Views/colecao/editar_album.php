@@ -6,14 +6,13 @@
     <title>SoundHaven - Editar Álbum</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/header.css">
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/colecao.css">
+    <link rel="stylesheet" href="assets/css/editAlbum.css">
 </head>
 <body class="colecao-module">
     <?php include __DIR__ . '/../partials/header.php'; ?>
 
-    <div class="modal-content">
-        <h2 id="edicaoHeaderTitle" style="color:var(--border-light); margin-top:0; margin-bottom: 20px;">
+    <div class="content">
+        <h2 id="edicaoHeaderTitle">
             Editar: <?= htmlspecialchars($album['titulo'] ?? '') ?>
         </h2>
 
@@ -238,6 +237,8 @@
             </div>
         </form>
     </div>
+
+    <?php include __DIR__ . '/../partials/footer.php'; ?>
 
     <datalist id="listaSugestoesGeneros">
         <?php foreach ($sugestoes['generos'] as $gen): ?><option value="<?= htmlspecialchars($gen) ?>"><?php endforeach; ?>

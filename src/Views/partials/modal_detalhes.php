@@ -19,10 +19,12 @@
                 </div>
                 
                 <div class="modal-actions">
-                    <button type="button" id="btnAdquirirDireto" class="btn-acao-positiva">
+                    <button type="button" id="btnAdquirirDireto" class="btn btn-search">
                         <i class="fas fa-shopping-cart"></i> Adquirir
                     </button>
-                    <button id="btnOpenEdit" class="btn btn-edit"><i class="fa-solid fa-pen"></i> Editar</button>
+                    <button type="button" id="btnOpenEdit" class="btn btn-edit" style="height: 35px;">
+                        <i class="fa-solid fa-pen"></i> Editar
+                    </button>
                     
                     <form method="POST" id="formDelete" onsubmit="return confirm('Deseja realmente descartar este álbum?')">
                         <input type="hidden" name="action" value="delete">

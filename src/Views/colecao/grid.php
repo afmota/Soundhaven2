@@ -5,14 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SoundHaven - Coleção</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/header.css">
+    <link rel="stylesheet" href="assets/css/colecao.css">
 </head>
-<body class="colecao-module">
+<body>
 
     <?php include __DIR__ . '/../partials/header.php'; ?>
 
     <div class="page-wrapper">
         <div class="left-spacer"></div>
+
         <main class="content">
             <div class="store-grid">
                 <?php if (empty($albuns)): ?>
@@ -21,7 +23,7 @@
                     </p>
                 <?php else: ?>
                     <?php foreach ($albuns as $album): ?>
-                        <article class="album-card album-card-modern" style="cursor:pointer;"data-album='<?= htmlspecialchars(json_encode($album), ENT_QUOTES, 'UTF-8') ?>'>
+                        <article class="album-card album-card-modern" style="cursor:pointer;" data-album='<?= htmlspecialchars(json_encode($album), ENT_QUOTES, 'UTF-8') ?>'>
                             
                             <span class="format-tag" style="background-color: <?= $album['formato_cor'] ?> !important;">
                                 <?= htmlspecialchars($album['formato_nome']) ?>
@@ -52,7 +54,6 @@
             </div>
         </main>
         <?php include __DIR__ . '/../partials/paginacao.php';?>
-        <?php include __DIR__ . '/../partials/sidebar_filtros.php'; ?>
     </div>
 
     <?php include __DIR__ . '/../partials/modal_detalhes_colecao.php'; ?>
