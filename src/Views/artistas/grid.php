@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css"/>
     <link rel="stylesheet" href="assets/css/header.css">
-    <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/artistas.css"> 
 </head>
 <body>
@@ -25,7 +24,7 @@
                 </p>
             <?php else: ?>
                 <?php foreach ($artistas as $artista): ?>
-                    <article class="album-card artist-card js-open-artista-modal" 
+                    <article class="album-card album-card-modern js-open-artista-modal" 
                             data-artista='<?= htmlspecialchars(json_encode($artista), ENT_QUOTES, 'UTF-8') ?>'
                             style="cursor: pointer;">
                         
