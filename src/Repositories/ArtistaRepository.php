@@ -45,4 +45,43 @@ class ArtistaRepository {
 
         return $this->db->query($sql)->fetchColumn();
     }
+
+    public function buscarTodosPaises() {
+        $sql = "SELECT pais_id, nome FROM tb_paises ORDER BY nome ASC";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function buscarTodosGeneros() {
+        $sql = "SELECT genero_id, descricao FROM tb_generos ORDER BY descricao ASC";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function updateArtista($dados) {
+        $sql = "UPDATE tb_artistas SET 
+                nome = :nome, 
+                imagem_url = :imagem_url, 
+                pais_origem = :pais_origem, 
+                genero_principal = :genero_principal, 
+                ano_formacao = :ano_formacao, 
+                ano_encerramento = :ano_encerramento, 
+                biografia = :biografia, 
+                site_oficial = :site_oficial,
+                atualizado_em = NOW()
+                WHERE artista_id = :artista_id";
+
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([
+            'nome' => $dados['nome'],
+            'imagem_url' => $dados['imagem_url'],
+            'pais_origem' => $dados['pais_origem'],
+            'genero_principal' => $dados['genero_principal'],
+            'ano_formacao' => $dados['ano_formacao'],
+            'ano_encerramento' => $dados['ano_encerramento'],
+            'biografia' => $dados['biografia'],
+            'site_oficial' => $dados['site_oficial'],
+            'artista_id' => $dados['artista_id']
+        ]);
+    }
 }

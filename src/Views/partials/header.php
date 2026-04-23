@@ -19,6 +19,7 @@
                         <ul>
                             <li><a href="?url=dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
                             <li><a href="?url=colecao"><i class="fas fa-list-alt"></i> Minha Coleção</a></li>
+                            <li><a href="?url=artistas"><i class="fas fa-microphone-lines"></i> Artistas</a></li>
                             <li><a href="?url=loja"><i class="fas fa-store"></i> Loja</a></li>
                             <li class="separator"></li>
                             <li><a href="?url=perfil"><i class="fas fa-user-circle"></i> Meu Perfil</a></li>

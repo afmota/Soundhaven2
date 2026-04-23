@@ -80,7 +80,12 @@ switch ($route) {
         $controller->salvarInclusao();
         break;
 
-    default:
+    case 'salvar_edicao_artista':
+        $controller = new App\Controllers\ArtistaController();
+        $controller->salvarEdicaoArtista(); // Este é o método que você precisa criar
+        break;
+
+        default:
         http_response_code(404);
         echo "404 - Página não encontrada no SoundHaven";
         break;

@@ -1,11 +1,24 @@
 document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('modalDetalhesArtista');
     const closeBtn = document.getElementById('closeModalArtista');
+    
+    // Elementos da Edição
+    const modalEdicao = document.getElementById('modalEdicaoArtista');
+    const btnEditar = document.getElementById('btnEditarArtista');
+    const closeBtnEdicao = document.getElementById('closeModalEdicaoArtista');
+    const btnCancelarEdicao = document.getElementById('btnCancelarEdicaoArtista');
+    
+    // Elementos de Preview da Imagem no Modal de Edição
+    const inputUrl = document.getElementById('editArtistaImgUrl');
+    const imgPreview = document.getElementById('editArtistaImgPreview');
+    
+    let artistaAtual = null;
 
+    // 1. Lógica dos Cards (Abrir Detalhes)
     document.querySelectorAll('.js-open-artista-modal').forEach(card => {
         card.addEventListener('click', function() {
             try {
-                const artista = JSON.parse(this.dataset.artista);
+                artistaAtual = JSON.parse(this.dataset.artista);
                 
                 const txtNome = document.getElementById('detalheNomeArtista');
                 const imgFoto = document.getElementById('detalheArtistaFoto');
@@ -16,45 +29,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 const txtBio = document.getElementById('detalheBiografia');
                 const btnVerAlbuns = document.getElementById('btnVerAlbunsArtista');
 
-                if (txtNome) txtNome.textContent = artista.nome;
-                if (imgFoto) imgFoto.src = artista.imagem_url || 'assets/images/placeholder_artist.jpg';
-
-                if (nomePais) {
-                    nomePais.textContent = artista.pais_nome || 'Origem não informada';
-                }
+                if (txtNome) txtNome.textContent = artistaAtual.nome;
+                if (imgFoto) imgFoto.src = artistaAtual.imagem_url || 'assets/images/placeholder_artist.jpg';
+                if (nomePais) nomePais.textContent = artistaAtual.pais_nome || 'Origem não informada';
 
                 if (bandeira) {
-                    // Reseta as classes
                     bandeira.className = 'fi'; 
-                    
-                    if (artista.codigo_iso) {
-                        const codigo = artista.codigo_iso.toLowerCase();
-                        
-                        // Se for Inglaterra, Escócia ou Gales, a biblioteca exige a classe 'fis' (flag-icon-square)
-                        if (['gb-eng', 'gb-sct', 'gb-wls'].includes(codigo)) {
-                            bandeira.classList.add('fis');
-                        }
-                        
+                    if (artistaAtual.codigo_iso) {
+                        const codigo = artistaAtual.codigo_iso.toLowerCase();
+                        if (['gb-eng', 'gb-sct', 'gb-wls'].includes(codigo)) bandeira.classList.add('fis');
                         bandeira.classList.add('fi-' + codigo);
                     }
                 }
 
                 if (txtInicio) {
-                    txtInicio.textContent = artista.data_inicio ? artista.data_inicio.substring(0, 4) : 'N/D';
+                    txtInicio.textContent = artistaAtual.ano_formacao || 'N/D';
                 }
-
-                if (txtGenero) {
-                    txtGenero.textContent = artista.genero_nome || 'N/D';
-                }
-
-                if (txtBio) {
-                    txtBio.textContent = artista.biografia || 'Nenhuma biografia disponível.';
-                }
-
+                if (txtGenero) txtGenero.textContent = artistaAtual.genero_nome || 'N/D';
+                if (txtBio) txtBio.textContent = artistaAtual.biografia || 'Nenhuma biografia disponível.';
+                
                 if (btnVerAlbuns) {
-                    btnVerAlbuns.onclick = function() {
-                        window.location.href = `?url=colecao&artista_id=${artista.artista_id}`;
-                    };
+                    btnVerAlbuns.onclick = () => window.location.href = `?url=colecao&artista_id=${artistaAtual.artista_id}`;
                 }
 
                 if (modal) modal.style.display = 'block';
@@ -65,11 +60,49 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    if (closeBtn) {
-        closeBtn.onclick = () => modal.style.display = 'none';
+    // 2. Lógica de Edição (Abrir Modal de Edição e popular campos)
+    if (btnEditar) {
+        btnEditar.addEventListener('click', function() {
+            if (!artistaAtual) return;
+
+            // Define o título dinâmico
+            document.getElementById('editArtistaModalTitle').textContent = 'Editar ' + artistaAtual.nome;
+
+            // Preenche os campos
+            document.getElementById('editArtistaId').value = artistaAtual.artista_id;
+            document.getElementById('editArtistaNome').value = artistaAtual.nome;
+            document.getElementById('editArtistaImgUrl').value = artistaAtual.imagem_url || '';
+            document.getElementById('editArtistaPais').value = artistaAtual.pais_origem || '';
+            document.getElementById('editArtistaGenero').value = artistaAtual.genero_principal || '';
+            document.getElementById('editArtistaAnoFormacao').value = artistaAtual.ano_formacao || '';
+            document.getElementById('editArtistaAnoEncerramento').value = artistaAtual.ano_encerramento || '';
+            document.getElementById('editArtistaBio').value = artistaAtual.biografia || '';
+            document.getElementById('editArtistaSite').value = artistaAtual.site_oficial || '';
+
+            // Atualiza o preview da imagem
+            if (imgPreview) {
+                imgPreview.src = artistaAtual.imagem_url || 'assets/images/placeholder_artist.jpg';
+            }
+
+            if (modalEdicao) modalEdicao.style.display = 'block';
+        });
     }
+
+    // 3. Live Update: Preview da imagem ao colar URL
+    if (inputUrl && imgPreview) {
+        inputUrl.addEventListener('input', function() {
+            const novaUrl = this.value.trim();
+            imgPreview.src = novaUrl || 'assets/images/placeholder_artist.jpg';
+        });
+    }
+
+    // 4. Fechamentos
+    if (closeBtn) closeBtn.onclick = () => modal.style.display = 'none';
+    if (closeBtnEdicao) closeBtnEdicao.onclick = () => modalEdicao.style.display = 'none';
+    if (btnCancelarEdicao) btnCancelarEdicao.onclick = () => modalEdicao.style.display = 'none';
     
     window.onclick = (event) => {
         if (event.target == modal) modal.style.display = 'none';
+        if (event.target == modalEdicao) modalEdicao.style.display = 'none';
     };
 });

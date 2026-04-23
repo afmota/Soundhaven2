@@ -10,7 +10,7 @@ class ArtistaService {
         $this->repository = new ArtistaRepository();
     }
 
-public function getGridArtistas($pagina) {
+    public function getGridArtistas($pagina) {
         $limit = 25; 
         $offset = ($pagina - 1) * $limit;
 
@@ -24,7 +24,22 @@ public function getGridArtistas($pagina) {
             'totalPaginas' => $totalPaginas,
             'totalRegistros' => $totalRegistros,
             'fimPagina' => $totalPaginas,
-            'inicioPagina' => 1 // Geralmente o início do range é 1
+            'inicioPagina' => 1,
+            'paises' => $this->repository->buscarTodosPaises(), // Buscando países para os selects
+            'generos' => $this->repository->buscarTodosGeneros()  // Buscando gêneros para os selects
+        ];
+    }
+
+    public function atualizarArtista($dados) {
+        // Aqui você pode adicionar alguma regra de negócio, 
+        // mas por enquanto, vamos repassar direto para o repositório
+        return $this->repository->updateArtista($dados);
+    }
+
+    public function getDadosParaEdicao() {
+        return [
+            'paises' => $this->repository->buscarTodosPaises(),
+            'generos' => $this->repository->buscarTodosGeneros()
         ];
     }
 }

@@ -56,6 +56,7 @@
     </div>
 
     <?php include __DIR__ . '/../partials/modal_detalhes_artista.php'; ?>
+    <?php include __DIR__ . '/../partials/modal_edicao_artista.php'; ?>
 </div>
 
 <?php include __DIR__ . '/../partials/footer.php'; ?>
