@@ -414,3 +414,20 @@ body {
     background-color: #888;
     border-radius: 4px;
 }
+
+#detalheBiografia {
+    white-space: pre-wrap; /* Respeita as quebras de linha e espaçamentos */
+    word-wrap: break-word; /* Quebra palavras muito longas para não estourar a caixa */
+    margin: 0;             /* Remove margens padrão que desalinham */
+    padding: 10px;         /* Dá um respiro para o texto */
+    background: var(--card-bg); 
+    border-radius: 4px;
+}
+
+#detalheBiografiaContainer {
+    max-height: 30em; 
+    overflow-y: auto; 
+    border: 1px solid var(--border-color); 
+    padding: 10px; 
+    border-radius: 4px;
+}

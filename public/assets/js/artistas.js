@@ -54,6 +54,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 if (modal) modal.style.display = 'block';
 
+                const containerSite = document.getElementById('containerSiteOficial');
+                const txtSiteLink = document.getElementById('detalheSiteLink');
+                const btnIrParaSite = document.getElementById('btnIrParaSite');
+
+                // Verifica se a propriedade existe no objeto
+                if (artistaAtual.site_oficial && artistaAtual.site_oficial.trim() !== "") {
+                    containerSite.style.display = 'block'; // Mostra o container
+                    txtSiteLink.textContent = artistaAtual.site_oficial;
+                    
+                    // Garante o protocolo para o link
+                    const url = artistaAtual.site_oficial.startsWith('http') ? 
+                                artistaAtual.site_oficial : 'https://' + artistaAtual.site_oficial;
+                    btnIrParaSite.href = url;
+                } else {
+                    containerSite.style.display = 'none'; // Esconde se estiver vazio
+                }
+
             } catch (e) {
                 console.error("Erro ao abrir modal:", e);
             }
