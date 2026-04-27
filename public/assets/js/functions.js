@@ -1,18 +1,15 @@
-// assets/js/functions.js
-
 /**
  * 1. SINCRONIZAÇÃO DE GRAVADORA (ID VS NOME)
  * Esta lógica roda em todas as páginas via delegação, mas só age se encontrar os campos.
  */
-document.addEventListener('input', function(e) {
+document.addEventListener('input', function (e) {
     if (e.target && (e.target.id === 'edicaoGravadora' || e.target.id === 'edicaoGravadoraNome')) {
-        
+
         const inputNome = e.target;
         const nomeDigitado = inputNome.value;
-        
         const inputHidden = document.getElementById('idGravadoraHidden') || document.getElementById('edicaoGravadoraId');
         const datalist = document.getElementById('listaSugestoesGravadoras');
-        
+
         if (inputHidden && datalist) {
             const opcao = Array.from(datalist.options).find(opt => opt.value === nomeDigitado);
 
@@ -43,9 +40,9 @@ const cacheFaixasGeral = {};
  * Busca as faixas via AJAX e popula a tabela do modal
  */
 async function carregarFaixas(midiaId) {
-    const ID_CONTAINER = 'corpoTabelaFaixas'; 
+    const ID_CONTAINER = 'corpoTabelaFaixas';
     const corpoTabela = document.getElementById(ID_CONTAINER);
-    
+
     if (!corpoTabela) return;
 
     // Se já buscamos esse álbum antes, usa o cache
@@ -59,7 +56,7 @@ async function carregarFaixas(midiaId) {
     try {
         const res = await fetch(`index.php?url=buscar_faixas&midia_id=${midiaId}`);
         const faixas = await res.json();
-        
+
         cacheFaixasGeral[midiaId] = faixas;
         renderizarFaixas(faixas, ID_CONTAINER);
     } catch (e) {
@@ -72,8 +69,8 @@ function renderizarFaixas(faixas, containerId = 'corpoTabelaFaixas') {
     const corpoTabela = document.getElementById(containerId);
     if (!corpoTabela) return;
 
-    corpoTabela.innerHTML = ''; 
-    
+    corpoTabela.innerHTML = '';
+
     if (!faixas || faixas.length === 0) {
         corpoTabela.innerHTML = '<tr><td colspan="3" class="text-center">Nenhuma faixa cadastrada.</td></tr>';
         return;
@@ -113,7 +110,7 @@ function inserirLinhaNaTabela(numero, titulo, duracao, containerId = 'corpoLista
     `;
 
     corpo.appendChild(novaLinha);
-    faixaIndex++; 
+    faixaIndex++;
 }
 
 function inicializarComportamentosFormulario() {
@@ -121,7 +118,7 @@ function inicializarComportamentosFormulario() {
     containersTags.forEach(id => {
         const container = document.getElementById(id);
         if (container) {
-            container.addEventListener('click', function(e) {
+            container.addEventListener('click', function (e) {
                 if (e.target.classList.contains('remove-tag')) {
                     const tag = e.target.closest('.tag-item');
                     tag.style.opacity = '0';
@@ -132,8 +129,8 @@ function inicializarComportamentosFormulario() {
     });
 
     document.querySelectorAll('.btn-add-tag').forEach(btn => {
-        btn.onclick = function() {
-            const target = this.getAttribute('data-target'); 
+        btn.onclick = function () {
+            const target = this.getAttribute('data-target');
             const searchBox = document.getElementById('searchContainer' + target);
             if (searchBox) {
                 const isHidden = searchBox.style.display === 'none' || searchBox.style.display === '';
@@ -147,13 +144,13 @@ function inicializarComportamentosFormulario() {
     });
 
     document.querySelectorAll('.input-search-tag').forEach(input => {
-        input.onkeypress = function(e) {
+        input.onkeypress = function (e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 processarAdicaoTag(this);
             }
         };
-        input.onchange = function() {
+        input.onchange = function () {
             setTimeout(() => { if (this.value.trim() !== '') processarAdicaoTag(this); }, 100);
         };
     });

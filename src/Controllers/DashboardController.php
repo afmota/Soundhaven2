@@ -45,4 +45,16 @@ public function index() {
         extract($data);
         require_once __DIR__ . "/../Views/{$view}.php";
     }
+
+public function getTopArtistasJson() {
+    // Limpa qualquer saída anterior (erros ou HTML)
+    if (ob_get_length()) ob_clean(); 
+    
+    $limit = (int)($_GET['limit'] ?? 10);
+    $dados = $this->repository->buscarTopArtistas($limit);
+    
+    header('Content-Type: application/json');
+    echo json_encode($dados);
+    exit;
+}
 }

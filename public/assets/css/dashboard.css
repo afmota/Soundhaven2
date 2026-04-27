@@ -23,6 +23,8 @@
     --action-positive-hover: #059669;
     --action-destructive: #EF4444;
     --action-destructive-hover: #DC2626;
+    --action-neutral: #3B82F6;
+    --action-neutral-hover: #1553da;
 
     --text-primary: #F1F5F9;
     --text-secondary: #94A3B8;
@@ -653,6 +655,8 @@ body {
 .btn-edit:hover { background: var(--action-positive-hover); }
 .btn-delete { background: var(--action-destructive); }
 .btn-delete:hover { background-color: var(--action-destructive-hover); }
+.btn-primary { background: var(--action-neutral); }
+.btn-primary:hover { background-color: var(--action-neutral-hover); }
 
 .modal-dashboard {
     position: fixed;
@@ -710,14 +714,26 @@ body {
     color: var(--accent-color);
 }
 
-.close-modal-anos {
+.close-modal-anos .close-modal-artistas {
     cursor: pointer;
     font-size: 24px;
     color: var(--text-secondary);
     transition: color 0.2s;
 }
 
-.close-modal-anos:hover {
+.close-modal-anos:hover .close-modal-artistas:hover {
     color: var(--action-destructive);
     /* Fica vermelho ao passar o mouse */
+}
+
+select {
+    width: 10%;
+    padding: 12px;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: 4px;
+    font-size: 0.9em;
+    box-sizing: border-box; 
+    transition: border-color 0.2s;
 }

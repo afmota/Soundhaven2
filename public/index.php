@@ -85,6 +85,11 @@ switch ($route) {
         $controller->salvarEdicaoArtista(); // Este é o método que você precisa criar
         break;
 
+    case 'get_top_artistas_json':
+        $controller = new App\Controllers\DashboardController($pdo);
+        $controller->getTopArtistasJson();
+        break;
+
         default:
         http_response_code(404);
         echo "404 - Página não encontrada no SoundHaven";

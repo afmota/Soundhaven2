@@ -309,6 +309,59 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Variável global para destruir o gráfico anterior antes de criar um novo
+    const cardArtistas = document.getElementById('cardTotalArtistas');
+    const modalArtistas = document.getElementById('modalGraficoArtistas');
+    const closeBtn = document.querySelector('.close-modal-artistas');
+    const btnAtualizar = document.getElementById('btnAtualizarGrafico');
+    let chartModalInstance = null;
+
+    if (cardArtistas && modalArtistas) {
+        cardArtistas.addEventListener('click', () => {
+            modalArtistas.style.display = 'block';
+            renderizarGraficoArtistas(10);
+        });
+    }
+
+    if (closeBtn) closeBtn.onclick = () => modalArtistas.style.display = 'none';
+
+    if (btnAtualizar) {
+        btnAtualizar.addEventListener('click', () => {
+            const limit = document.getElementById('selectLimitArtistas').value;
+            renderizarGraficoArtistas(limit);
+        });
+    }
+
+    async function renderizarGraficoArtistas(limit) {
+        const response = await fetch(`index.php?url=get_top_artistas_json&limit=${limit}`);
+        const dados = await response.json();
+        const ctx = document.getElementById('chartModalArtistas').getContext('2d');
+        
+        if (chartModalInstance) chartModalInstance.destroy();
+
+        chartModalInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: dados.map(d => d.artista),
+                datasets: [{
+                    label: 'Álbuns por Artista',
+                    data: dados.map(d => d.total),
+                    backgroundColor: '#3c3cff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                onClick: (evt, elements) => {
+                    if (elements.length > 0) {
+                        const id = dados[elements[0].index].artista_id;
+                        window.location.href = `index.php?url=colecao&artista_id=${id}`;
+                    }
+                }
+            }
+        });
+    }
+
     // --- Lógica do Modal de Abrangência (Linha do Tempo) ---
     const btnAnos = document.getElementById('btnAbrirModalAnos');
     const modalAnos = document.getElementById('modalLinhaTempo');

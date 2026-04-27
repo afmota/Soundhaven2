@@ -13,6 +13,7 @@
     <?php include __DIR__ . '/../partials/header.php'; ?>
 
     <div class="page-wrapper">
+        <?php include __DIR__ . '/../partials/paginacao.php';?>
         <div class="left-spacer"></div>
 
         <main class="content">
