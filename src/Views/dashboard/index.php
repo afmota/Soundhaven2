@@ -59,7 +59,7 @@
                         <div class="icon-container cor-4"><i class="fas fa-users"></i></div>
                     </div>
                 </div>
-                <div class="card metric-card">
+                <div class="card metric-card" id="cardTotalGravadoras" style="cursor: pointer;">
                     <div class="metric-card-content">
                         <div>
                             <div class="metric-value"><?= $total_gravadoras ?></div>
@@ -185,6 +185,7 @@
         </main>
         <?php require_once __DIR__ . '/../partials/modal_detalhes_colecao.php'; ?>
         <?php require_once __DIR__ . '/../partials/modal_grafico_artistas.php'; ?>
+        <?php require_once __DIR__ . '/../partials/modal_grafico_gravadoras.php'; ?>
         <?php include __DIR__ . '/../partials/modal_linha_tempo.php'; ?>
         <?php require_once __DIR__ . '/../partials/footer.php'; ?>
     </div>

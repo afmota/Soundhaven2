@@ -362,6 +362,60 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+/** GRÁFICO DAS GRAVADORAS */
+const cardGravadoras = document.getElementById('cardTotalGravadoras'); // Certifique-se que o card tenha este ID
+const modalGravadoras = document.getElementById('modalGraficoGravadoras');
+const closeBtnGrav = document.querySelector('.close-modal-gravadoras');
+const btnAtualizarGrav = document.getElementById('btnAtualizarGravadoras');
+let chartGravInstance = null;
+
+if (cardGravadoras && modalGravadoras) {
+    cardGravadoras.addEventListener('click', () => {
+        modalGravadoras.style.display = 'block';
+        renderizarGraficoGravadoras(10);
+    });
+}
+
+if (closeBtnGrav) closeBtnGrav.onclick = () => modalGravadoras.style.display = 'none';
+
+if (btnAtualizarGrav) {
+    btnAtualizarGrav.addEventListener('click', () => {
+        const limit = document.getElementById('selectLimitGravadoras').value;
+        renderizarGraficoGravadoras(limit);
+    });
+}
+
+async function renderizarGraficoGravadoras(limit) {
+    const response = await fetch(`index.php?url=get_top_gravadoras_json&limit=${limit}`);
+    const dados = await response.json();
+    const ctx = document.getElementById('chartModalGravadoras').getContext('2d');
+    
+    if (chartGravInstance) chartGravInstance.destroy();
+
+    chartGravInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: dados.map(d => d.gravadora),
+            datasets: [{
+                label: 'Álbuns por Gravadora',
+                data: dados.map(d => d.total),
+                backgroundColor: '#3dff2b' // Cor de sucesso do SoundHaven
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            onClick: (evt, elements) => {
+                if (elements.length > 0) {
+                    const id = dados[elements[0].index].gravadora_id;
+                    // Redireciona para o grid filtrado pela gravadora
+                    window.location.href = `index.php?url=colecao&gravadora_id=${id}`;
+                }
+            }
+        }
+    });
+}
+
     // --- Lógica do Modal de Abrangência (Linha do Tempo) ---
     const btnAnos = document.getElementById('btnAbrirModalAnos');
     const modalAnos = document.getElementById('modalLinhaTempo');

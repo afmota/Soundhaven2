@@ -714,14 +714,14 @@ body {
     color: var(--accent-color);
 }
 
-.close-modal-anos .close-modal-artistas {
+.close-modal-anos, .close-modal-artistas {
     cursor: pointer;
     font-size: 24px;
     color: var(--text-secondary);
     transition: color 0.2s;
 }
 
-.close-modal-anos:hover .close-modal-artistas:hover {
+.close-modal-anos:hover, .close-modal-artistas:hover {
     color: var(--action-destructive);
     /* Fica vermelho ao passar o mouse */
 }

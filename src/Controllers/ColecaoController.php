@@ -10,19 +10,23 @@ class ColecaoController {
         $this->service = $service ?? new ColecaoService();
     }
 
-    public function index() {
-        // Captura a página atual
-        $pagina = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
-        
-        // Captura os filtros da URL (titulo, artista_id, tipo_id, situacao_id, etc.)
-        $filtros = $_GET;
-        
-        // Passamos a página e o array de filtros para o Service
-        $dados = $this->service->getGridColecao($pagina, $filtros);
-        
-        extract($dados);
-        include __DIR__ . '/../Views/colecao/grid.php';
+public function index() {
+    $pagina = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
+    
+    // Em vez de apenas $_GET, vamos garantir que o gravadora_id seja tratado
+    $filtros = $_GET;
+    
+    // Se o seu formulário lateral usa "gravadora" (nome) e o gráfico usa "id"
+    // precisamos garantir que o Repository receba o que ele espera.
+    if (isset($_GET['gravadora_id'])) {
+        $filtros['gravadora_id'] = $_GET['gravadora_id'];
     }
+
+    $dados = $this->service->getGridColecao($pagina, $filtros);
+    
+    extract($dados);
+    include __DIR__ . '/../Views/colecao/grid.php';
+}
 
     // NOVO MÉTODO PARA O BOTÃO DE FONE DE OUVIDO
     public function registrarAudicao() {

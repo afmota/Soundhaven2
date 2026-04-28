@@ -90,6 +90,11 @@ switch ($route) {
         $controller->getTopArtistasJson();
         break;
 
+    case 'get_top_gravadoras_json':
+        $controller = new App\Controllers\DashboardController($pdo);
+        $controller->getTopGravadorasJson();
+        break;
+
         default:
         http_response_code(404);
         echo "404 - Página não encontrada no SoundHaven";
