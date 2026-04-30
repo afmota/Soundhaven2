@@ -10,9 +10,18 @@
 </head>
 <body>
     <?php include __DIR__ . '/../partials/header.php'; ?>
+    <?php include __DIR__ . '/../partials/paginacao.php';?>
 
     <div class="page-wrapper">
-        <div class="spacer-left"></div>
+        <div class="spacer-left">
+            <button type="button" class="btn btn-add" onclick="document.getElementById('createModal').style.display='block'">
+                <i class="fas fa-compact-disc" style="font-size: 1.2em; margin-left: -5px; vertical-align: top;"></i>
+                ADICIONAR ÁLBUM
+            </button>
+            <button type="button" class="btn btn-import" onclick="document.getElementById('importModal').style.display='block'">
+                <i class="fas fa-file-csv"></i> IMPORTAR ÁLBUNS
+            </button>
+        </div>
 
         <main class="content">
             <div class="store-grid">
@@ -43,6 +52,7 @@
     <?php include __DIR__ . '/../partials/modal_detalhes.php'; ?>
     <?php include __DIR__ . '/../partials/modal_edicao.php'; ?>
     <?php include __DIR__ . '/../partials/modal_inclusao.php'; ?>
+    <?php include __DIR__ . '/../partials/modal_importacao.php'; ?>
 
     <script src="assets/js/loja.js"></script>
 </body>

@@ -43,16 +43,12 @@ body {
     align-items: flex-start;
     background-color: var(--bg-color);
     gap: 0;
-    padding: 20px;
+    padding: 20px 20px 20px 110px;
     width: 100%;
 }
 
 .page-wrapper > div:last-child {
     flex: 0 0 250px;
-}
-
-.spacer-left {
-    flex: 0 0 20%;
 }
 
 .content {
@@ -175,6 +171,21 @@ body {
     border-color: var(--accent-hover);
 }
 
+.spacer-left {
+    grid-column: 1;
+    width: 250px;
+    margin-right: 20px;
+    background: var(--card-bg);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    position: sticky;
+    top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
 .sidebar-filters {
     grid-column: 3;
     width: 250px;
@@ -230,13 +241,36 @@ body {
     transition: all 0.2s ease; /* Transição global */
 }
 
-.btn-search { width: 100%; background: var(--action-neutral); color: #000; margin-bottom: 10px; }
+.btn-search {
+    background: var(--action-neutral); 
+    width: 100% !important;
+    color: var(--text-secondary); 
+    margin-bottom: 10px;
+}
+
 .btn-search:hover { background: var(--action-neutral-hover); color: var(--text-primary); }
 
+.btn-add { 
+    background: var(--action-positive); 
+    white-space: nowrap;
+    box-sizing: border-box;
+    width: 100% !important;
+}
+
+.btn-add:hover { background: var(--action-positive-hover); }
+
+.btn-import { 
+    background: var(--action-positive); 
+    white-space: nowrap;
+    box-sizing: border-box;
+    width: 100% !important;
+}
+
+.btn-import:hover { background: var(--action-positive-hover); }
+
 .btn-clear { 
-    width: 100%; 
-    background: transparent; 
-    border: 1px solid var(--border-color); 
+    width: 100% !important; 
+    background: var(--action-destructive); 
     color: var(--text-secondary); 
     text-decoration: none;
     display: flex;
@@ -245,6 +279,8 @@ body {
     font-size: 0.8em;
     border-radius: 4px;
 }
+
+.btn-clear:hover { background-color: var(--action-destructive-hover); color: var(--text-primary); } 
 
 .modal { 
     display: none; 
@@ -425,4 +461,3 @@ body {
     flex-shrink: 0;
     background: #121212;
 }
-

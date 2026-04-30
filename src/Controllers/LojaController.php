@@ -26,7 +26,7 @@ class LojaController {
                 $erro = "Erro ao atualizar o álbum.";
             }
 
-            // AÇÃO: CRIAR NOVO (A que faltava!)
+            // AÇÃO: CRIAR NOVO
             if ($action === 'create') {
                 if ($service->criarNovoAlbum($_POST)) {
                     header("Location: ?url=loja");
@@ -41,6 +41,20 @@ class LojaController {
                 if ($id) {
                     $service->deletar($id);
                     header("Location: ?url=loja");
+                    exit;
+                }
+            }
+
+            if ($action === 'import_csv') {
+                if (isset($_FILES['csv_file']) && $_FILES['csv_file']['error'] === UPLOAD_ERR_OK) {
+                    $arquivo = $_FILES['csv_file']['tmp_name'];
+                    if ($service->importarCsv($arquivo)) {
+                        // Sucesso!
+                        header("Location: ?url=loja&msg=import_ok");
+                    } else {
+                        // Erro de processamento
+                        header("Location: ?url=loja&msg=import_error");
+                    }
                     exit;
                 }
             }
@@ -67,7 +81,8 @@ class LojaController {
         $inicioPagina  = $dadosPagina['inicioPagina'];
         $fimPagina     = $dadosPagina['fimPagina'];
 
-        // Dados para popular os Selects (Filtros, Edição e Inclusão)
+        // Dados para popular os Selects (Filtros, Edição e Inclusão do Modal)
+        // Certifique-se de que o seu Modal em grid.php esteja usando estas variáveis
         $artistas   = Artist::all();
         $gravadoras = Label::all();
         $tipos      = Type::all();
