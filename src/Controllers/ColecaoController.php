@@ -25,6 +25,14 @@ public function index() {
     $dados = $this->service->getGridColecao($pagina, $filtros);
     
     extract($dados);
+
+    $valorTotal = $this->service->getValorTotalColecao();
+    $valorFormatado = 'R$ ' . number_format($valorTotal, 2, ',', '.');
+    $maisCaro = $this->service->getDadosAlbumMaisCaro();
+    $tempoTotal = $this->service->getTempoTotalFormatado();
+    $totalFaixas = $this->service->getTotalFaixas();
+    $tempoMedio = $this->service->getTempoMedioFormatado();
+
     include __DIR__ . '/../Views/colecao/grid.php';
 }
 

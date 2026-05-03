@@ -476,4 +476,59 @@ class ColecaoRepository {
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([':id' => (int)$midiaId]);
     }
+
+    public function getValorTotalColecao() {
+        $sql = "SELECT SUM(preco) as total FROM tb_midias WHERE ativo = 1";
+        $stmt = $this->db->query($sql);
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result['total'] ?? 0;
+    }
+
+    public function getTempoTotalColecao() {
+        $sql = "SELECT SUM(TIME_TO_SEC(f.duracao)) as total_segundos 
+                FROM tb_midia_faixas f
+                JOIN tb_midias m ON f.midia_id = m.midia_id
+                WHERE m.ativo = 1";
+        
+        $stmt = $this->db->query($sql);
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        
+        return (int)($result['total_segundos'] ?? 0);
+    }
+
+    public function getTotalFaixasColecao() {
+        $sql = "SELECT COUNT(*) as total_faixas 
+                FROM tb_midia_faixas f
+                JOIN tb_midias m ON f.midia_id = m.midia_id
+                WHERE m.ativo = 1";
+        
+        $stmt = $this->db->query($sql);
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        
+        return (int)($result['total_faixas'] ?? 0);
+    }
+
+    public function getTempoMedioFaixas() {
+        $sql = "SELECT AVG(TIME_TO_SEC(f.duracao)) as media_segundos 
+                FROM tb_midia_faixas f
+                JOIN tb_midias m ON f.midia_id = m.midia_id
+                WHERE m.ativo = 1 AND f.duracao IS NOT NULL";
+        
+        $stmt = $this->db->query($sql);
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        
+        return (float)($result['media_segundos'] ?? 0);
+    }
+
+    public function getAlbumMaisCaro() {
+        $sql = "SELECT a.titulo, m.preco 
+                FROM tb_midias m
+                JOIN tb_albuns a ON m.album_id = a.album_id
+                WHERE m.ativo = 1
+                ORDER BY m.preco DESC
+                LIMIT 1";
+        
+        $stmt = $this->db->query($sql);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
 }

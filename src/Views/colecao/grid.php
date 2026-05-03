@@ -13,10 +13,71 @@
     <?php include __DIR__ . '/../partials/header.php'; ?>
 
     <div class="page-wrapper">
-        <?php include __DIR__ . '/../partials/paginacao.php';?>
         <div class="left-spacer"></div>
 
         <main class="content">
+            <div class="metrics-row" style="display: flex; gap: 15px; width: 100%; margin-bottom: 25px; align-items: stretch;">
+                <div class="card metric-card no-click">
+                    <div class="metric-card-content">
+                        <div>
+                            <div class="metric-value"><?= $valorFormatado ?></div>
+                            <div class="metric-label">Valor da Coleção</div>
+                        </div>
+                        <div class="icon-container cor-1"><i class="fas fa-hand-holding-usd"></i></div>
+                    </div>
+                </div>
+
+                <div class="card metric-card">
+                    <a href="index.php?url=colecao&busca=<?= urlencode($maisCaro['titulo']) ?>" style="text-decoration: none; color: inherit; display: block; width: 100%;">
+                        <div class="metric-card-content">
+                            <div>
+                                <div class="metric-value" style="font-size: 1.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
+                                    <?= $maisCaro['titulo'] ?>
+                                </div>
+                                <div class="metric-label">+ Valioso (<?= $maisCaro['preco'] ?>)</div>
+                            </div>
+                            <div class="icon-container cor-6" style="background-color: #e91e6322; color: #e91e63;">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="card metric-card no-click">
+                    <div class="metric-card-content">
+                        <div>
+                            <div class="metric-value"><?= $tempoTotal ?></div>
+                            <div class="metric-label">Tempo de Audição</div>
+                        </div>
+                        <div class="icon-container cor-2"><i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card metric-card no-click">
+                    <div class="metric-card-content">
+                        <div>
+                            <div class="metric-value"><?= $totalFaixas ?></div>
+                            <div class="metric-label">Músicas (Faixas)</div>
+                        </div>
+                        <div class="icon-container cor-3"><i class="fas fa-list-ol"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card metric-card no-click">
+                    <div class="metric-card-content">
+                        <div>
+                            <div class="metric-value"><?= $tempoMedio ?></div>
+                            <div class="metric-label">Duração Média</div>
+                        </div>
+                        <div class="icon-container cor-4" style="background-color: #3c3cff22; color: #3c3cff;">
+                            <i class="fas fa-stopwatch"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="store-grid">
                 <?php if (empty($albuns)): ?>
                     <p style="grid-column: span 5; text-align: center; color: var(--text-secondary); padding: 50px;">

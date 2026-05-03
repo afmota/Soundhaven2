@@ -160,4 +160,48 @@ class ColecaoService {
     public function marcarComoOuvido($midiaId) {
         return $this->repository->registrarExecucao($midiaId);
     }
+
+    public function getValorTotalColecao() {
+        return $this->repository->getValorTotalColecao();
+    }
+
+    public function getTempoTotalFormatado() {
+        $segundosTotais = $this->repository->getTempoTotalColecao();
+
+        $horas = floor($segundosTotais / 3600);
+        $minutos = floor(($segundosTotais % 3600) / 60);
+        $segundos = $segundosTotais % 60;
+
+        // Retorna no formato: 125h 40m 15s
+        return sprintf("%dh %02dm %02ds", $horas, $minutos, $segundos);
+    }
+
+    public function getTotalFaixas() {
+        return $this->repository->getTotalFaixasColecao();
+    }
+
+    public function getTempoMedioFormatado() {
+        $segundosMedios = $this->repository->getTempoMedioFaixas();
+
+        // Transformamos o float em int explicitamente para calar o aviso
+        $segundosInteiros = (int)round($segundosMedios);
+
+        $minutos = floor($segundosInteiros / 60);
+        $segundos = $segundosInteiros % 60;
+
+        return sprintf("%02d:%02d", $minutos, $segundos);
+    }
+
+    public function getDadosAlbumMaisCaro() {
+        $dados = $this->repository->getAlbumMaisCaro();
+        
+        if (!$dados) {
+            return ['titulo' => 'N/A', 'preco' => 'R$ 0,00'];
+        }
+
+        return [
+            'titulo' => $dados['titulo'],
+            'preco' => 'R$ ' . number_format($dados['preco'], 2, ',', '.')
+        ];
+    }
 }
