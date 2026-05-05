@@ -204,4 +204,21 @@ class ColecaoService {
             'preco' => 'R$ ' . number_format($dados['preco'], 2, ',', '.')
         ];
     }
+
+    public function getDadosAlbumMaisLongo() {
+        $dados = $this->repository->getAlbumMaisLongo();
+        
+        if (!$dados) return null;
+
+        $segundos = $dados['tempo_total_segundos'];
+        $horas = floor($segundos / 3600);
+        $minutos = floor(($segundos % 3600) / 60);
+
+        $tempoFormatado = $horas > 0 ? "{$horas}h {$minutos}m" : "{$minutos}m";
+
+        return [
+            'titulo' => $dados['titulo'],
+            'duracao' => $tempoFormatado
+        ];
+    }
 }

@@ -13,7 +13,31 @@
     <?php include __DIR__ . '/../partials/header.php'; ?>
 
     <div class="page-wrapper">
-        <div class="left-spacer"></div>
+        <div class="spacer-left">
+            <div class="sidebar-metrics">
+                <h3>Destaques</h3>
+
+                <div class="card metric-card sidebar-card">
+                    <a href="index.php?url=colecao&busca=<?= urlencode($albumMaisLongo['titulo']) ?>" 
+                    style="text-decoration: none; color: inherit; display: block;">
+                        <div class="metric-card-content" style="justify-content: flex-start; gap: 10px;">
+                            <div class="icon-container cor-5">
+                                <i class="fas fa-layer-group"></i>
+                            </div>
+                            <div class="metric-info">
+                                <div class="metric-label">Álbum Mais Longo</div>
+                                <div class="metric-value" style="font-size: 1rem; margin-top: 5px;">
+                                    <?= $albumMaisLongo['titulo'] ?>
+                                </div>
+                                <div style="font-size: 0.8rem; color: #338d33; font-weight: bold; margin-top: 5px;">
+                                    <i class="far fa-clock"></i> <?= $albumMaisLongo['duracao'] ?>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
 
         <main class="content">
             <div class="metrics-row" style="display: flex; gap: 15px; width: 100%; margin-bottom: 25px; align-items: stretch;">

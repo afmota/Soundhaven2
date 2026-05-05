@@ -32,6 +32,7 @@ public function index() {
     $tempoTotal = $this->service->getTempoTotalFormatado();
     $totalFaixas = $this->service->getTotalFaixas();
     $tempoMedio = $this->service->getTempoMedioFormatado();
+    $albumMaisLongo = $this->service->getDadosAlbumMaisLongo();
 
     include __DIR__ . '/../Views/colecao/grid.php';
 }

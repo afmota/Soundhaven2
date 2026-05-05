@@ -531,4 +531,20 @@ class ColecaoRepository {
         $stmt = $this->db->query($sql);
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
+
+    public function getAlbumMaisLongo() {
+        $sql = "SELECT 
+                    a.titulo, 
+                    SUM(TIME_TO_SEC(f.duracao)) as tempo_total_segundos
+                FROM tb_midia_faixas f
+                JOIN tb_midias m ON f.midia_id = m.midia_id
+                JOIN tb_albuns a ON m.album_id = a.album_id
+                WHERE m.ativo = 1
+                GROUP BY m.midia_id, a.titulo
+                ORDER BY tempo_total_segundos DESC
+                LIMIT 1";
+        
+        $stmt = $this->db->query($sql);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
 }

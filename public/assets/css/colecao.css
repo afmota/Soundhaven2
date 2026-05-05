@@ -53,6 +53,32 @@ body {
 
 .spacer-left {
     flex: 0 0 20%;
+    flex: 0 0 20%;
+    max-width: 20%;
+    box-sizing: border-box;
+    padding-right: 15px;
+    position: absolute;
+    margin-left: 75px;
+}
+
+.sidebar-metrics {
+    position: sticky;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sidebar-metrics h3 {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-top: 75px;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+.sidebar-card {
+    padding: 15px !important;
+    width: 250px;
 }
 
 .content {
