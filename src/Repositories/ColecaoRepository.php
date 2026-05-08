@@ -547,4 +547,38 @@ class ColecaoRepository {
         $stmt = $this->db->query($sql);
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
+
+    public function getAlbumMaisCurto() {
+        $sql = "SELECT 
+                    a.titulo, 
+                    SUM(TIME_TO_SEC(f.duracao)) as tempo_total_segundos
+                FROM tb_midia_faixas f
+                JOIN tb_midias m ON f.midia_id = m.midia_id
+                JOIN tb_albuns a ON m.album_id = a.album_id
+                WHERE m.ativo = 1
+                GROUP BY a.album_id, a.titulo
+                HAVING tempo_total_segundos > 0
+                ORDER BY tempo_total_segundos ASC
+                LIMIT 1";
+        
+        $stmt = $this->db->query($sql);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    public function getMaiorMusica() {
+        return $this->db->query("SELECT f.titulo as musica, a.titulo as album, f.duracao 
+                                FROM tb_midia_faixas f 
+                                JOIN tb_midias m ON f.midia_id = m.midia_id
+                                JOIN tb_albuns a ON m.album_id = a.album_id
+                                ORDER BY f.duracao DESC LIMIT 1")->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    public function getMenorMusica() {
+        return $this->db->query("SELECT f.titulo as musica, a.titulo as album, f.duracao 
+                                FROM tb_midia_faixas f 
+                                JOIN tb_midias m ON f.midia_id = m.midia_id
+                                JOIN tb_albuns a ON m.album_id = a.album_id
+                                WHERE f.duracao > '00:00:05'
+                                ORDER BY f.duracao ASC LIMIT 1")->fetch(\PDO::FETCH_ASSOC);
+    }
 }

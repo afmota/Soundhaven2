@@ -25,23 +25,80 @@
                                 <i class="fas fa-layer-group"></i>
                             </div>
                             <div class="metric-info">
-                                <div class="metric-label">Álbum Mais Longo</div>
-                                <div class="metric-value" style="font-size: 1rem; margin-top: 5px;">
+                                <div class="metric-label">Maior Álbum</div>
+                                <div class="metric-value">
                                     <?= $albumMaisLongo['titulo'] ?>
                                 </div>
-                                <div style="font-size: 0.8rem; color: #338d33; font-weight: bold; margin-top: 5px;">
+                                <div class="metric-time">
                                     <i class="far fa-clock"></i> <?= $albumMaisLongo['duracao'] ?>
                                 </div>
                             </div>
                         </div>
                     </a>
                 </div>
+
+                <div class="card metric-card sidebar-card">
+                    <div class="metric-card-content" style="justify-content: flex-start; gap: 10px;">
+                        <div class="icon-container cor-2">
+                            <i class="fas fa-compress-arrows-alt"></i>
+                        </div>
+                        <div class="metric-info">
+                            <div class="metric-label">Menor Álbum</div>
+                            <div class="metric-value">
+                                <?= $albumMaisCurto['titulo'] ?>
+                            </div>
+                            <div class="metric-time">
+                                <i class="far fa-clock"></i> <?= $albumMaisCurto['duracao'] ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card metric-card sidebar-card">
+                    <div class="metric-card-content" style="justify-content: flex-start; gap: 10px;">
+                        <div class="icon-container cor-3">
+                            <i class="fas fa-arrows-alt-h"></i>
+                        </div>
+                        <div class="metric-info">
+                            <div class="metric-label">Maior Música</div>
+                            <div class="metric-value" title="<?= $maiorMusica['musica'] ?> "style="font-size: 0.9rem; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px;">
+                                <?= $maiorMusica['musica'] ?>
+                            </div>
+                            <div style="font-size: 0.75rem; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; margin-top: 5px;">
+                                <?= $maiorMusica['album'] ?>
+                            </div>
+                            <div style="font-size: 0.8rem; color: #338d33; font-weight: bold; margin-top: 5px;">
+                                <i class="far fa-clock"></i> <?= $maiorMusica['duracao'] ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card metric-card sidebar-card">
+                    <div class="metric-card-content" style="justify-content: flex-start; gap: 10px;">
+                        <div class="icon-container cor-4">
+                            <i class="fas fa-compress"></i>
+                        </div>
+                        <div class="metric-info">
+                            <div class="metric-label">Menor Música</div>
+                            <div class="metric-value" title="<?= $menorMusica['musica'] ?>" style="font-size: 0.9rem; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px;">
+                                <?= $menorMusica['musica'] ?>
+                            </div>
+                            <div style="font-size: 0.75rem; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; margin-top: 5px;">
+                                <?= $menorMusica['album'] ?>
+                            </div>
+                            <div style="font-size: 0.8rem; color: #338d33; font-weight: bold; margin-top: 5px;">
+                                <i class="far fa-clock"></i> <?= $menorMusica['duracao'] ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <main class="content">
             <div class="metrics-row" style="display: flex; gap: 15px; width: 100%; margin-bottom: 25px; align-items: stretch;">
-                <div class="card metric-card no-click">
+                <div class="card metric-card metric-row-card">
                     <div class="metric-card-content">
                         <div>
                             <div class="metric-value"><?= $valorFormatado ?></div>
@@ -51,7 +108,7 @@
                     </div>
                 </div>
 
-                <div class="card metric-card">
+                <div class="card metric-card metric-row-card">
                     <a href="index.php?url=colecao&busca=<?= urlencode($maisCaro['titulo']) ?>" style="text-decoration: none; color: inherit; display: block; width: 100%;">
                         <div class="metric-card-content">
                             <div>
@@ -67,7 +124,7 @@
                     </a>
                 </div>
 
-                <div class="card metric-card no-click">
+                <div class="card metric-card metric-row-card">
                     <div class="metric-card-content">
                         <div>
                             <div class="metric-value"><?= $tempoTotal ?></div>
@@ -78,7 +135,7 @@
                     </div>
                 </div>
 
-                <div class="card metric-card no-click">
+                <div class="card metric-card metric-row-card">
                     <div class="metric-card-content">
                         <div>
                             <div class="metric-value"><?= $totalFaixas ?></div>
@@ -89,7 +146,7 @@
                     </div>
                 </div>
 
-                <div class="card metric-card no-click">
+                <div class="card metric-card metric-row-card">
                     <div class="metric-card-content">
                         <div>
                             <div class="metric-value"><?= $tempoMedio ?></div>

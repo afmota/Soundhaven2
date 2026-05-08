@@ -221,4 +221,37 @@ class ColecaoService {
             'duracao' => $tempoFormatado
         ];
     }
+
+    public function getDadosAlbumMaisCurto() {
+        $dados = $this->repository->getAlbumMaisCurto();
+        
+        if (!$dados) return null;
+
+        $segundos = $dados['tempo_total_segundos'];
+        $minutos = floor($segundos / 60);
+        $segundosRestantes = $segundos % 60;
+
+        return [
+            'titulo' => $dados['titulo'],
+            'duracao' => "{$minutos}m " . str_pad($segundosRestantes, 2, '0', STR_PAD_LEFT) . "s"
+        ];
+    }
+
+    public function estatisticasSimples() {
+        $maior = $this->repository->getMaiorMusica();
+        $menor = $this->repository->getMenorMusica();
+
+        return [
+            'maior' => [
+                'musica' => $maior['musica'] ?? 'N/A',
+                'album'  => $maior['album'] ?? '---',
+                'duracao' => isset($maior['duracao']) ? substr($maior['duracao'], 3) : '--:--'
+            ],
+            'menor' => [
+                'musica' => $menor['musica'] ?? 'N/A',
+                'album'  => $menor['album'] ?? '---',
+                'duracao' => isset($menor['duracao']) ? substr($menor['duracao'], 3) : '--:--'
+            ]
+        ];
+    }
 }

@@ -10,32 +10,39 @@ class ColecaoController {
         $this->service = $service ?? new ColecaoService();
     }
 
-public function index() {
-    $pagina = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
-    
-    // Em vez de apenas $_GET, vamos garantir que o gravadora_id seja tratado
-    $filtros = $_GET;
-    
-    // Se o seu formulário lateral usa "gravadora" (nome) e o gráfico usa "id"
-    // precisamos garantir que o Repository receba o que ele espera.
-    if (isset($_GET['gravadora_id'])) {
-        $filtros['gravadora_id'] = $_GET['gravadora_id'];
+    public function index() {
+        $pagina = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
+        
+        // Em vez de apenas $_GET, vamos garantir que o gravadora_id seja tratado
+        $filtros = $_GET;
+        
+        // Se o seu formulário lateral usa "gravadora" (nome) e o gráfico usa "id"
+        // precisamos garantir que o Repository receba o que ele espera.
+        if (isset($_GET['gravadora_id'])) {
+            $filtros['gravadora_id'] = $_GET['gravadora_id'];
+        }
+
+        $dados = $this->service->getGridColecao($pagina, $filtros);
+        
+        extract($dados);
+
+        $valorTotal = $this->service->getValorTotalColecao();
+        $valorFormatado = 'R$ ' . number_format($valorTotal, 2, ',', '.');
+        $maisCaro = $this->service->getDadosAlbumMaisCaro();
+
+        $tempoTotal = $this->service->getTempoTotalFormatado();
+        $totalFaixas = $this->service->getTotalFaixas();
+        $tempoMedio = $this->service->getTempoMedioFormatado();
+
+        $albumMaisLongo = $this->service->getDadosAlbumMaisLongo();
+        $albumMaisCurto = $this->service->getDadosAlbumMaisCurto();
+
+        $estatisticasFaixas = $this->service->estatisticasSimples();
+        $maiorMusica = $estatisticasFaixas['maior'];
+        $menorMusica = $estatisticasFaixas['menor'];
+
+        include __DIR__ . '/../Views/colecao/grid.php';
     }
-
-    $dados = $this->service->getGridColecao($pagina, $filtros);
-    
-    extract($dados);
-
-    $valorTotal = $this->service->getValorTotalColecao();
-    $valorFormatado = 'R$ ' . number_format($valorTotal, 2, ',', '.');
-    $maisCaro = $this->service->getDadosAlbumMaisCaro();
-    $tempoTotal = $this->service->getTempoTotalFormatado();
-    $totalFaixas = $this->service->getTotalFaixas();
-    $tempoMedio = $this->service->getTempoMedioFormatado();
-    $albumMaisLongo = $this->service->getDadosAlbumMaisLongo();
-
-    include __DIR__ . '/../Views/colecao/grid.php';
-}
 
     // NOVO MÉTODO PARA O BOTÃO DE FONE DE OUVIDO
     public function registrarAudicao() {
