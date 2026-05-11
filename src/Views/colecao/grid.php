@@ -196,13 +196,49 @@
                 <?php endif; ?>
             </div>
         </main>
-        <?php include __DIR__ . '/../partials/paginacao.php';?>
+
+        <aside class="spacer-right">
+            <div class="card metric-card metric-row-card" onclick="abrirModalDecadas()" style="cursor: pointer; margin-bottom: 15px; border-right: 4px solid #3c3cff;">
+                <div class="metric-card-content" style="justify-content: flex-start; gap: 10px;">
+                    <div class="icon-container" style="background-color: #3c3cff22; color: #3c3cff;">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <div class="metric-info">
+                        <div class="metric-label">Distribuição</div>
+                        <div class="metric-value" style="font-size: 1rem;">Por Década</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card metric-card metric-row-card" onclick="abrirModalAnos()" style="cursor: pointer; margin-bottom: 15px; border-right: 4px solid #338d33;">
+                <div class="metric-card-content" style="justify-content: flex-start; gap: 10px;">
+                    <div class="icon-container" style="background-color: #338d3322; color: #338d33;">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="metric-info">
+                        <div class="metric-label">Aquisições</div>
+                        <div class="metric-value" style="font-size: 1rem;">Por Ano</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
     </div>
+    <?php include __DIR__ . '/../partials/paginacao.php';?>
+
 
     <?php include __DIR__ . '/../partials/modal_detalhes_colecao.php'; ?>
+    <?php include __DIR__ . '/../partials/modal_grafico_decada.php'; ?>
+    <?php include __DIR__ . '/../partials/modal_grafico_anos.php'; ?>
     <?php include __DIR__ . '/../partials/footer.php'; ?>
     
-    <script src="assets/js/functions.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const dadosDecadas = <?= $jsonDecadas ?>;
+        const dadosAquisicoes = <?= $jsonAquisicoes ?>;
+    </script>
+
+<script src="assets/js/functions.js"></script>
     <script src="assets/js/colecao.js"></script>
 </body>
 </html>

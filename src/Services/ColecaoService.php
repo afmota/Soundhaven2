@@ -254,4 +254,38 @@ class ColecaoService {
             ]
         ];
     }
+
+    public function getDadosGraficoDecadas() {
+        $dados = $this->repository->getDistribuicaoDecadas();
+        
+        $labels = [];
+        $valores = [];
+
+    foreach ($dados as $linha) {
+        $labels[] = $linha['decada'] . 's';
+        $valores[] = (int)$linha['total']; // Força ser inteiro aqui
+    }
+
+        return [
+            'labels' => $labels,
+            'datasets' => $valores
+        ];
+    }
+
+    public function getDadosGraficoAquisicoes() {
+        $dados = $this->repository->getAquisicoesPorAno();
+        
+        $labels = [];
+        $valores = [];
+
+        foreach ($dados as $linha) {
+            $labels[] = $linha['ano'];
+            $valores[] = (int)$linha['total'];
+        }
+
+        return [
+            'labels' => $labels,
+            'datasets' => $valores
+        ];
+    }
 }

@@ -581,4 +581,35 @@ class ColecaoRepository {
                                 WHERE f.duracao > '00:00:05'
                                 ORDER BY f.duracao ASC LIMIT 1")->fetch(\PDO::FETCH_ASSOC);
     }
+
+    public function getDistribuicaoDecadas() {
+        // Agora filtrando apenas o que está na tb_midias (sua coleção real)
+        $sql = "SELECT 
+                    FLOOR(YEAR(a.data_lancamento) / 10) * 10 as decada, 
+                    COUNT(m.midia_id) as total 
+                FROM tb_albuns a
+                INNER JOIN tb_midias m ON a.album_id = m.album_id
+                WHERE a.deletado = 0 
+                AND a.data_lancamento IS NOT NULL 
+                AND a.data_lancamento > '1900-01-01'
+                GROUP BY decada 
+                ORDER BY decada ASC";
+        
+        return $this->db->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function getAquisicoesPorAno() {
+        $sql = "SELECT 
+                    YEAR(data_aquisicao) as ano, 
+                    COUNT(*) as total 
+                FROM tb_midias 
+                WHERE ativo = 1 
+                AND data_aquisicao IS NOT NULL 
+                AND data_aquisicao > '1900-01-01'
+                GROUP BY ano 
+                ORDER BY ano ASC";
+        
+        return $this->db->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
 }
