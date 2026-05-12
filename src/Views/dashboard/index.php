@@ -89,12 +89,12 @@
                     </div>
                 </div>
                 <div class="card chart-card">
-                    <h3 class="chart-title"><i class="fas fa-building"></i> Top 5 Produtores</h3>
-                    <div id="containerChartTopProdutores"
+                    <h3 class="chart-title"><i class="fas fa-compact-disc"></i> Top 5 Gêneros</h3>
+                    <div id="containerChartTopGeneros"
                         class="chart-container"
                         style="position: relative; height:180px;"
-                        data-produtores='<?= json_encode($top_produtores) ?>'>
-                        <canvas id="chartTopProdutores"></canvas>
+                        data-generos='<?= json_encode($top_generos) ?>'>
+                        <canvas id="chartTopGeneros"></canvas>
                     </div>
                 </div>
                 <div class="card chart-card">

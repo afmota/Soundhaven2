@@ -7,11 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
     itensNiver.forEach(item => {
         item.addEventListener('click', () => {
             const album = JSON.parse(item.dataset.album);
-            
+
             // Aqui chamamos a mesma lógica que você já tem no colecao.js
             // Se as funções de preencher modal forem globais, basta usá-las.
             // Caso contrário, usamos este atalho:
-            
+
             exibirDetalhesNoModal(album);
         });
     });
@@ -28,10 +28,10 @@ document.addEventListener('DOMContentLoaded', () => {
         btnDescartar.onclick = async () => {
             const midiaId = modal.getAttribute('data-current-midia-id');
             if (!midiaId || !confirm('Remover este álbum da coleção?')) return;
-            
+
             const formData = new URLSearchParams();
             formData.append('midia_id', midiaId);
-            
+
             try {
                 const res = await fetch('index.php?url=descartar_album', { method: 'POST', body: formData });
                 const data = await res.json();
@@ -45,15 +45,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 1. Localiza o container que guarda os dados
     const container = document.getElementById('containerChartTopArtistas');
-    
+
     if (container && container.dataset.artistas) {
         try {
             // 2. Faz o parse do JSON que está no atributo data-artistas
             const dadosTopArtistas = JSON.parse(container.dataset.artistas);
-            
+
             if (dadosTopArtistas.length > 0) {
                 const ctx = document.getElementById('chartTopArtistas').getContext('2d');
-                
+
                 new Chart(ctx, {
                     type: 'bar',
                     data: {
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             if (elements.length > 0) {
                                 const index = elements[0].index;
                                 const artistaSelecionado = dadosTopArtistas[index];
-                                
+
                                 // Redireciona para a coleção passando o artista_id
                                 // Usamos artista_id se disponível, ou id como fallback
                                 const id = artistaSelecionado.artista_id || artistaSelecionado.id;
@@ -159,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 const index = elements[0].index;
                                 const gravadoraSelecionada = dadosTopGravadoras[index];
                                 const id = gravadoraSelecionada.gravadora_id;
-                                
+
                                 if (id) {
                                     // Redireciona para a coleção filtrando pela gravadora
                                     window.location.href = `index.php?url=colecao&gravadora_id=${id}`;
@@ -188,29 +188,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- Gráfico Top 5 Produtores ---
-    const containerProdutores = document.getElementById('containerChartTopProdutores');
+    // --- Gráfico Top 5 Gêneros ---
+    const containerGeneros = document.getElementById('containerChartTopGeneros');
 
-    if (containerProdutores && containerProdutores.dataset.produtores) {
+    if (containerGeneros && containerGeneros.dataset.generos) {
         try {
-            const dadosTopProdutores = JSON.parse(containerProdutores.dataset.produtores);
+            const dadosTopGeneros = JSON.parse(containerGeneros.dataset.generos);
 
-            if (dadosTopProdutores.length > 0) {
-                const ctxProdutores = document.getElementById('chartTopProdutores').getContext('2d');
+            if (dadosTopGeneros.length > 0) {
+                const ctxGeneros = document.getElementById('chartTopGeneros').getContext('2d');
 
-                new Chart(ctxProdutores, {
+                new Chart(ctxGeneros, {
                     type: 'bar',
                     data: {
-                        labels: dadosTopProdutores.map(item => item.produtor),
+                        labels: dadosTopGeneros.map(item => item.genero),
                         datasets: [{
                             label: 'Mídias',
-                            data: dadosTopProdutores.map(item => item.total),
+                            data: dadosTopGeneros.map(item => item.total),
                             backgroundColor: [
-                                '#ef4444',  // Vermelho
+                                '#ef4444', // Vermelho
                                 '#f59e0b', // Laranja
                                 '#10b981', // Verde
                                 '#3b82f6', // Azul
-                                '#8b5cf6' // Roxo
+                                '#8b5cf6'  // Roxo
                             ],
                             borderWidth: 0,
                             borderRadius: 5,
@@ -218,18 +218,18 @@ document.addEventListener('DOMContentLoaded', () => {
                         }]
                     },
                     options: {
-                        indexAxis: 'y', // Mantém o estilo horizontal
+                        indexAxis: 'y',
                         responsive: true,
                         maintainAspectRatio: false,
                         onClick: (evt, elements) => {
                             if (elements.length > 0) {
                                 const index = elements[0].index;
-                                const produtorSelecionado = dadosTopProdutores[index];
-                                const id = produtorSelecionado.produtor_id;
-                               
+                                const generoSelecionado = dadosTopGeneros[index];
+                                const id = generoSelecionado.genero_id;
+
                                 if (id) {
-                                    // Redireciona passando o parâmetro produtor_id
-                                    window.location.href = `index.php?url=colecao&produtor_id=${id}`;
+                                    // Redireciona para a coleção filtrando pelo gênero
+                                    window.location.href = `index.php?url=colecao&genero_id=${id}`;
                                 }
                             }
                         },
@@ -251,14 +251,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         } catch (e) {
-            console.error("Erro ao processar dados dos produtores:", e);
+            console.error("Erro ao processar dados dos gêneros:", e);
         }
     }
 
     const containerFormatos = document.getElementById('containerChartFormatos');
     if (containerFormatos) {
         const dadosRaw = JSON.parse(containerFormatos.dataset.formatos);
-        
+
         // Mapeia os labels (CD, LP) e os valores (quantidades)
         const labels = dadosRaw.map(item => item.formato);
         const valores = dadosRaw.map(item => item.total);
@@ -269,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 labels: labels,
                 datasets: [{
                     data: valores,
-                    backgroundColor: ['#3c3cff', '#338d33'], // Azul para CD, Verde para LP
+                    backgroundColor: ['#3c3cff', '#338d33', '#ef4444'], // Azul para CD, Verde para LP, Vermelho para CD-R
                     borderWidth: 0,
                     hoverOffset: 5
                 }]
@@ -285,7 +285,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         // Mapeamento de ID baseado no nome do formato
                         // Vinil/LP costuma ser 1, CD costuma ser 2 no seu banco
-                        let formatoId = (formatoNome === 'LP' || formatoNome === 'Vinil') ? 1 : 2;
+                        //let formatoId = (formatoNome === 'LP' || formatoNome === 'Vinil') ? 1 : 2;
+                        switch (formatoNome.toLowerCase()) {
+                            case 'lp':
+                            case 'vinil':
+                                formatoId = 1;
+                                break;
+                            case 'cd':
+                                formatoId = 2;
+                                break;
+                            case 'cd-r':
+                                formatoId = 3;
+                                break;
+                            default:
+                                formatoId = null; // Ou algum ID genérico
+                                break;
+                        }
 
                         window.location.href = `index.php?url=colecao&formato_id=${formatoId}`;
                     }
@@ -336,7 +351,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const response = await fetch(`index.php?url=get_top_artistas_json&limit=${limit}`);
         const dados = await response.json();
         const ctx = document.getElementById('chartModalArtistas').getContext('2d');
-        
+
         if (chartModalInstance) chartModalInstance.destroy();
 
         chartModalInstance = new Chart(ctx, {
@@ -362,59 +377,59 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-/** GRÁFICO DAS GRAVADORAS */
-const cardGravadoras = document.getElementById('cardTotalGravadoras'); // Certifique-se que o card tenha este ID
-const modalGravadoras = document.getElementById('modalGraficoGravadoras');
-const closeBtnGrav = document.querySelector('.close-modal-gravadoras');
-const btnAtualizarGrav = document.getElementById('btnAtualizarGravadoras');
-let chartGravInstance = null;
+    /** GRÁFICO DAS GRAVADORAS */
+    const cardGravadoras = document.getElementById('cardTotalGravadoras'); // Certifique-se que o card tenha este ID
+    const modalGravadoras = document.getElementById('modalGraficoGravadoras');
+    const closeBtnGrav = document.querySelector('.close-modal-gravadoras');
+    const btnAtualizarGrav = document.getElementById('btnAtualizarGravadoras');
+    let chartGravInstance = null;
 
-if (cardGravadoras && modalGravadoras) {
-    cardGravadoras.addEventListener('click', () => {
-        modalGravadoras.style.display = 'block';
-        renderizarGraficoGravadoras(10);
-    });
-}
+    if (cardGravadoras && modalGravadoras) {
+        cardGravadoras.addEventListener('click', () => {
+            modalGravadoras.style.display = 'block';
+            renderizarGraficoGravadoras(10);
+        });
+    }
 
-if (closeBtnGrav) closeBtnGrav.onclick = () => modalGravadoras.style.display = 'none';
+    if (closeBtnGrav) closeBtnGrav.onclick = () => modalGravadoras.style.display = 'none';
 
-if (btnAtualizarGrav) {
-    btnAtualizarGrav.addEventListener('click', () => {
-        const limit = document.getElementById('selectLimitGravadoras').value;
-        renderizarGraficoGravadoras(limit);
-    });
-}
+    if (btnAtualizarGrav) {
+        btnAtualizarGrav.addEventListener('click', () => {
+            const limit = document.getElementById('selectLimitGravadoras').value;
+            renderizarGraficoGravadoras(limit);
+        });
+    }
 
-async function renderizarGraficoGravadoras(limit) {
-    const response = await fetch(`index.php?url=get_top_gravadoras_json&limit=${limit}`);
-    const dados = await response.json();
-    const ctx = document.getElementById('chartModalGravadoras').getContext('2d');
-    
-    if (chartGravInstance) chartGravInstance.destroy();
+    async function renderizarGraficoGravadoras(limit) {
+        const response = await fetch(`index.php?url=get_top_gravadoras_json&limit=${limit}`);
+        const dados = await response.json();
+        const ctx = document.getElementById('chartModalGravadoras').getContext('2d');
 
-    chartGravInstance = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: dados.map(d => d.gravadora),
-            datasets: [{
-                label: 'Álbuns por Gravadora',
-                data: dados.map(d => d.total),
-                backgroundColor: '#3dff2b' // Cor de sucesso do SoundHaven
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            onClick: (evt, elements) => {
-                if (elements.length > 0) {
-                    const id = dados[elements[0].index].gravadora_id;
-                    // Redireciona para o grid filtrado pela gravadora
-                    window.location.href = `index.php?url=colecao&gravadora_id=${id}`;
+        if (chartGravInstance) chartGravInstance.destroy();
+
+        chartGravInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: dados.map(d => d.gravadora),
+                datasets: [{
+                    label: 'Álbuns por Gravadora',
+                    data: dados.map(d => d.total),
+                    backgroundColor: '#3dff2b' // Cor de sucesso do SoundHaven
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                onClick: (evt, elements) => {
+                    if (elements.length > 0) {
+                        const id = dados[elements[0].index].gravadora_id;
+                        // Redireciona para o grid filtrado pela gravadora
+                        window.location.href = `index.php?url=colecao&gravadora_id=${id}`;
+                    }
                 }
             }
-        }
-    });
-}
+        });
+    }
 
     // --- Lógica do Modal de Abrangência (Linha do Tempo) ---
     const btnAnos = document.getElementById('btnAbrirModalAnos');
@@ -424,11 +439,11 @@ async function renderizarGraficoGravadoras(limit) {
 
     if (btnAnos && modalAnos) {
         // Usando addEventListener para garantir que não sobrescreva outros cliques
-        btnAnos.addEventListener('click', function() {
+        btnAnos.addEventListener('click', function () {
             console.log("Clique detectado! Abrindo modal...");
-            
+
             modalAnos.style.display = 'block';
-            
+
             const dadosRaw = this.dataset.anos;
             if (!dadosRaw) {
                 console.error("Dados 'data-anos' não encontrados no card.");
@@ -437,7 +452,7 @@ async function renderizarGraficoGravadoras(limit) {
 
             const dadosAnos = JSON.parse(dadosRaw);
             const canvas = document.getElementById('chartLinhaTempo');
-            
+
             if (!canvas) {
                 console.error("Canvas 'chartLinhaTempo' não encontrado dentro do modal!");
                 return;
@@ -469,14 +484,14 @@ async function renderizarGraficoGravadoras(limit) {
                         }
                     },
                     scales: {
-                        y: { 
-                            beginAtZero: true, 
+                        y: {
+                            beginAtZero: true,
                             grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                            ticks: { color: '#aaa', stepSize: 1 } 
+                            ticks: { color: '#aaa', stepSize: 1 }
                         },
-                        x: { 
+                        x: {
                             grid: { display: false },
-                            ticks: { color: '#fff' } 
+                            ticks: { color: '#fff' }
                         }
                     },
                     plugins: {
@@ -501,21 +516,21 @@ async function renderizarGraficoGravadoras(limit) {
 
 function exibirDetalhesNoModal(album) {
     const modal = document.getElementById('modalDetalhesColecao');
-    if(!modal) return;
+    if (!modal) return;
 
     // Seta o ID da mídia para os botões de Editar/Descartar funcionarem
     modal.setAttribute('data-current-midia-id', album.midia_id || album.id);
 
     document.getElementById('detalheCapa').src = album.capa_url || 'assets/images/placeholder.jpg';
-    
-    const setTxt = (id, text) => { if(document.getElementById(id)) document.getElementById(id).textContent = text || 'N/D'; };
-    
+
+    const setTxt = (id, text) => { if (document.getElementById(id)) document.getElementById(id).textContent = text || 'N/D'; };
+
     setTxt('detalheTitulo', album.titulo);
     setTxt('detalheArtista', album.artista_nome);
     setTxt('detalheGravadora', album.gravadora_nome);
     setTxt('detalheCatalogo', album.numero_catalogo);
     setTxt('detalheObservacoes', album.observacoes);
-    
+
     // Datas formatadas
     const formatarData = (dataStr) => dataStr ? new Date(dataStr + 'T12:00:00').toLocaleDateString('pt-BR') : 'N/D';
     setTxt('detalheLancamento', formatarData(album.data_lancamento));
@@ -527,7 +542,7 @@ function exibirDetalhesNoModal(album) {
 
     // Formato
     const tag = document.getElementById('detalheFormatoTag');
-    if(tag) {
+    if (tag) {
         tag.textContent = album.formato_nome || '';
         tag.style.backgroundColor = album.formato_cor || '#666';
     }
@@ -535,9 +550,9 @@ function exibirDetalhesNoModal(album) {
     // Tags (Gêneros, Estilos, Produtores)
     const renderTags = (containerId, str) => {
         const c = document.getElementById(containerId);
-        if(!c) return;
+        if (!c) return;
         c.innerHTML = '';
-        if(!str) { c.innerHTML = '<span class="no-data">N/D</span>'; return; }
+        if (!str) { c.innerHTML = '<span class="no-data">N/D</span>'; return; }
         str.split('|').forEach(t => {
             const s = document.createElement('span');
             s.className = 'tag-item';

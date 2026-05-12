@@ -13,18 +13,19 @@ class ColecaoController {
     public function index() {
         $pagina = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
         
-        // Em vez de apenas $_GET, vamos garantir que o gravadora_id seja tratado
+        // Pegamos tudo que veio via GET (filtros de gênero, gravadora, formato, etc.)
         $filtros = $_GET;
+
+        // O service agora recebe o array completo de filtros
+        $dados = $this->service->getGridColecao($pagina, $filtros);
         
+        extract($dados);
+    
         // Se o seu formulário lateral usa "gravadora" (nome) e o gráfico usa "id"
         // precisamos garantir que o Repository receba o que ele espera.
         if (isset($_GET['gravadora_id'])) {
             $filtros['gravadora_id'] = $_GET['gravadora_id'];
         }
-
-        $dados = $this->service->getGridColecao($pagina, $filtros);
-        
-        extract($dados);
 
         $valorTotal = $this->service->getValorTotalColecao();
         $valorFormatado = 'R$ ' . number_format($valorTotal, 2, ',', '.');

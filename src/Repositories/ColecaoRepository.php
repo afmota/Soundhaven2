@@ -59,14 +59,15 @@ class ColecaoRepository {
             $params[':titulo'] = '%' . $filtros['titulo'] . '%';
         }
 
-        if (!empty($filtros['produtor_id'])) {
-            // Como é uma relação N:N, usamos um EXISTS para filtrar álbuns que tenham esse produtor
+        if (!empty($filtros['genero_id'])) {
+            // Usamos EXISTS porque um álbum pode ter vários gêneros, 
+            // e queremos apenas os que contenham o ID selecionado.
             $sql .= " AND EXISTS (
-                SELECT 1 FROM tb_album_produtores tap 
-                WHERE tap.album_id = ta.album_id 
-                AND tap.produtor_id = :produtor_id
+                SELECT 1 FROM tb_album_generos tag 
+                WHERE tag.album_id = ta.album_id 
+                AND tag.genero_id = :genero_id
             )";
-            $params[':produtor_id'] = (int)$filtros['produtor_id'];
+            $params[':genero_id'] = (int)$filtros['genero_id'];
         }
 
         if (!empty($filtros['formato_id'])) {

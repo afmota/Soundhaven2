@@ -107,33 +107,37 @@ class DashboardRepository {
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-        public function buscarTopGravadoras($limit = 5) {
-            $sql = "SELECT
-                        tg.gravadora_id,
-                        tg.nome AS gravadora,
-                        COUNT(tm.gravadora_id) AS total
-                    FROM tb_midias AS tm
-                    INNER JOIN tb_gravadoras AS tg ON tm.gravadora_id = tg.gravadora_id
-                    GROUP BY tg.gravadora_id, tg.nome
-                    ORDER BY total DESC
-                    LIMIT :limit";
-        
-            $stmt = $this->db->prepare($sql);
-            $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
-            $stmt->execute();
-            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        }
-
-    public function buscarTopProdutores($limit = 5) {
+    public function buscarTopGravadoras($limit = 5) {
         $sql = "SELECT
-                    tap.produtor_id,
-                    tp.nome as produtor,
-                    COUNT(tap.produtor_id) as total
-                FROM tb_album_produtores tap
-                INNER JOIN tb_produtores tp ON tap.produtor_id = tp.produtor_id
-                GROUP BY tap.produtor_id, tp.nome
+                    tg.gravadora_id,
+                    tg.nome AS gravadora,
+                    COUNT(tm.gravadora_id) AS total
+                FROM tb_midias AS tm
+                INNER JOIN tb_gravadoras AS tg ON tm.gravadora_id = tg.gravadora_id
+                GROUP BY tg.gravadora_id, tg.nome
                 ORDER BY total DESC
-                LIMIT  :limit";
+                LIMIT :limit";
+    
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function buscarTopGeneros($limit = 5) {
+        $sql = "SELECT 
+                    tg.genero_id, 
+                    tg.descricao as genero, 
+                    COUNT(m.midia_id) as total
+                FROM tb_generos tg
+                INNER JOIN tb_album_generos tag ON tg.genero_id = tag.genero_id
+                INNER JOIN tb_albuns a ON tag.album_id = a.album_id
+                INNER JOIN tb_midias m ON a.album_id = m.album_id
+                WHERE a.deletado = 0 
+                AND m.ativo = 1
+                GROUP BY tg.genero_id, tg.descricao
+                ORDER BY total DESC
+                LIMIT :limit";
 
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
