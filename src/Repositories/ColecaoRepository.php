@@ -60,8 +60,6 @@ class ColecaoRepository {
         }
 
         if (!empty($filtros['genero_id'])) {
-            // Usamos EXISTS porque um álbum pode ter vários gêneros, 
-            // e queremos apenas os que contenham o ID selecionado.
             $sql .= " AND EXISTS (
                 SELECT 1 FROM tb_album_generos tag 
                 WHERE tag.album_id = ta.album_id 

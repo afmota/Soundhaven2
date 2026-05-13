@@ -16,6 +16,10 @@ class ColecaoController {
         // Pegamos tudo que veio via GET (filtros de gênero, gravadora, formato, etc.)
         $filtros = $_GET;
 
+        if (!empty($_GET['busca'])) {
+            $filtros['titulo'] = $_GET['busca'];
+        }
+
         // O service agora recebe o array completo de filtros
         $dados = $this->service->getGridColecao($pagina, $filtros);
         

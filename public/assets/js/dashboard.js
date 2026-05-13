@@ -361,7 +361,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 datasets: [{
                     label: 'Álbuns por Artista',
                     data: dados.map(d => d.total),
-                    backgroundColor: '#3c3cff'
+                    backgroundColor: '#10b981',
+                    borderWidth: 0,
+                    borderRadius: 8
                 }]
             },
             options: {
@@ -414,7 +416,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 datasets: [{
                     label: 'Álbuns por Gravadora',
                     data: dados.map(d => d.total),
-                    backgroundColor: '#3dff2b' // Cor de sucesso do SoundHaven
+                    backgroundColor: '#8b5cf6',
+                    borderWidth: 0,
+                    borderRadius: 8
                 }]
             },
             options: {

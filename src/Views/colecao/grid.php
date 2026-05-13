@@ -38,20 +38,23 @@
                 </div>
 
                 <div class="card metric-card sidebar-card">
-                    <div class="metric-card-content" style="justify-content: flex-start; gap: 10px;">
-                        <div class="icon-container cor-2">
-                            <i class="fas fa-compress-arrows-alt"></i>
-                        </div>
-                        <div class="metric-info">
-                            <div class="metric-label">Menor Álbum</div>
-                            <div class="metric-value">
-                                <?= $albumMaisCurto['titulo'] ?>
+                    <a href="index.php?url=colecao&busca=<?= urlencode($albumMaisCurto['titulo']) ?>" 
+                    style="text-decoration: none; color: inherit; display: block;">
+                        <div class="metric-card-content" style="justify-content: flex-start; gap: 10px;">
+                            <div class="icon-container cor-2">
+                                <i class="fas fa-compress-arrows-alt"></i>
                             </div>
-                            <div class="metric-time">
-                                <i class="far fa-clock"></i> <?= $albumMaisCurto['duracao'] ?>
+                            <div class="metric-info">
+                                <div class="metric-label">Menor Álbum</div>
+                                <div class="metric-value">
+                                    <?= $albumMaisCurto['titulo'] ?>
+                                </div>
+                                <div class="metric-time">
+                                    <i class="far fa-clock"></i> <?= $albumMaisCurto['duracao'] ?>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
 
                 <div class="card metric-card sidebar-card">
@@ -98,7 +101,7 @@
 
         <main class="content">
             <div class="metrics-row" style="display: flex; gap: 15px; width: 100%; margin-bottom: 25px; align-items: stretch;">
-                <div class="card metric-card metric-row-card">
+                <a href="index.php?url=colecao" class="card metric-card metric-row-card" style="text-decoration: none; color: inherit;">
                     <div class="metric-card-content">
                         <div>
                             <div class="metric-value"><?= $valorFormatado ?></div>
@@ -106,7 +109,7 @@
                         </div>
                         <div class="icon-container cor-1"><i class="fas fa-hand-holding-usd"></i></div>
                     </div>
-                </div>
+                </a>
 
                 <div class="card metric-card metric-row-card">
                     <a href="index.php?url=colecao&busca=<?= urlencode($maisCaro['titulo']) ?>" style="text-decoration: none; color: inherit; display: block; width: 100%;">

@@ -35,7 +35,8 @@ window.abrirModalDecadas = function() {
                 data: dadosDecadas.datasets,
                 backgroundColor: '#3b82f6',
                 borderColor: '#3b82f6',
-                borderWidth: 1
+                borderWidth: 1,
+                borderRadius: 8
             }]
         },
         options: {
@@ -92,7 +93,7 @@ window.abrirModalAnos = function() {
                 borderColor: '#338d33',
                 backgroundColor: '#338d3322',
                 fill: true,
-                tension: 0.4,
+                tension: 0,
                 pointRadius: 5,
                 pointBackgroundColor: '#338d33'
             }]
