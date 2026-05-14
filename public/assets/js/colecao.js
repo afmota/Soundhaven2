@@ -42,19 +42,29 @@ window.abrirModalDecadas = function() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            // --- ATIVAR CURSOR DE CLIQUE AO PASSAR NAS BARRAS ---
+            onHover: (event, chartElement) => {
+                event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+            },
+            // --- A MACUMBA DO CLIQUE AQUI ---
+            onClick: (evt, elementos) => {
+                if (elementos.length > 0) {
+                    const index = elementos[0].index;
+                    const label = dadosDecadas.labels[index]; // Pega ex: "1980s"
+                    const decada = parseInt(label, 10);      // Transforma em 1980
+                    
+                    // Redireciona limpando outros filtros e focando na década
+                    window.location.href = `index.php?url=colecao&decada=${decada}`;
+                }
+            },
             scales: {
                 y: { 
                     beginAtZero: true,
-                    ticks: {
-                        // Removemos o stepSize: 1 que causou o spam
-                        precision: 0 // Garante que não mostre "1.5 álbuns", apenas inteiros
-                    }
+                    ticks: { precision: 0 }
                 }
             },
             plugins: {
-                legend: {
-                    display: false // Opcional: esconde a legenda 'Total de Álbuns' pra ganhar espaço
-                }
+                legend: { display: false }
             }
         }
     });
@@ -101,6 +111,18 @@ window.abrirModalAnos = function() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            onHover: (event, chartElement) => {
+                event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+            },
+            onClick: (evt, elementos) => {
+                if (elementos.length > 0) {
+                    const index = elementos[0].index;
+                    const ano = dadosAquisicoes.labels[index]; // Pega o ano direto (ex: 2024)
+                    
+                    // Redireciona aplicando o filtro de ano de aquisição
+                    window.location.href = `index.php?url=colecao&ano_aquisicao=${ano}`;
+                }
+            },
             scales: {
                 y: { beginAtZero: true, ticks: { precision: 0, color: '#aaa' } },
                 x: { ticks: { color: '#aaa' } }

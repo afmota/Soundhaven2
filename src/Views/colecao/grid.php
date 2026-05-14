@@ -57,7 +57,7 @@
                     </a>
                 </div>
 
-                <div class="card metric-card sidebar-card">
+                <a href="index.php?url=colecao&busca=<?= urlencode($maiorMusica['album']) ?>"class="card metric-card sidebar-card" style="text-decoration: none; color: inherit; cursor: pointer;">
                     <div class="metric-card-content" style="justify-content: flex-start; gap: 10px;">
                         <div class="icon-container cor-3">
                             <i class="fas fa-arrows-alt-h"></i>
@@ -75,9 +75,9 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
 
-                <div class="card metric-card sidebar-card">
+                <a href="index.php?url=colecao&busca=<?= urlencode($menorMusica['album']) ?>" class="card metric-card sidebar-card" style="text-decoration: none; color: inherit; cursor: pointer;">
                     <div class="metric-card-content" style="justify-content: flex-start; gap: 10px;">
                         <div class="icon-container cor-4">
                             <i class="fas fa-compress"></i>
@@ -95,7 +95,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
 
@@ -241,7 +241,7 @@
         const dadosAquisicoes = <?= $jsonAquisicoes ?>;
     </script>
 
-<script src="assets/js/functions.js"></script>
+    <script src="assets/js/functions.js"></script>
     <script src="assets/js/colecao.js"></script>
 </body>
 </html>

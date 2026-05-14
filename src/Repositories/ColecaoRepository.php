@@ -76,7 +76,18 @@ class ColecaoRepository {
         if (!empty($filtros['ano'])) {
             $sql .= " AND YEAR(ta.data_lancamento) = :ano";
             $params[':ano'] = (int)$filtros['ano'];
-        }        
+        }
+
+        if (!empty($filtros['decada'])) {
+            $sql .= " AND FLOOR(YEAR(ta.data_lancamento) / 10) * 10 = :decada";
+            $params[':decada'] = (int)$filtros['decada'];
+        }
+
+        if (!empty($filtros['ano_aquisicao'])) {
+            // m.data_aquisicao refere-se à tabela tb_midias (sua coleção)
+            $sql .= " AND YEAR(tm.data_aquisicao) = :ano_aquisicao";
+            $params[':ano_aquisicao'] = (int)$filtros['ano_aquisicao'];
+        }
 
         $sql .= " ORDER BY tm.midia_id DESC LIMIT :limit OFFSET :offset";
 
@@ -130,6 +141,17 @@ class ColecaoRepository {
         if (!empty($filtros['ano'])) {
             $sql .= " AND YEAR(ta.data_lancamento) = :ano";
             $params[':ano'] = (int)$filtros['ano'];
+        }
+
+        if (!empty($filtros['decada'])) {
+            $sql .= " AND FLOOR(YEAR(ta.data_lancamento) / 10) * 10 = :decada";
+            $params[':decada'] = (int)$filtros['decada'];
+        }
+
+        if (!empty($filtros['ano_aquisicao'])) {
+            // m.data_aquisicao refere-se à tabela tb_midias (sua coleção)
+            $sql .= " AND YEAR(tm.data_aquisicao) = :ano_aquisicao";
+            $params[':ano_aquisicao'] = (int)$filtros['ano_aquisicao'];
         }
 
         $stmt = $this->db->prepare($sql);
