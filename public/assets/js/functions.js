@@ -38,8 +38,9 @@ const cacheFaixasGeral = {};
 
 /**
  * Busca as faixas via AJAX e popula a tabela do modal
+ * Atualizado para receber e repassar o nome do artista
  */
-async function carregarFaixas(midiaId) {
+async function carregarFaixas(midiaId, artistaNome = 'N/D') {
     const ID_CONTAINER = 'corpoTabelaFaixas';
     const corpoTabela = document.getElementById(ID_CONTAINER);
 
@@ -47,7 +48,7 @@ async function carregarFaixas(midiaId) {
 
     // Se já buscamos esse álbum antes, usa o cache
     if (cacheFaixasGeral[midiaId]) {
-        renderizarFaixas(cacheFaixasGeral[midiaId], ID_CONTAINER);
+        renderizarFaixas(cacheFaixasGeral[midiaId], ID_CONTAINER, artistaNome);
         return;
     }
 
@@ -58,14 +59,14 @@ async function carregarFaixas(midiaId) {
         const faixas = await res.json();
 
         cacheFaixasGeral[midiaId] = faixas;
-        renderizarFaixas(faixas, ID_CONTAINER);
+        renderizarFaixas(faixas, ID_CONTAINER, artistaNome);
     } catch (e) {
         corpoTabela.innerHTML = '<tr><td colspan="3" class="text-center">Erro ao carregar faixas</td></tr>';
         console.error("Erro no fetch das faixas:", e);
     }
 }
 
-function renderizarFaixas(faixas, containerId = 'corpoTabelaFaixas') {
+function renderizarFaixas(faixas, containerId = 'corpoTabelaFaixas', artistaNome = 'N/D') {
     const corpoTabela = document.getElementById(containerId);
     if (!corpoTabela) return;
 
@@ -82,9 +83,18 @@ function renderizarFaixas(faixas, containerId = 'corpoTabelaFaixas') {
         const titulo = f.titulo || f.title || 'Sem título';
         const duracao = f.duracao || f.duration || '--:--';
 
+        // Injetamos o link com os atributos data- para o Vagalume usar depois
         tr.innerHTML = `
             <td class="col-pos text-center">${pos}</td>
-            <td class="col-titulo">${titulo}</td>
+            <td class="col-titulo">
+                <span class="link-letra" style="cursor: pointer; color: #3b82f6; transition: color 0.2s;" 
+                      data-artista="${encodeURIComponent(artistaNome)}" 
+                      data-musica="${encodeURIComponent(titulo)}"
+                      onmouseover="this.style.color='#60a5fa'" 
+                      onmouseout="this.style.color='#3b82f6'">
+                    ${titulo}
+                </span>
+            </td>
             <td class="col-duracao text-right">${duracao}</td>
         `;
         corpoTabela.appendChild(tr);
@@ -189,21 +199,30 @@ function inicializarComponentesGlobais() {
         });
     }
 
-    // Gerenciamento Universal de Cliques (Dropdown e Fechamento de Modal)
+// Gerenciamento Universal de Cliques (Dropdown e Fechamento de Modais)
     window.addEventListener('click', (e) => {
-        // Fecha dropdown do avatar
+        // 1. Fecha dropdown do avatar
         if (dropdown && dropdown.classList.contains('show')) {
             if (!dropdown.contains(e.target) && !avatarTrigger.contains(e.target)) {
                 dropdown.classList.remove('show');
             }
         }
 
-        // Fecha Modal de Detalhes (Universal)
+        // 2. Fecha Modal de Detalhes (Universal)
         const modal = document.getElementById('modalDetalhesColecao');
         if (modal && modal.style.display === 'block') {
             const closeBtn = modal.querySelector('.modal-close');
             if (e.target === modal || e.target === closeBtn) {
                 modal.style.display = 'none';
+            }
+        }
+
+        // 3. NOVO: Fecha o Modal de Letras ao clicar fora ou no 'X'
+        const modalLetra = document.getElementById('modalLetraMusica');
+        if (modalLetra && modalLetra.style.display === 'block') {
+            const closeBtnLetra = document.getElementById('fecharModalLetra');
+            if (e.target === modalLetra || e.target === closeBtnLetra) {
+                modalLetra.style.display = 'none';
             }
         }
     });

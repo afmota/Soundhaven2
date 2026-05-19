@@ -243,4 +243,42 @@ class ColecaoController {
         }
         exit;
     }
+
+public function buscarLetraMusica() {
+    header('Content-Type: application/json');
+    
+    // Ajustado de 'musica' para 'mus' para casar com a URL do JS e do teste
+    $artistaCru = $_GET['artista'] ?? '';
+    $musicaCru = $_GET['mus'] ?? ''; 
+    
+    if (empty($artistaCru) || empty($musicaCru)) {
+        echo json_encode(['type' => 'error', 'message' => 'Parâmetros ausentes. O PHP recebeu artista: ' . $artistaCru . ' e mus: ' . $musicaCru]);
+        exit;
+    }
+
+    // Codifica bonitinho para mandar pro Vagalume
+    $artista = urlencode($artistaCru);
+    $musica = urlencode($musicaCru);
+
+    $url = "https://api.vagalume.com.br/search.php?art={$artista}&mus={$musica}&apikey=660a4395f992f6d66e81ef1957b406e1";
+
+    // Mantém o seu código de cURL que já está certinho abaixo...
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($response === false || $httpCode !== 200) {
+        echo json_encode(['type' => 'error', 'message' => 'Erro na comunicação com o servidor externo.']);
+        exit;
+    }
+
+    echo $response;
+    exit;
+}
 }

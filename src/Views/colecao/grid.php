@@ -267,6 +267,7 @@
     <?php include __DIR__ . '/../partials/modal_detalhes_colecao.php'; ?>
     <?php include __DIR__ . '/../partials/modal_grafico_decada.php'; ?>
     <?php include __DIR__ . '/../partials/modal_grafico_anos.php'; ?>
+    <?php include __DIR__ . '/../partials/modal_letra_musica.php'; ?>
     <?php include __DIR__ . '/../partials/footer.php'; ?>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

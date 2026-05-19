@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
             renderizarTags('containerTagsProdutores', album.produtores);
             
             if (typeof carregarFaixas === 'function') {
-                carregarFaixas(album.midia_id);
+                carregarFaixas(album.midia_id, album.artista_nome);
             }
             
             modal.style.display = 'block';
@@ -312,6 +312,53 @@ document.addEventListener('DOMContentLoaded', () => {
                 painelFiltros.style.display = 'none';
                 txtToggle.textContent = 'Mostrar Filtros';
             }
+        });
+    }
+
+document.getElementById('corpoTabelaFaixas').addEventListener('click', function(e) {
+    const alvo = e.target.closest('.link-letra');
+    if (!alvo) return;
+
+    const artista = decodeURIComponent(alvo.getAttribute('data-artista'));
+    const musica = decodeURIComponent(alvo.getAttribute('data-musica'));
+
+    const modalLetra = document.getElementById('modalLetraMusica');
+    const tituloModal = document.getElementById('tituloLetraModal');
+    const corpoModal = document.getElementById('corpoLetraModal');
+
+    if (!modalLetra || !tituloModal || !corpoModal) return;
+
+    // Estado de carregando
+    tituloModal.textContent = `${musica} - ${artista}`;
+    corpoModal.innerHTML = '<div style="text-align:center; padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Buscando letra no Vagalume...</div>';
+    modalLetra.style.display = 'block';
+
+    const url = `index.php?url=buscar_letra&artista=${encodeURIComponent(artista)}&mus=${encodeURIComponent(musica)}`;
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            // O PHP vai repassar a resposta do Vagalume, basta ler os dados
+            if (data.type === 'exact' || data.type === 'aprox') {
+                corpoModal.textContent = data.mus[0].text;
+            } else {
+                corpoModal.innerHTML = '<p style="color: #ff3838; text-align:center;"><i class="fas fa-exclamation-circle"></i> Letra não encontrada ou faixa instrumental.</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao processar requisição de letra:', error);
+            corpoModal.innerHTML = '<p style="color: #ff3838; text-align:center;">Erro ao processar a requisição de letras no servidor local.</p>';
+        });
+    });
+
+    // Fechar o modal de letras ao clicar no 'X' ou fora dele
+    const modalLetra = document.getElementById('modalLetraMusica');
+    if (modalLetra) {
+        const btnFechar = document.getElementById('fecharModalLetra');
+        if (btnFechar) btnFechar.onclick = () => modalLetra.style.display = 'none';
+        
+        window.addEventListener('click', (e) => {
+            if (e.target === modalLetra) modalLetra.style.display = 'none';
         });
     }
 });

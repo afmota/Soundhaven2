@@ -43,6 +43,11 @@ switch ($route) {
         $controller->listarFaixas();
         break;
 
+    case 'buscar_letra':
+        $controller = new ColecaoController();
+        $controller->buscarLetraMusica();
+        break;
+
     case 'descartar_album':
         $controller = new ColecaoController();
         $controller->descartarAlbum();
