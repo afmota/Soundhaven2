@@ -417,7 +417,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     label: 'Álbuns por Gravadora',
                     data: dados.map(d => d.total),
                     backgroundColor: '#8b5cf6',
-                    borderWidth: 0,
+                    borderWidth: 2,
+                    borderColor: '#5412bd',
                     borderRadius: 8
                 }]
             },

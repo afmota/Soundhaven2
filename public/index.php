@@ -95,7 +95,22 @@ switch ($route) {
         $controller->getTopGravadorasJson();
         break;
 
-        default:
+    case 'configuracao':
+        $controller = new App\Controllers\ConfiguracaoController();
+        $controller->index();
+        break;
+
+    case 'configuracao/backup':
+        $controller = new App\Controllers\ConfiguracaoController();
+        $controller->backup();
+        break;
+
+    case 'configuracao/restaurar':
+        $controller = new App\Controllers\ConfiguracaoController();
+        $controller->restaurar();
+        break;
+
+    default:
         http_response_code(404);
         echo "404 - Página não encontrada no SoundHaven";
         break;

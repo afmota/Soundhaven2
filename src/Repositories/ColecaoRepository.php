@@ -89,6 +89,18 @@ class ColecaoRepository {
             $params[':ano_aquisicao'] = (int)$filtros['ano_aquisicao'];
         }
 
+        if (!empty($filtros['produtor'])) {
+            // Usamos EXISTS para checar se o álbum possui o produtor buscado
+            $sql .= " AND EXISTS (
+                SELECT 1 
+                FROM tb_album_produtores ap
+                INNER JOIN tb_produtores p ON ap.produtor_id = p.produtor_id
+                WHERE ap.album_id = ta.album_id 
+                AND p.nome LIKE :produtor
+            )"; 
+            $params[':produtor'] = '%' . $filtros['produtor'] . '%';
+        }
+
         $sql .= " ORDER BY tm.midia_id DESC LIMIT :limit OFFSET :offset";
 
         $stmt = $this->db->prepare($sql);

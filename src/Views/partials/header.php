@@ -22,6 +22,7 @@
                             <li><a href="?url=artistas"><i class="fas fa-microphone-lines"></i> Artistas</a></li>
                             <li><a href="?url=loja"><i class="fas fa-store"></i> Loja</a></li>
                             <li class="separator"></li>
+                            <li><a href="?url=configuracao"><i class="fas fa-tools"></i> Manutenção</a></li>
                             <li><a href="?url=perfil"><i class="fas fa-user-circle"></i> Meu Perfil</a></li>
                             <li><a href="?url=logout" class="logout-link"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
                         </ul>

@@ -224,6 +224,41 @@
                     </div>
                 </div>
             </div>
+
+            <div class="filter-toggle-container" style="margin-bottom: 15px;">
+                <button type="button" id="btnToggleFiltros" class="btn-filter-trigger" style="background: #3c3cff; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                    <i class="fas fa-sliders-h"></i> <span id="txtToggleFiltros">Mostrar Filtros</span>
+                </button>
+            </div>
+
+            <div id="barraFiltrosAvancados" class="filtros-avancados-panel" style="display: none; background: #222; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                <form action="index.php" method="GET" class="filtros-form" style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+                    <input type="hidden" name="url" value="colecao">
+
+                    <div class="form-group" style="flex: 1; min-width: 200px;">
+                        <label style="display: block; color: #aaa; font-size: 0.85rem; margin-bottom: 5px;">Nome do Álbum</label>
+                        <input type="text" name="busca" value="<?= htmlspecialchars($_GET['busca'] ?? '') ?>" placeholder="Ex: Dark Side of the Moon..." style="width: 100%; padding: 8px; background: #333; border: 1px solid #444; color: white; border-radius: 4px;">
+                    </div>
+
+                    <div class="form-group" style="flex: 1; min-width: 200px;">
+                        <label style="display: block; color: #aaa; font-size: 0.85rem; margin-bottom: 5px;">Produtor</label>
+                        <input type="text" name="produtor" value="<?= htmlspecialchars($_GET['produtor'] ?? '') ?>" placeholder="Ex: George Martin..." style="width: 100%; padding: 8px; background: #333; border: 1px solid #444; color: white; border-radius: 4px;">
+                    </div>
+
+                    <div class="form-actions" style="display: flex; gap: 10px;">
+                        <button type="submit" style="background: #338d33; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                            Filtrar
+                        </button>
+                        <?php if (!empty($_GET['busca']) || !empty($_GET['produtor'])): ?>
+                            <a href="index.php?url=colecao" style="background: #ff3838; color: white; text-decoration: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; font-size: 0.85rem;">
+                                Limpar
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </form>
+            </div>
+
+
         </aside>
     </div>
     <?php include __DIR__ . '/../partials/paginacao.php';?>

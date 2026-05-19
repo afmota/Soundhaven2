@@ -286,4 +286,32 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     });
+
+    // --- Lógica de Auto-Ocultar Filtros ---
+    const btnToggle = document.getElementById('btnToggleFiltros');
+    const painelFiltros = document.getElementById('barraFiltrosAvancados');
+    const txtToggle = document.getElementById('txtToggleFiltros');
+
+    if (btnToggle && painelFiltros) {
+        // Pega os parâmetros da URL atual
+        const urlParams = new URLSearchParams(window.location.search);
+        const temFiltroAtivo = urlParams.has('busca') || urlParams.has('produtor');
+
+        // Se já tiver algo filtrado, começa aberto
+        if (temFiltroAtivo) {
+            painelFiltros.style.display = 'block';
+            txtToggle.textContent = 'Ocultar Filtros';
+            btnToggle.style.background = '#3c3cff'; // Mantém sua cor padrão de ação
+        }
+
+        btnToggle.addEventListener('click', () => {
+            if (painelFiltros.style.display === 'none') {
+                painelFiltros.style.display = 'block';
+                txtToggle.textContent = 'Ocultar Filtros';
+            } else {
+                painelFiltros.style.display = 'none';
+                txtToggle.textContent = 'Mostrar Filtros';
+            }
+        });
+    }
 });
