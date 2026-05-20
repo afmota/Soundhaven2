@@ -259,10 +259,18 @@ class ColecaoController {
             exit;
         }
 
-        $artista = urlencode($artistaCru);
-        $musica = urlencode($musicaCru);
+        // ==================== O CORTE É AQUI (NOVA URL DA API) ====================
+        // Transformamos os nomes em formatos limpos para a URL (tudo minúsculo e sem espaços)
+        $artSlug = strtolower(str_replace(' ', '-', trim($artistaCru)));
+        $musSlug = strtolower(str_replace(' ', '-', trim($musicaCru)));
 
-        $url = "https://api.vagalume.com.br/search.php?art={$artista}&mus={$musica}&apikey=660a4395f992f6d66e81ef1957b406e1";
+        // Remove caracteres especiais que o regex antigo deixaria passar, limpando a string
+        $artSlug = preg_replace('/[^a-z0-9\-]/', '', $artSlug);
+        $musSlug = preg_replace('/[^a-z0-9\-]/', '', $musSlug);
+
+        // Nova URL oficial da API direta de letras do Vagalume (Evita o erro 503)
+        $url = "https://api.vagalume.com.br/www/images/api/api2-musica.php?art={$artSlug}&mus={$musSlug}";
+        // ==========================================================================
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -279,8 +287,6 @@ class ColecaoController {
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         
-        // REMOVIDO: curl_close($ch); -> Não é mais necessário e causava o Deprecated no PHP 8.5!
-
         if ($response === false || $httpCode !== 200) {
             // Se falhar, pelo menos devolvemos um JSON limpo e válido para o JS não quebrar
             echo json_encode(['type' => 'error', 'message' => 'Erro na conexão com o Vagalume. Código HTTP: ' . $httpCode]);
