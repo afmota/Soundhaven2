@@ -269,22 +269,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // Lógica de Filtros por Pills
     const pills = document.querySelectorAll('.pill');
     pills.forEach(pill => {
-        pill.addEventListener('click', function() {
-            document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-            this.classList.add('active');
-            
-            const filtroSelecionado = this.getAttribute('data-filter');
-            const todosOsCards = document.querySelectorAll('.album-card');
-            
-            todosOsCards.forEach(card => {
-                const album = JSON.parse(card.dataset.album);
-                if (filtroSelecionado === 'all' || album.tipo_id == filtroSelecionado) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
+        try {
+            pill.addEventListener('click', function() {
+                document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filtroSelecionado = this.getAttribute('data-filter');
+                const todosOsCards = document.querySelectorAll('.album-card');
+                
+                todosOsCards.forEach(card => {
+                    const album = JSON.parse(card.dataset.album);
+                    if (filtroSelecionado === 'all' || album.tipo_id == filtroSelecionado) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
             });
-        });
+        } catch (e) {
+            // Previne quebras caso o JSON do dataset falte em algum card
+        }
     });
 
     // --- Lógica de Auto-Ocultar Filtros ---
@@ -315,50 +319,45 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-document.getElementById('corpoTabelaFaixas').addEventListener('click', function(e) {
-    const alvo = e.target.closest('.link-letra');
-    if (!alvo) return;
+    // --- BUSCA DE LETRAS DIRETA E LIMPA VIA API LYRICS.OVH (AMIGÁVEL COM LOCALHOST) ---
+    document.getElementById('corpoTabelaFaixas').addEventListener('click', function(e) {
+        const alvo = e.target.closest('.link-letra');
+        if (!alvo) return;
 
-    const artista = decodeURIComponent(alvo.getAttribute('data-artista'));
-    const musica = decodeURIComponent(alvo.getAttribute('data-musica'));
+        const artista = decodeURIComponent(alvo.getAttribute('data-artista'));
+        const musica = decodeURIComponent(alvo.getAttribute('data-musica'));
 
-    const modalLetra = document.getElementById('modalLetraMusica');
-    const tituloModal = document.getElementById('tituloLetraModal');
-    const corpoModal = document.getElementById('corpoLetraModal');
+        const modalLetra = document.getElementById('modalLetraMusica');
+        const tituloModal = document.getElementById('tituloLetraModal');
+        const corpoModal = document.getElementById('corpoLetraModal');
 
-    if (!modalLetra || !tituloModal || !corpoModal) return;
+        if (!modalLetra || !tituloModal || !corpoModal) return;
 
-    // Estado de carregando
-    tituloModal.textContent = `${musica} - ${artista}`;
-    corpoModal.innerHTML = '<div style="text-align:center; padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Buscando letra no Vagalume...</div>';
-    modalLetra.style.display = 'block';
+        // Estado visual de carregando
+        tituloModal.textContent = `${musica} - ${artista}`;
+        corpoModal.innerHTML = '<div style="text-align:center; padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Buscando letra no Vagalume...</div>';
+        modalLetra.style.display = 'block';
 
-    const url = `index.php?url=buscar_letra&artista=${encodeURIComponent(artista)}&mus=${encodeURIComponent(musica)}`;
+        // Chama a rota interna do seu projeto index.php sem o prefixo public/
+        const urlLocal = `index.php?url=buscar_letra&artista=${encodeURIComponent(artista)}&mus=${encodeURIComponent(musica)}`;
 
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            // O PHP vai repassar a resposta do Vagalume, basta ler os dados
-            if (data.type === 'exact' || data.type === 'aprox') {
-                corpoModal.textContent = data.mus[0].text;
-            } else {
-                corpoModal.innerHTML = '<p style="color: #ff3838; text-align:center;"><i class="fas fa-exclamation-circle"></i> Letra não encontrada ou faixa instrumental.</p>';
-            }
-        })
-        .catch(error => {
-            console.error('Erro ao processar requisição de letra:', error);
-            corpoModal.innerHTML = '<p style="color: #ff3838; text-align:center;">Erro ao processar a requisição de letras no servidor local.</p>';
-        });
+        fetch(urlLocal)
+            .then(response => {
+                if (!response.ok) throw new Error("Erro na resposta do servidor");
+                return response.json();
+            })
+            .then(data => {
+                // Checa a estrutura exata de retorno da API do Vagalume
+                if (data && (data.type === 'exact' || data.type === 'aprox') && data.mus && data.mus[0]) {
+                    corpoModal.style.whiteSpace = 'pre-line';
+                    corpoModal.textContent = data.mus[0].text;
+                } else {
+                    corpoModal.innerHTML = '<p style="color: #ff3838; text-align:center;"><i class="fas fa-exclamation-circle"></i> Letra não encontrada ou faixa instrumental.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Erro na requisição local:', error);
+                corpoModal.innerHTML = '<p style="color: #ff3838; text-align:center;"><i class="fas fa-exclamation-circle"></i> Erro ao processar requisição no servidor local.</p>';
+            });
     });
-
-    // Fechar o modal de letras ao clicar no 'X' ou fora dele
-    const modalLetra = document.getElementById('modalLetraMusica');
-    if (modalLetra) {
-        const btnFechar = document.getElementById('fecharModalLetra');
-        if (btnFechar) btnFechar.onclick = () => modalLetra.style.display = 'none';
-        
-        window.addEventListener('click', (e) => {
-            if (e.target === modalLetra) modalLetra.style.display = 'none';
-        });
-    }
 });

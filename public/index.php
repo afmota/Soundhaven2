@@ -44,8 +44,7 @@ switch ($route) {
         break;
 
     case 'buscar_letra':
-        $controller = new ColecaoController();
-        $controller->buscarLetraMusica();
+        ColecaoController::buscarLetraMusica();
         break;
 
     case 'descartar_album':
