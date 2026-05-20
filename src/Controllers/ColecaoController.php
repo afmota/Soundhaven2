@@ -244,57 +244,44 @@ class ColecaoController {
         exit;
     }
 
-    public function buscarLetraMusica() {
-        // Força o PHP a não cuspir nenhum aviso/erro na tela que possa quebrar o JSON do JavaScript
-        error_reporting(0);
-        ini_set('display_errors', 0);
-
-        header('Content-Type: application/json');
-        
-        $artistaCru = $_GET['artista'] ?? '';
-        $musicaCru = $_GET['mus'] ?? ''; 
-        
-        if (empty($artistaCru) || empty($musicaCru)) {
-            echo json_encode(['type' => 'error', 'message' => 'Parâmetros ausentes.']);
-            exit;
-        }
-
-        // ==================== O CORTE É AQUI (NOVA URL DA API) ====================
-        // Transformamos os nomes em formatos limpos para a URL (tudo minúsculo e sem espaços)
-        $artSlug = strtolower(str_replace(' ', '-', trim($artistaCru)));
-        $musSlug = strtolower(str_replace(' ', '-', trim($musicaCru)));
-
-        // Remove caracteres especiais que o regex antigo deixaria passar, limpando a string
-        $artSlug = preg_replace('/[^a-z0-9\-]/', '', $artSlug);
-        $musSlug = preg_replace('/[^a-z0-9\-]/', '', $musSlug);
-
-        // Nova URL oficial da API direta de letras do Vagalume (Evita o erro 503)
-        $url = "https://api.vagalume.com.br/www/images/api/api2-musica.php?art={$artSlug}&mus={$musSlug}";
-        // ==========================================================================
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        
-        // Configurações cruciais para o ambiente Windows/Local não barrar o cURL por falta de certificados atualizados
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        
-        // Adiciona um User-Agent para a API do Vagalume não bloquear a requisição achando que é um bot malicioso
-        curl_setopt($ch, CURLOPT_USERAGENT, 'SoundHaven/1.0 (Localhost)');
-        curl_setopt($ch, CURLOPT_TIMEOUT, 15);
-        
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        
-        if ($response === false || $httpCode !== 200) {
-            // Se falhar, pelo menos devolvemos um JSON limpo e válido para o JS não quebrar
-            echo json_encode(['type' => 'error', 'message' => 'Erro na conexão com o Vagalume. Código HTTP: ' . $httpCode]);
-            exit;
-        }
-
-        // Garante que o retorno seja estritamente o JSON do Vagalume
-        echo $response;
+public static function buscarLetraMusica() {
+    // Limpa qualquer lixo ou espaço gerado por outros arquivos
+    if (ob_get_length()) ob_clean();
+    
+    header('Content-Type: application/json; charset=utf-8');
+    
+    $artista = $_GET['artista'] ?? '';
+    $musica = $_GET['mus'] ?? ''; 
+    
+    if (empty($artista) || empty($musica)) {
+        echo json_encode(['type' => 'error', 'message' => 'Parâmetros inválidos.']);
         exit;
     }
+
+    // Endpoint oficial do Vagalume
+    $url = "https://api.vagalume.com.br/search.php?art=" . urlencode($artista) . "&mus=" . urlencode($musica);
+
+    $opts = [
+        "http" => [
+            "method" => "GET",
+            "header" => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36\r\n" .
+                        "Accept: application/json\r\n"
+        ],
+        "ssl" => [
+            "verify_peer" => false,
+            "verify_peer_name" => false,
+        ]
+    ];
+    
+    $context = stream_context_create($opts);
+    $response = @file_get_contents($url, false, $context);
+
+    if ($response === false) {
+        echo json_encode(['type' => 'error', 'message' => 'Servidor de letras indisponível.']);
+        exit;
+    }
+
+    echo $response;
+    exit;
+}
 }
