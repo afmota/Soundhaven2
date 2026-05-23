@@ -245,39 +245,38 @@ class ColecaoController {
     }
 
 public static function buscarLetraMusica() {
-    // Limpa qualquer lixo ou espaço gerado por outros arquivos
     if (ob_get_length()) ob_clean();
-    
     header('Content-Type: application/json; charset=utf-8');
     
     $artista = $_GET['artista'] ?? '';
     $musica = $_GET['mus'] ?? ''; 
     
     if (empty($artista) || empty($musica)) {
-        echo json_encode(['type' => 'error', 'message' => 'Parâmetros inválidos.']);
+        echo json_encode(['error' => 'Parâmetros inválidos.']);
         exit;
     }
 
-    // Endpoint oficial do Vagalume
-    $url = "https://api.vagalume.com.br/search.php?art=" . urlencode($artista) . "&mus=" . urlencode($musica);
+    // O endpoint deles é lindo: basta passar o Artista e a Música na URL
+    $url = "https://api.lyrics.ovh/v1/" . urlencode(trim($artista)) . "/" . urlencode(trim($musica));
 
-    $opts = [
-        "http" => [
-            "method" => "GET",
-            "header" => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36\r\n" .
-                        "Accept: application/json\r\n"
-        ],
-        "ssl" => [
-            "verify_peer" => false,
-            "verify_peer_name" => false,
-        ]
-    ];
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_USERAGENT, 'SoundHavenApp/1.0');
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
     
-    $context = stream_context_create($opts);
-    $response = @file_get_contents($url, false, $context);
+    // Blindagem padrão para o Docker local
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
-    if ($response === false) {
-        echo json_encode(['type' => 'error', 'message' => 'Servidor de letras indisponível.']);
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    // A Lyrics.ovh devolve 404 se não achar a letra, o que tratamos aqui
+    if ($response === false || $httpCode !== 200) {
+        echo json_encode(['error' => 'Letra não encontrada nesta API.']);
         exit;
     }
 

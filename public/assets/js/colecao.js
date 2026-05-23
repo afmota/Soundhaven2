@@ -319,7 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- BUSCA DE LETRAS DIRETA E LIMPA VIA API LYRICS.OVH (AMIGÁVEL COM LOCALHOST) ---
+// --- BUSCA DE LETRAS VIA CONTROLLER LOCAL (VAGALUME) ---
     document.getElementById('corpoTabelaFaixas').addEventListener('click', function(e) {
         const alvo = e.target.closest('.link-letra');
         if (!alvo) return;
@@ -338,26 +338,27 @@ document.addEventListener('DOMContentLoaded', () => {
         corpoModal.innerHTML = '<div style="text-align:center; padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Buscando letra no Vagalume...</div>';
         modalLetra.style.display = 'block';
 
-        // Chama a rota interna do seu projeto index.php sem o prefixo public/
+
+// Requisição para a sua rota interna do PHP
         const urlLocal = `index.php?url=buscar_letra&artista=${encodeURIComponent(artista)}&mus=${encodeURIComponent(musica)}`;
 
         fetch(urlLocal)
             .then(response => {
-                if (!response.ok) throw new Error("Erro na resposta do servidor");
+                if (!response.ok) throw new Error("Letra não encontrada");
                 return response.json();
             })
             .then(data => {
-                // Checa a estrutura exata de retorno da API do Vagalume
-                if (data && (data.type === 'exact' || data.type === 'aprox') && data.mus && data.mus[0]) {
+                // A Lyrics.ovh retorna o texto direto na propriedade .lyrics
+                if (data && data.lyrics) {
                     corpoModal.style.whiteSpace = 'pre-line';
-                    corpoModal.textContent = data.mus[0].text;
+                    corpoModal.textContent = data.lyrics;
                 } else {
                     corpoModal.innerHTML = '<p style="color: #ff3838; text-align:center;"><i class="fas fa-exclamation-circle"></i> Letra não encontrada ou faixa instrumental.</p>';
                 }
             })
             .catch(error => {
-                console.error('Erro na requisição local:', error);
-                corpoModal.innerHTML = '<p style="color: #ff3838; text-align:center;"><i class="fas fa-exclamation-circle"></i> Erro ao processar requisição no servidor local.</p>';
+                console.error('Erro na requisição:', error);
+                corpoModal.innerHTML = '<p style="color: #ff3838; text-align:center;"><i class="fas fa-exclamation-circle"></i> Letra não encontrada para esta faixa.</p>';
             });
     });
 });
