@@ -43,10 +43,14 @@ switch ($route) {
         $controller->listarFaixas();
         break;
 
-case 'buscar_letra':
-    // Ajuste o nome da classe caso sua classe não se chame ColecaoController
-    ColecaoController::buscarLetraMusica();
-    break;
+    case 'buscar_letra':
+        // Ajuste o nome da classe caso sua classe não se chame ColecaoController
+        ColecaoController::buscarLetraMusica();
+        break;
+
+    case 'salvar_letra':
+        ColecaoController::salvarLetraMusica();
+        break;
     
     case 'descartar_album':
         $controller = new ColecaoController();

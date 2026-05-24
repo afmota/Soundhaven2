@@ -2,6 +2,7 @@
 namespace App\Controllers;
 
 use App\Services\ColecaoService;
+use App\Config\Database;
 
 class ColecaoController {
     private $service;
@@ -244,43 +245,123 @@ class ColecaoController {
         exit;
     }
 
-public static function buscarLetraMusica() {
-    if (ob_get_length()) ob_clean();
-    header('Content-Type: application/json; charset=utf-8');
-    
-    $artista = $_GET['artista'] ?? '';
-    $musica = $_GET['mus'] ?? ''; 
-    
-    if (empty($artista) || empty($musica)) {
-        echo json_encode(['error' => 'Parâmetros inválidos.']);
+    public static function buscarLetraMusica() {
+        if (ob_get_length()) ob_clean();
+        header('Content-Type: application/json; charset=utf-8');
+        
+        $artista = $_GET['artista'] ?? '';
+        $musica = $_GET['mus'] ?? ''; 
+        $midiaId = isset($_GET['midia_id']) ? (int)$_GET['midia_id'] : 0;
+        $numFaixa = isset($_GET['numero_faixa']) ? (int)$_GET['numero_faixa'] : 0;
+        
+        if (empty($artista) || empty($musica)) {
+            echo json_encode(['status' => 'error', 'message' => 'Parâmetros inválidos.']);
+            exit;
+        }
+
+        // --- PASSO 1: TENTAR NA API EXTERNA ---
+        $url = "https://api.lyrics.ovh/v1/" . urlencode(trim($artista)) . "/" . urlencode(trim($musica));
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'SoundHavenApp/1.0');
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 6); // Timeout ligeiramente menor para não travar o usuário
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($response !== false && $httpCode === 200) {
+            $data = json_decode($response, true);
+            if (!empty($data['lyrics'])) {
+                echo json_encode([
+                    'status' => 'success',
+                    'origem' => 'api',
+                    'lyrics' => $data['lyrics']
+                ]);
+                exit;
+            }
+        }
+
+        // --- PASSO 2: FALHOU NA API? TENTA NO BANCO LOCAL ---
+        if ($midiaId > 0 && $numFaixa > 0) {
+            try {
+                // Chama a sua classe de conexão estruturada
+                $db = Database::getConnection();
+                $stmt = $db->prepare("SELECT texto_letra FROM tb_letras WHERE midia_id = :midia_id AND numero_faixa = :numero_faixa");
+                $stmt->execute([
+                    'midia_id' => $midiaId,
+                    'numero_faixa' => $numFaixa
+                ]);
+                $letraLocal = $stmt->fetchColumn();
+
+                if ($letraLocal) {
+                    echo json_encode([
+                        'status' => 'success',
+                        'origem' => 'local',
+                        'lyrics' => $letraLocal
+                    ]);
+                    exit;
+                }
+            } catch (\PDOException $e) {
+                // Se der erro no banco, logamos internamente mas não travamos o fluxo visual
+                error_log("Erro ao buscar letra local: " . $e->getMessage());
+            }
+        }
+
+        // --- PASSO 3: NÃO ACHOU EM LUGAR NENHUM ---
+        // Devolvemos um sinal claro para o JS abrir o formulário de cadastro
+        echo json_encode([
+            'status' => 'not_found',
+            'message' => 'Letra não encontrada. Deseja cadastrar manualmente?'
+        ]);
         exit;
     }
 
-    // O endpoint deles é lindo: basta passar o Artista e a Música na URL
-    $url = "https://api.lyrics.ovh/v1/" . urlencode(trim($artista)) . "/" . urlencode(trim($musica));
+    public static function salvarLetraMusica() {
+        if (ob_get_length()) ob_clean();
+        header('Content-Type: application/json; charset=utf-8');
 
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_USERAGENT, 'SoundHavenApp/1.0');
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-    
-    // Blindagem padrão para o Docker local
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['status' => 'error', 'message' => 'Método de requisição inválido.']);
+            exit;
+        }
 
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
+        $midiaId = isset($_POST['midia_id']) ? (int)$_POST['midia_id'] : 0;
+        $numFaixa = isset($_POST['numero_faixa']) ? (int)$_POST['numero_faixa'] : 0;
+        $textoLetra = $_POST['texto_letra'] ?? '';
 
-    // A Lyrics.ovh devolve 404 se não achar a letra, o que tratamos aqui
-    if ($response === false || $httpCode !== 200) {
-        echo json_encode(['error' => 'Letra não encontrada nesta API.']);
-        exit;
+        if ($midiaId <= 0 || $numFaixa <= 0 || empty(trim($textoLetra))) {
+            echo json_encode(['status' => 'error', 'message' => 'Dados incompletos para salvamento.']);
+            exit;
+        }
+
+        try {
+            $db = Database::getConnection();
+            
+            // Usamos ON DUPLICATE KEY UPDATE por segurança para o caso de você decidir editar uma letra existente no futuro
+            $stmt = $db->prepare("
+                INSERT INTO tb_letras (midia_id, numero_faixa, texto_letra) 
+                VALUES (:midia_id, :numero_faixa, :texto_letra)
+                ON DUPLICATE KEY UPDATE texto_letra = :texto_letra_update
+            ");
+
+            $stmt->execute([
+                'midia_id' => $midiaId,
+                'numero_faixa' => $numFaixa,
+                'texto_letra' => $textoLetra,
+                'texto_letra_update' => $textoLetra
+            ]);
+
+            echo json_encode(['status' => 'success', 'message' => 'Letra guardada no acervo!']);
+            exit;
+        } catch (\PDOException $e) {
+            echo json_encode(['status' => 'error', 'message' => 'Erro no banco de dados: ' . $e->getMessage()]);
+            exit;
+        }
     }
-
-    echo $response;
-    exit;
-}
 }

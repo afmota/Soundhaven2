@@ -319,13 +319,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-// --- BUSCA DE LETRAS VIA CONTROLLER LOCAL (VAGALUME) ---
+    // --- BUSCA E CADASTRO DE LETRAS (SOUNDHAVEN) ---
     document.getElementById('corpoTabelaFaixas').addEventListener('click', function(e) {
         const alvo = e.target.closest('.link-letra');
         if (!alvo) return;
 
         const artista = decodeURIComponent(alvo.getAttribute('data-artista'));
         const musica = decodeURIComponent(alvo.getAttribute('data-musica'));
+        const midiaId = alvo.getAttribute('data-midia'); // Garanta que esses atributos existem no HTML da tabela
+        const numFaixa = alvo.getAttribute('data-faixa');
 
         const modalLetra = document.getElementById('modalLetraMusica');
         const tituloModal = document.getElementById('tituloLetraModal');
@@ -333,32 +335,75 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!modalLetra || !tituloModal || !corpoModal) return;
 
-        // Estado visual de carregando
         tituloModal.textContent = `${musica} - ${artista}`;
-        corpoModal.innerHTML = '<div style="text-align:center; padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Buscando letra no Vagalume...</div>';
+        corpoModal.innerHTML = '<div style="text-align:center; padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Procurando letra...</div>';
         modalLetra.style.display = 'block';
 
-
-// Requisição para a sua rota interna do PHP
-        const urlLocal = `index.php?url=buscar_letra&artista=${encodeURIComponent(artista)}&mus=${encodeURIComponent(musica)}`;
+        // Enviamos os parâmetros completos para o PHP purista
+        const urlLocal = `index.php?url=buscar_letra&artista=${encodeURIComponent(artista)}&mus=${encodeURIComponent(musica)}&midia_id=${midiaId}&numero_faixa=${numFaixa}`;
 
         fetch(urlLocal)
-            .then(response => {
-                if (!response.ok) throw new Error("Letra não encontrada");
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
-                // A Lyrics.ovh retorna o texto direto na propriedade .lyrics
-                if (data && data.lyrics) {
+                if (data && data.status === 'success') {
                     corpoModal.style.whiteSpace = 'pre-line';
-                    corpoModal.textContent = data.lyrics;
-                } else {
-                    corpoModal.innerHTML = '<p style="color: #ff3838; text-align:center;"><i class="fas fa-exclamation-circle"></i> Letra não encontrada ou faixa instrumental.</p>';
+                    // Se veio do banco local, adicionamos um marcador sutil, se não, exibe o texto puro
+                    corpoModal.innerHTML = data.origem === 'local' 
+                        ? `<small style="color: #888; display:block; margin-bottom:10px;"><i class="fas fa-database"></i> Letra do acervo local</small>${data.lyrics}`
+                        : data.lyrics;
+                } else if (data && data.status === 'not_found') {
+                    // Monta o formulário de inserção usando as suas variáveis de CSS para os botões
+                    corpoModal.innerHTML = `
+                        <p style="text-align:center; margin-bottom:15px; color: #888;">
+                            <i class="fas fa-music"></i> Letra não encontrada automaticamente. Deseja cadastrá-la?
+                        </p>
+                        <textarea id="txtNovaLetra" style="width:100%; height:250px; padding:10px; border-radius:4px; border:1px solid #ccc; font-family:inherit; resize:vertical;" placeholder="Cole ou digite a letra da música aqui..."></textarea>
+                        <div style="text-align:right; margin-top:15px; display:flex; justify-content:flex-end; gap:10px;">
+                            <button id="btnCancelarLetra" style="background: var(--action-destructive); color:#fff; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">Cancelar</button>
+                            <button id="btnSalvarLetra" style="background: var(--action-positive); color:#fff; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;"><i class="fas fa-save"></i> Salvar no Banco</button>
+                        </div>
+                    `;
+
+                    // Evento do botão Cancelar (limpa e fecha o modal)
+                    document.getElementById('btnCancelarLetra').addEventListener('click', () => {
+                        modalLetra.style.display = 'none';
+                    });
+
+                    // Evento do botão Salvar Letra
+                    document.getElementById('btnSalvarLetra').addEventListener('click', function() {
+                        const textoLetra = document.getElementById('txtNovaLetra').value.trim();
+                        if (!textoLetra) {
+                            alert('Digite a letra antes de salvar!');
+                            return;
+                        }
+
+                        const formData = new FormData();
+                        formData.append('midia_id', midiaId);
+                        formData.append('numero_faixa', numFaixa);
+                        formData.append('texto_letra', textoLetra);
+
+                        fetch('index.php?url=salvar_letra', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(res => res.json())
+                        .then(resData => {
+                            if (resData && resData.status === 'success') {
+                                alert('Letra salva com sucesso no acervo!');
+                                // Recarrega o modal com a letra nova já impressa
+                                corpoModal.style.whiteSpace = 'pre-line';
+                                corpoModal.textContent = `<small style="color: #888; display:block; margin-bottom:10px;"><i class="fas fa-database"></i> Letra do acervo local</small>${textoLetra}`;
+                            } else {
+                                alert('Erro ao salvar: ' + resData.message);
+                            }
+                        })
+                        .catch(err => console.error('Erro ao salvar letra:', err));
+                    });
                 }
             })
             .catch(error => {
                 console.error('Erro na requisição:', error);
-                corpoModal.innerHTML = '<p style="color: #ff3838; text-align:center;"><i class="fas fa-exclamation-circle"></i> Letra não encontrada para esta faixa.</p>';
+                corpoModal.innerHTML = '<p style="color: var(--action-destructive); text-align:center;"><i class="fas fa-exclamation-circle"></i> Erro interno no servidor.</p>';
             });
     });
 });

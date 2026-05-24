@@ -9,6 +9,10 @@
 
     --action-positive: #10B981;
     --action-positive-hover: #059669;
+    --action-destructive: #EF4444;
+    --action-destructive-hover: #DC2626;
+    --action-neutral: #3B82F6;
+    --action-neutral-hover: #1553da;
 
     --border-color: #334155;
     --border-hover: #475569;

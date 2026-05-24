@@ -46,9 +46,9 @@ async function carregarFaixas(midiaId, artistaNome = 'N/D') {
 
     if (!corpoTabela) return;
 
-    // Se já buscamos esse álbum antes, usa o cache
+    // Se já buscamos esse álbum antes, usa o cache (passando midiaId agora)
     if (cacheFaixasGeral[midiaId]) {
-        renderizarFaixas(cacheFaixasGeral[midiaId], ID_CONTAINER, artistaNome);
+        renderizarFaixas(cacheFaixasGeral[midiaId], ID_CONTAINER, artistaNome, midiaId);
         return;
     }
 
@@ -59,21 +59,22 @@ async function carregarFaixas(midiaId, artistaNome = 'N/D') {
         const faixas = await res.json();
 
         cacheFaixasGeral[midiaId] = faixas;
-        renderizarFaixas(faixas, ID_CONTAINER, artistaNome);
+        // Passando midiaId aqui também para a renderização ter o dado
+        renderizarFaixas(faixas, ID_CONTAINER, artistaNome, midiaId);
     } catch (e) {
         corpoTabela.innerHTML = '<tr><td colspan="3" class="text-center">Erro ao carregar faixas</td></tr>';
         console.error("Erro no fetch das faixas:", e);
     }
 }
 
-function renderizarFaixas(faixas, containerId = 'corpoTabelaFaixas', artistaNome = 'N/D') {
+function renderizarFaixas(faixas, containerId = 'corpoTabelaFaixas', artistaNome = 'N/D', midiaId = 0) {
     const corpoTabela = document.getElementById(containerId);
     if (!corpoTabela) return;
 
     corpoTabela.innerHTML = '';
 
     if (!faixas || faixas.length === 0) {
-        corpoTabela.innerHTML = '<tr><td colspan="3" class="text-center">Nenhuma faixa cadastrada.</td></tr>';
+        containerTabele.innerHTML = '<tr><td colspan="3" class="text-center">Nenhuma faixa cadastrada.</td></tr>';
         return;
     }
 
@@ -83,13 +84,15 @@ function renderizarFaixas(faixas, containerId = 'corpoTabelaFaixas', artistaNome
         const titulo = f.titulo || f.title || 'Sem título';
         const duracao = f.duracao || f.duration || '--:--';
 
-        // Injetamos o link com os atributos data- para o Vagalume usar depois
+        // Injetamos o link com os atributos data- completos para o fluxo purista
         tr.innerHTML = `
             <td class="col-pos text-center">${pos}</td>
             <td class="col-titulo">
                 <span class="link-letra" style="cursor: pointer; color: #3b82f6; transition: color 0.2s;" 
                       data-artista="${encodeURIComponent(artistaNome)}" 
                       data-musica="${encodeURIComponent(titulo)}"
+                      data-midia="${midiaId}"
+                      data-faixa="${pos}"
                       onmouseover="this.style.color='#60a5fa'" 
                       onmouseout="this.style.color='#3b82f6'">
                     ${titulo}
