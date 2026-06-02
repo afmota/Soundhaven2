@@ -155,4 +155,33 @@ class AlbumRepository {
         
         return $stmt->execute();
     }
+
+    public function buscarOuCriarGravadora($nome) {
+        $nome = trim($nome);
+        if (empty($nome)) return null;
+
+        // Verifica se já existe
+        $stmt = $this->db->prepare("SELECT gravadora_id FROM tb_gravadoras WHERE nome = :nome");
+        $stmt->execute([':nome' => $nome]);
+        $id = $stmt->fetchColumn();
+
+        if ($id) {
+            return (int)$id;
+        }
+
+        // Se não existe, cria na hora
+        $stmt = $this->db->prepare("INSERT INTO tb_gravadoras (nome) VALUES (:nome)");
+        $stmt->execute([':nome' => $nome]);
+        
+        return (int)$this->db->lastInsertId();
+    }
+
+    public function atualizarSituacao($albumId, $situacaoId) {
+        $sql = "UPDATE tb_albuns SET situacao = :situacao WHERE album_id = :album_id";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([
+            ':situacao' => (int) $situacaoId,
+            ':album_id' => (int) $albumId
+        ]);
+    }
 }

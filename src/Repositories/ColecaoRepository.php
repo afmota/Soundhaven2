@@ -603,6 +603,7 @@ class ColecaoRepository {
                                 FROM tb_midia_faixas f 
                                 JOIN tb_midias m ON f.midia_id = m.midia_id
                                 JOIN tb_albuns a ON m.album_id = a.album_id
+                                WHERE f.titulo NOT IN ('U2 And 3 Songs (Video)', 'Come on')
                                 ORDER BY f.duracao DESC LIMIT 1")->fetch(\PDO::FETCH_ASSOC);
     }
 

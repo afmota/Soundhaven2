@@ -91,4 +91,20 @@ class LojaController {
         // --- 3. RENDERIZAÇÃO ---
         include __DIR__ . '/../Views/loja/grid.php';
     }
+
+    public function moverParaWishlist() {
+        header('Content-Type: application/json');
+        $albumId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+
+        if (!$albumId) {
+            echo json_encode(['success' => false, 'error' => 'ID de álbum inválido']);
+            exit;
+        }
+
+        $service = new AlbumService();
+        $sucesso = $service->marcarComoDesejado($albumId);
+        
+        echo json_encode(['success' => $sucesso]);
+        exit;
+    }
 }

@@ -118,6 +118,7 @@ class ColecaoController {
         $gravadoras = $this->service->buscarTodasGravadoras();
         $tipos = $this->service->buscarTodosTipos();
         $sugestoes = $this->service->listarTodasSugestoes(); 
+        $formatos = $this->service->buscarTodosFormatos();
     
         if (!$album) {
             die("Álbum não encontrado.");

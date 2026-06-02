@@ -42,6 +42,14 @@ class AlbumService {
         if (empty($data['capa_url'])) {
             $data['capa_url'] = 'assets/images/placeholder.jpg';
         }
+
+        // --- TRATAMENTO DA GRAVADORA DINÂMICA ---
+        if (!empty($data['gravadora_nome'])) {
+            $data['gravadora_id'] = $this->repository->buscarOuCriarGravadora($data['gravadora_nome']);
+        } else {
+            $data['gravadora_id'] = null;
+        }
+
         return $this->repository->update($id, $data);
     }
 
@@ -63,6 +71,14 @@ class AlbumService {
         if (empty($dados['titulo']) || empty($dados['artista_id'])) {
             throw new \Exception("Dados obrigatórios faltando.");
         }
+
+        // --- TRATAMENTO DA GRAVADORA DINÂMICA ---
+        if (!empty($dados['gravadora_nome'])) {
+            $dados['gravadora_id'] = $this->repository->buscarOuCriarGravadora($dados['gravadora_nome']);
+        } else {
+            $dados['gravadora_id'] = null;
+        }
+
         return $this->repository->create($dados);
     }
 
@@ -105,5 +121,23 @@ class AlbumService {
             // Opcional: logar o erro $e->getMessage() para saber o que falhou
             return false;
         }
+    }
+
+    public function marcarComoDesejado($albumId) {
+        if (!$albumId) return false;
+        
+        // 1. Pegamos os dados atuais do álbum direto pelo repositório
+        // (Aproveitando o método buscarPorId ou similar que você já tenha para pegar a situação atual)
+        $db = \App\Config\Database::getConnection();
+        $stmtCheck = $db->prepare("SELECT situacao FROM tb_albuns WHERE album_id = :album_id");
+        $stmtCheck->execute([':album_id' => $albumId]);
+        $situacaoAtual = (int) $stmtCheck->fetchColumn();
+
+        // 2. Se a situação atual já for 2 (Desejado), mudamos de volta para 1 (Disponível na Loja)
+        // Caso contrário, mudamos para 2 (Desejado)
+        $novaSituacao = ($situacaoAtual === 2) ? 1 : 2;
+        
+        // 3. Executa a atualização usando o Repository que ajustamos antes
+        return $this->repository->atualizarSituacao($albumId, $novaSituacao);
     }
 }

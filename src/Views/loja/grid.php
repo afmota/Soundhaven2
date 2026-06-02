@@ -31,7 +31,12 @@
                     </p>
                 <?php else: ?>
                     <?php foreach ($albuns as $album): ?>
-                        <article class="album-card album-card-modern" style="cursor:pointer;" data-album='<?= htmlspecialchars(json_encode($album), ENT_QUOTES, 'UTF-8') ?>'>
+                        <article class="album-card album-card-modern" style="cursor:pointer; position: relative;" data-album='<?= htmlspecialchars(json_encode($album), ENT_QUOTES, 'UTF-8') ?>'>
+                            
+                            <button type="button" class="btn-wishlist-direto" data-id="<?= $album['album_id'] ?>" title="Mudar para Desejado (WishList)">
+                                <i class="fa-regular fa-heart"></i>
+                            </button>
+                            
                             <img src="<?= htmlspecialchars($album['capa_url'] ?: 'assets/images/placeholder.jpg') ?>" alt="Capa">
                             <div class="album-info">
                                 <span class="album-title"><?= htmlspecialchars($album['titulo']) ?></span>

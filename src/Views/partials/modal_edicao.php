@@ -34,11 +34,12 @@
                     </div>
                     <div class="edit-field-group">
                         <label>GRAVADORA</label>
-                        <select name="gravadora_id" id="editModalGravadora"> <option value="">Selecione...</option>
+                        <input type="text" name="gravadora_nome" id="editModalGravadora" list="listaGravadorasEdicao" placeholder="Selecione ou digite uma nova...">
+                        <datalist id="listaGravadorasEdicao">
                             <?php foreach ($gravadoras as $grav): ?>
-                                <option value="<?= $grav['id'] ?>"><?= htmlspecialchars($grav['nome']) ?></option>
+                                <option value="<?= htmlspecialchars($grav['nome']) ?>"></option>
                             <?php endforeach; ?>
-                        </select>
+                        </datalist>
                     </div>
                 </div>
 

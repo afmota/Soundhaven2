@@ -36,11 +36,11 @@ class ColecaoService {
             'fimPagina' => $fimPagina,
             'totalRegistros' => $totalRegistros,
             'filters' => $filtros,
-            // Adicionamos os dados necessários para popular os selects do sidebar
             'artistas' => $this->buscarTodosArtistas(),
             'gravadoras' => $this->buscarTodasGravadoras(),
             'tipos' => $this->buscarTodosTipos(),
-            'situacoes' => $this->repository->getAllSituacoes() 
+            'situacoes' => $this->repository->getAllSituacoes(),
+            'formatos' => $this->buscarTodosFormatos()
         ];
     }
 
@@ -83,36 +83,53 @@ class ColecaoService {
     /**
      * ATUALIZAR ÁLBUM - Agora com tratamento de gravadora dinâmica
      */
-    public function atualizarAlbum($midiaId, $dados) {
-        try {
-            $this->repository->iniciarTransacao();
+public function atualizarAlbum($midiaId, $dados) {
+    try {
+        $this->repository->iniciarTransacao();
 
-            // --- TRATAMENTO DA GRAVADORA DINÂMICA NA EDIÇÃO ---
-            if (!empty($dados['gravadora_nome'])) {
-                $idGravadora = $this->repository->buscarOuCriarGravadora($dados['gravadora_nome']);
-                $dados['gravadora_id'] = $idGravadora;
-            }
-
-            // 1. Dados Básicos
-            $this->repository->updateDadosBasicos($midiaId, $dados['album_id'], $dados);
-
-            // 2. Tags N:N
-            $this->repository->salvarGeneros($dados['album_id'], $dados['generos'] ?? []);
-            $this->repository->salvarEstilos($dados['album_id'], $dados['estilos'] ?? []);
-            $this->repository->salvarProdutores($dados['album_id'], $dados['produtores'] ?? []);
-
-            // 3. Faixas
-            $this->repository->salvarFaixas($midiaId, $dados['faixas'] ?? []);
-
-            $this->repository->confirmarTransacao();
-            return true;
-
-        } catch (\Exception $e) {
-            $this->repository->cancelarTransacao();
-            error_log("Erro no atualizarAlbum: " . $e->getMessage());
-            die("Erro no Service: " . $e->getMessage());
+        // --- CORREÇÃO DA CAPA ---
+        if (!isset($dados['capa_url']) && isset($dados['edicaoCapaUrl'])) {
+            $dados['capa_url'] = $dados['edicaoCapaUrl'];
         }
+        $dados['capa_url'] = $dados['capa_url'] ?? '';
+
+        // --- TRATAMENTO DA GRAVADORA DINÂMICA NA EDIÇÃO ---
+        if (!empty($dados['gravadora_nome'])) {
+            $idGravadora = $this->repository->buscarOuCriarGravadora($dados['gravadora_nome']);
+            $dados['gravadora_id'] = $idGravadora;
+        }
+
+        // === MÁGICA DO FORMATO AQUI ===
+        // Se o formato veio do select, atualiza ele direto na tabela de mídias
+        if (!empty($dados['formato_id'])) {
+            $db = \App\Config\Database::getConnection();
+            $stmtFormato = $db->prepare("UPDATE tb_midias SET formato_id = :formato_id WHERE midia_id = :midia_id");
+            $stmtFormato->execute([
+                'formato_id' => $dados['formato_id'],
+                'midia_id'   => $midiaId
+            ]);
+        }
+
+        // 1. Dados Básicos (Atualiza a tabela tb_albuns)
+        $this->repository->updateDadosBasicos($midiaId, $dados['album_id'], $dados);
+
+        // 2. Tags N:N
+        $this->repository->salvarGeneros($dados['album_id'], $dados['generos'] ?? []);
+        $this->repository->salvarEstilos($dados['album_id'], $dados['estilos'] ?? []);
+        $this->repository->salvarProdutores($dados['album_id'], $dados['produtores'] ?? []);
+
+        // 3. Faixas
+        $this->repository->salvarFaixas($midiaId, $dados['faixas'] ?? []);
+
+        $this->repository->confirmarTransacao();
+        return true;
+
+    } catch (\Exception $e) {
+        $this->repository->cancelarTransacao();
+        error_log("Erro no atualizarAlbum: " . $e->getMessage());
+        die("Erro no Service: " . $e->getMessage());
     }
+}
 
     public function buscarPorId($id) {
         return $this->repository->buscarDetalhesAlbum($id);

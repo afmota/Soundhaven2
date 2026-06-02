@@ -46,7 +46,7 @@ class DashboardRepository {
                 JOIN tb_midias m ON a.album_id = m.album_id
                 JOIN tb_gravadoras g ON m.gravadora_id = g.gravadora_id
                 JOIN tb_formatos f ON m.formato_id = f.formato_id
-                ORDER BY m.data_aquisicao DESC LIMIT :limit";
+                ORDER BY m.midia_id DESC LIMIT :limit";
 
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);

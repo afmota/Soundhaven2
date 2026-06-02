@@ -22,6 +22,11 @@ switch ($route) {
         $controller->index();
         break;
 
+    case 'loja_desejar_album':
+        $controller = new LojaController();
+        $controller->moverParaWishlist();
+        break;
+
     case 'colecao':
         $controller = new ColecaoController();
         $controller->index();

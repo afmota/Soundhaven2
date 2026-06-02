@@ -26,7 +26,8 @@
                     <img id="edicaoImg" class="edit-modal-capa" src="<?= htmlspecialchars($album['capa_url'] ?? '') ?>" alt="Capa Edição">
                     <div class="edit-field-group" style="margin-bottom: 0;">
                         <label>URL DA CAPA</label>
-                        <input type="text" name="capa_url" id="edicaoCapaUrl" value="<?= htmlspecialchars($album['capa_url'] ?? '') ?>">
+                        <!-- <input type="text" name="capa_url" id="edicaoCapaUrl" value="<?= htmlspecialchars($album['capa_url'] ?? '') ?>"> -->
+                        <input type="text" id="edicaoCapaUrl" name="capa_url" class="form-control" value="<?= $album['capa_url'] ?? '' ?>">
                     </div>
                 </div>
 
@@ -82,11 +83,22 @@
                         <input type="date" name="data_aquisicao" value="<?= $album['data_aquisicao'] ?? '' ?>">
                     </div>
                     <div class="edit-field-group">
-                        <label>TIPO DE MÍDIA</label>
+                        <label>GRAVAÇÃO</label>
                         <select name="tipo_id">
                             <?php foreach ($tipos as $tp): ?>
                             <option value="<?= $tp['tipo_id'] ?>" <?= (isset($album['tipo_id']) && $tp['tipo_id'] == $album['tipo_id']) ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($tp['descricao']) ?>
+                            </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="edit-field-group">
+                        <label>FORMATO</label>
+                        <select name="formato_id" id="edicaoFormato">
+                            <option value="">Selecione...</option>
+                            <?php foreach ($formatos as $f): ?>
+                            <option value="<?= $f['formato_id'] ?>" <?= (isset($album['formato_id']) && $f['formato_id'] == $album['formato_id']) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($f['descricao']) ?>
                             </option>
                             <?php endforeach; ?>
                         </select>

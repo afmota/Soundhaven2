@@ -30,9 +30,46 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- 2. EVENTOS DE CLIQUE ---
+    document.addEventListener('click', async (e) => {
+        const btnWish = e.target.closest('.btn-wishlist-direto');
+        
+        // 1º CASO: Clicou no botão do coração
+        if (btnWish) {
+            e.preventDefault();
+            e.stopPropagation();
 
-    // Abrir Detalhes (ao clicar no card)
-    document.addEventListener('click', (e) => {
+            const albumId = btnWish.getAttribute('data-id');
+            const card = btnWish.closest('.album-card');
+
+            btnWish.style.transform = 'scale(1.3)';
+            btnWish.style.backgroundColor = '#ff3838'; 
+
+            try {
+                const response = await fetch(`index.php?url=loja_desejar_album&id=${albumId}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    if (card) {
+                        card.style.transition = 'all 0.3s ease';
+                        card.style.opacity = '0';
+                        card.style.transform = 'scale(0.7)';
+                        setTimeout(() => card.remove(), 300);
+                    }
+                } else {
+                    btnWish.style.transform = 'scale(1)';
+                    btnWish.style.backgroundColor = '#3c3cff';
+                    alert('Erro ao mover para a WishList: ' + (data.error || 'Erro desconhecido'));
+                }
+            } catch (error) {
+                console.error('Erro na requisição:', error);
+                btnWish.style.transform = 'scale(1)';
+                btnWish.style.backgroundColor = '#3c3cff';
+                alert('Erro de comunicação com o servidor.');
+            }
+            return; // Mata a execução aqui para não abrir os detalhes abaixo
+        }
+
+        // 2º CASO: Clicou no card normal (Abrir Detalhes)
         const card = e.target.closest('.album-card');
         if (card) {
             currentAlbumData = JSON.parse(card.getAttribute('data-album'));
@@ -135,7 +172,8 @@ function openEditModal(album) {
     setVal('editModalCapaUrl', album.capa_url || '');
     setVal('editModalTitulo', album.titulo);
     setVal('editModalArtista', album.artista_id);
-    setVal('editModalGravadora', album.gravadora_id);
+    //setVal('editModalGravadora', album.gravadora_id);
+    setVal('editModalGravadora', album.gravadora_nome || '');
     setVal('editModalTipo', album.tipo_id);
     setVal('editModalSituacao', album.situacao_id || album.situacao);
     setVal('editModalData', album.data_lancamento || '');

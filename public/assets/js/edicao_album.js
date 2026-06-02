@@ -10,9 +10,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 1. Prévia da Capa
     if (inputCapa && imgPreview) {
-        inputCapa.addEventListener('input', function() {
-            const novaUrl = this.value.trim();
+        const atualizarPrevia = function() {
+            const novaUrl = inputCapa.value.trim();
             imgPreview.src = novaUrl ? novaUrl : 'assets/img/default-cover.png';
+        };
+
+        inputCapa.addEventListener('input', atualizarPrevia);
+        inputCapa.addEventListener('change', atualizarPrevia);
+        inputCapa.addEventListener('paste', function() {
+            setTimeout(atualizarPrevia, 100); // Pequeno delay para o browser processar o texto colado
         });
     }
 
@@ -145,6 +151,12 @@ document.addEventListener('DOMContentLoaded', function() {
             e.target.value = v.substring(0, 8);
         }
     });
+
+    const inputCapaEdicao = document.getElementById('edicaoCapaUrl');
+    if (inputCapaEdicao) {
+        // Garante que o input tenha o nome correto que o PHP espera na hora de salvar
+        inputCapaEdicao.setAttribute('name', 'capa_url');
+    }
 });
 
 // Funções Auxiliares de Tags
