@@ -187,6 +187,7 @@
         <?php require_once __DIR__ . '/../partials/modal_detalhes_colecao.php'; ?>
         <?php require_once __DIR__ . '/../partials/modal_grafico_artistas.php'; ?>
         <?php require_once __DIR__ . '/../partials/modal_grafico_gravadoras.php'; ?>
+        <?php include __DIR__ . '/../partials/modal_sugestao.php'; ?>
         <?php include __DIR__ . '/../partials/modal_linha_tempo.php'; ?>
         <?php require_once __DIR__ . '/../partials/footer.php'; ?>
     </div>

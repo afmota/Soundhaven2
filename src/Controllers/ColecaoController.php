@@ -56,7 +56,6 @@ class ColecaoController {
         include __DIR__ . '/../Views/colecao/grid.php';
     }
 
-    // NOVO MÉTODO PARA O BOTÃO DE FONE DE OUVIDO
     public function registrarAudicao() {
         header('Content-Type: application/json');
         $midiaId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);

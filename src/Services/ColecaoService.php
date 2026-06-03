@@ -135,9 +135,6 @@ public function atualizarAlbum($midiaId, $dados) {
         return $this->repository->buscarDetalhesAlbum($id);
     }
 
-    /**
-     * INSERIR NOVO ÁLBUM - Mantido com a lógica de gravadora dinâmica
-     */
     public function inserirNovoAlbumNaColecao($dados) {
         try {
             $this->repository->iniciarTransacao();

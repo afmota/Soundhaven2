@@ -457,6 +457,18 @@ class ColecaoRepository {
     }
 
     public function inserirNovaMidia(array $dados) {
+        // === SALVA A NOVA URL DA CAPA NA TABELA DE ÁLBUNS ===
+        // Pegamos o name correto que está vindo do formulário (capa_url)
+        if (!empty($dados['capa_url'])) {
+            $sqlCapa = "UPDATE tb_albuns SET capa_url = :capa WHERE album_id = :album_id";
+            $stmtCapa = $this->db->prepare($sqlCapa);
+            $stmtCapa->execute([
+                ':capa'     => $dados['capa_url'],
+                ':album_id' => (int)$dados['album_id']
+            ]);
+        }
+
+        // Seu código original do INSERT continua exatamente igual abaixo...
         $sql = "INSERT INTO tb_midias (album_id, formato_id, gravadora_id, data_aquisicao, preco, numero_catalogo, discogs_id, condicao, observacoes, ativo) 
                 VALUES (:album_id, :formato_id, :gravadora_id, :data_aq, :preco, :cat, :d_id, :cond, :obs, 1)";
 

@@ -174,4 +174,21 @@ class DashboardRepository {
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
+
+    public function buscarSugestaoAleatoria() {
+        // Seleciona um álbum aleatório da loja com todas as amarrações de nomes tratadas
+        $sql = "SELECT a.*, art.nome AS artista_nome, g.nome AS gravadora_nome, t.descricao AS tipo_descricao, s.descricao AS situacao_descricao
+                FROM tb_albuns a
+                LEFT JOIN tb_artistas art ON a.artista_id = art.artista_id
+                LEFT JOIN tb_gravadoras g ON a.gravadora_id = g.gravadora_id
+                LEFT JOIN tb_tipos t ON a.tipo_id = t.tipo_id
+                LEFT JOIN tb_situacoes s ON a.situacao = s.situacao_id
+                WHERE a.situacao = 1 AND a.deletado = 0
+                ORDER BY RAND()
+                LIMIT 1";
+                
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetch(\PDO::FETCH_ASSOC) ?: null;
+    }
 }
