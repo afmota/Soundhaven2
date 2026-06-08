@@ -5,13 +5,11 @@ let faixaIndex = 0;
 
 document.addEventListener("DOMContentLoaded", async () => {
     // --- 1. ATIVAÇÃO DOS COMPORTAMENTOS COMUNS ---
-    // Aqui o functions.js entra em ação, inclusive com a nova lógica de Gravadora
     if (typeof inicializarComportamentosFormulario === 'function') {
         inicializarComportamentosFormulario();
     }
 
-    // === SOLUÇÃO DO LIVE UPDATE (PREVIEW DA CAPA) ===
-    // Escuta a digitação no campo e atualiza a imagem na hora
+    // === PREVIEW DA CAPA ===
     const inputCapa = document.getElementById('edicaoCapaUrl');
     const imgPreview = document.getElementById('edicaoImg');
 
@@ -44,8 +42,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 if (campoArtista) campoArtista.value = album.artista_id || '';
 
                 // Gravadora (Input + Datalist)
-                const campoGravadora = document.getElementById('edicaoGravadora');
+                const campoGravadora = document.getElementById('edicaoGravadoraNome');
+                const campoGravadoraId = document.getElementById('edicaoGravadoraId');
                 if (campoGravadora) campoGravadora.value = album.gravadora_nome || '';
+                if (campoGravadoraId) campoGravadoraId.value = album.gravadora_id || '';
 
                 // Outros campos
                 if (document.getElementById('edicaoLancamento')) document.getElementById('edicaoLancamento').value = album.data_lancamento || '';
@@ -69,45 +69,57 @@ document.addEventListener("DOMContentLoaded", async () => {
     // --- 3. IMPORTAÇÃO VIA DISCOGS ---
     if (btnImport) {
         btnImport.addEventListener('click', async () => {
-            const query = document.getElementById('edicaoTitulo').value;
-            const artistaSelect = document.getElementById('edicaoArtista');
-            const artistaNome = artistaSelect ? artistaSelect.options[artistaSelect.selectedIndex]?.text : '';
+            const inputCatalogo = document.getElementById('inputCatalogo');
+            const inputTitulo = document.getElementById('edicaoTitulo');
+            const catalogo = inputCatalogo ? inputCatalogo.value.trim() : '';
+            const titulo = inputTitulo ? inputTitulo.value.trim() : '';
 
-            if (!query) {
-                alert('Digite ou carregue o título do álbum primeiro.');
+            if (!catalogo) {
+                alert("Opa! Preciso do Número de Catálogo.");
+                if (inputCatalogo) inputCatalogo.focus();
                 return;
             }
 
-            btnImport.disabled = true;
+            const originalHTML = btnImport.innerHTML;
             btnImport.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Buscando...';
+            btnImport.disabled = true;
 
             try {
-                const urlSearch = `index.php?url=api_importar_discogs&query=${encodeURIComponent(query)}&artist=${encodeURIComponent(artistaNome)}`;
-                const response = await fetch(urlSearch);
+                const response = await fetch(`index.php?url=api_importar_discogs`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ catalogo, titulo })
+                });
+
                 const data = await response.json();
 
-                if (data.success && data.tracks) {
+                if (data.success && data.tracklist) {
                     corpoTabela.innerHTML = '';
-                    data.tracks.forEach(f => {
-                        inserirLinhaNaTabela(f.position, f.title, f.duration);
+                    faixaIndex = 0; // Reseta para a nova lista importada
+
+                    const inputDiscogsId = document.getElementById('inputDiscogsId');
+                    if (inputDiscogsId) inputDiscogsId.value = data.discogs_id;
+
+                    data.tracklist.forEach(track => {
+                        inserirLinhaNaTabela(track.numero, track.titulo, track.duracao);
                     });
-                    alert(`Sucesso! ${data.tracks.length} faixas importadas.`);
+
+                    alert(`Sucesso! Importamos ${data.tracklist.length} faixas.`);
                 } else {
-                    alert(data.error || 'Nenhuma faixa encontrada para este álbum.');
+                    alert("Discogs diz: " + (data.message || "Não encontrado."));
                 }
             } catch (error) {
                 console.error('Erro na importação:', error);
                 alert('Erro de comunicação com o servidor.');
             } finally {
                 btnImport.disabled = false;
-                btnImport.innerHTML = '<i class="fa-solid fa-cloud-arrow-down"></i> Importar Faixas via Discogs';
+                btnImport.innerHTML = originalHTML;
             }
         });
     }
 
     // --- 4. FUNÇÃO PARA INSERIR LINHA DE FAIXA ---
     function inserirLinhaNaTabela(posicao, titulo, duracao) {
-        faixaIndex++;
         const tr = document.createElement('div');
         tr.className = 'faixa-item';
         tr.style.display = 'flex';
@@ -117,16 +129,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         tr.style.transition = 'all 0.2s ease';
 
         tr.innerHTML = `
+            <input type="hidden" name="faixas[${faixaIndex}][id]" value="new">
             <input type="text" name="faixas[${faixaIndex}][posicao]" class="input-posicao" style="width: 50px; text-align: center;" value="${posicao || ''}" placeholder="01">
             <input type="text" name="faixas[${faixaIndex}][titulo]" class="input-titulo" style="flex: 1;" value="${titulo || ''}" placeholder="Nome da música">
-            <input type="text" name="faixas[${faixaIndex}][duracao]" class="input-duracao" style="width: 80px; text-align: center;" value="${duracao || ''}" placeholder="00:00" maxlength="5">
+            <input type="text" name="faixas[${faixaIndex}][duracao]" class="input-duracao" style="width: 80px; text-align: center;" value="${duracao || ''}" placeholder="00:00" maxlength="8">
             <button type="button" class="btn-remove-faixa" style="background: none; border: none; color: var(--action-destructive); cursor: pointer;"><i class="fa-solid fa-trash"></i></button>
         `;
         corpoTabela.appendChild(tr);
+        faixaIndex++;
     }
 
     // Botão Adicionar Faixa Manual
-    const btnAddManual = document.getElementById('btn-add-faixa-manual');
+    const btnAddManual = document.getElementById('btnAdicionarFaixa');
     if (btnAddManual) {
         btnAddManual.addEventListener('click', () => {
             const proximaPos = corpoTabela.querySelectorAll('.faixa-item').length + 1;
@@ -153,13 +167,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     corpoTabela.addEventListener('input', (e) => {
         if (e.target.classList.contains('input-duracao')) {
-            let v = e.target.value.replace(/\\D/g, ''); 
+            let v = e.target.value.replace(/\D/g, ''); 
             if (v.length >= 3 && v.length <= 4) {
                 v = v.substring(0, v.length - 2) + ':' + v.substring(v.length - 2);
             } else if (v.length > 4) {
-                v = v.substring(0, 2) + ':' + v.substring(2, 4);
+                v = v.substring(0, v.length - 4) + ':' + v.substring(v.length - 4, v.length - 2) + ':' + v.substring(v.length - 2);
             }
-            e.target.value = v;
+            e.target.value = v.substring(0, 8);
         }
     });
 });

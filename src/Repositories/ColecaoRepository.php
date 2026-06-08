@@ -240,11 +240,6 @@ class ColecaoRepository {
         return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getAllGravadoras() {
-        $sql = "SELECT gravadora_id, nome FROM tb_gravadoras ORDER BY nome ASC";
-        return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-    }
-
     public function getAllTipos() {
         $sql = "SELECT tipo_id, descricao FROM tb_tipos ORDER BY descricao ASC";
         return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);

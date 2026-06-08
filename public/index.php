@@ -124,6 +124,19 @@ switch ($route) {
         $controller->restaurar();
         break;
 
+    case 'perfil':
+        $controller = new App\Controllers\PerfilController();
+        $controller->index();
+        break;
+
+    case 'logout':
+        // Simulação de logout limpando cookies e redirecionando de volta ao dashboard
+        if (isset($_COOKIE['soundhaven_sugestao_diaria'])) {
+            setcookie('soundhaven_sugestao_diaria', '', time() - 3600, '/');
+        }
+        header("Location: index.php?url=dashboard&msg=logout_sucesso");
+        exit;
+
     default:
         http_response_code(404);
         echo "404 - Página não encontrada no SoundHaven";

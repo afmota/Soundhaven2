@@ -49,8 +49,6 @@ class ColecaoController {
 
         $dadosDecadas = $this->service->getDadosGraficoDecadas();
         $jsonDecadas = json_encode($dadosDecadas);
-
-        $jsonDecadas = json_encode($this->service->getDadosGraficoDecadas());
         $jsonAquisicoes = json_encode($this->service->getDadosGraficoAquisicoes());
 
         include __DIR__ . '/../Views/colecao/grid.php';
