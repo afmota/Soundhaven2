@@ -33,7 +33,7 @@ window.abrirModalDecadas = function() {
             datasets: [{
                 label: 'Total de Álbuns',
                 data: dadosDecadas.datasets,
-                backgroundColor: '#3b82f6',
+                backgroundColor: '#00eeff',
                 borderColor: '#3b82f6',
                 borderWidth: 1,
                 borderRadius: 8
@@ -94,18 +94,19 @@ window.abrirModalAnos = function() {
     }
 
     window.meuGraficoAnos = new Chart(ctx, {
-        type: 'line',
+        type: 'bar',
         data: {
             labels: dadosAquisicoes.labels,
             datasets: [{
                 label: 'Álbuns Adquiridos',
                 data: dadosAquisicoes.datasets,
-                borderColor: '#338d33',
-                backgroundColor: '#338d3322',
+                borderColor: '#2ec22e',
+                backgroundColor: '#14f714',
                 fill: true,
-                tension: 0,
+                tension: 0.3,
                 pointRadius: 5,
-                pointBackgroundColor: '#338d33'
+                pointBackgroundColor: '#338d33',
+                borderRadius: 5
             }]
         },
         options: {
