@@ -101,7 +101,22 @@ class ColecaoRepository {
             $params[':produtor'] = '%' . $filtros['produtor'] . '%';
         }
 
-        $sql .= " ORDER BY tm.midia_id DESC LIMIT :limit OFFSET :offset";
+        $ordemPermitida = [
+            'titulo_asc'   => 'ta.titulo ASC',
+            'titulo_desc'  => 'ta.titulo DESC',
+            'ano_asc'      => 'ta.data_lancamento ASC',
+            'ano_desc'     => 'ta.data_lancamento DESC',
+            'artista_asc'  => 'art.nome ASC',
+            'artista_desc' => 'art.nome DESC',
+            'padrao'       => 'tm.midia_id DESC'
+        ];
+
+        $ordemSql = $ordemPermitida['padrao'];
+        if (!empty($filtros['ordem']) && array_key_exists($filtros['ordem'], $ordemPermitida)) {
+            $ordemSql = $ordemPermitida[$filtros['ordem']];
+        }
+
+        $sql .= " ORDER BY " . $ordemSql . " LIMIT :limit OFFSET :offset";
 
         $stmt = $this->db->prepare($sql);
         

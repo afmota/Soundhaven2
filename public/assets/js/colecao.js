@@ -306,7 +306,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (temFiltroAtivo) {
             painelFiltros.style.display = 'block';
             txtToggle.textContent = 'Ocultar Filtros';
-            btnToggle.style.background = '#3c3cff'; // Mantém sua cor padrão de ação
         }
 
         btnToggle.addEventListener('click', () => {
@@ -319,6 +318,33 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // --- Lógica de Auto-Ocultar Ordenação ---
+    const btnToggleOrdem = document.getElementById('btnToggleOrdenacao');
+    const painelOrdem = document.getElementById('barraOrdenacao');
+    const txtToggleOrdem = document.getElementById('txtToggleOrdenacao');
+
+    if (btnToggleOrdem && painelOrdem) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const temOrdemAtiva = urlParams.has('ordem') && urlParams.get('ordem') !== 'padrao';
+
+        // Se já tiver alguma ordenação ativada, começa aberto
+        if (temOrdemAtiva) {
+            painelOrdem.style.display = 'block';
+            txtToggleOrdem.textContent = 'Ocultar Ordenação';
+        }
+
+        btnToggleOrdem.addEventListener('click', () => {
+            if (painelOrdem.style.display === 'none') {
+                painelOrdem.style.display = 'block';
+                txtToggleOrdem.textContent = 'Ocultar Ordenação';
+            } else {
+                painelOrdem.style.display = 'none';
+                txtToggleOrdem.textContent = 'Mostrar Ordenação';
+            }
+        });
+    }
+
 
     // --- BUSCA E CADASTRO DE LETRAS (SOUNDHAVEN) ---
     document.getElementById('corpoTabelaFaixas').addEventListener('click', function(e) {

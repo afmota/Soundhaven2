@@ -225,13 +225,13 @@
                 </div>
             </div>
 
-            <div class="filter-toggle-container" style="margin-bottom: 15px;">
-                <button type="button" id="btnToggleFiltros" class="btn-filter-trigger" style="background: #3c3cff; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold;">
+            <div class="filter-toggle-container">
+                <button type="button" id="btnToggleFiltros" class="btn-filter-trigger">
                     <i class="fas fa-sliders-h"></i> <span id="txtToggleFiltros">Mostrar Filtros</span>
                 </button>
             </div>
 
-            <div id="barraFiltrosAvancados" class="filtros-avancados-panel" style="display: none; background: #222; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <div id="barraFiltrosAvancados" class="filtros-avancados-panel">
                 <form action="index.php" method="GET" class="filtros-form" style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
                     <input type="hidden" name="url" value="colecao">
 
@@ -258,6 +258,42 @@
                 </form>
             </div>
 
+            <div class="sorting-toggle-container">
+                <button type="button" id="btnToggleOrdenacao" class="btn-sort-trigger">
+                    <i class="fas fa-sort-amount-down"></i> <span id="txtToggleOrdenacao">Mostrar Ordenação</span>
+                </button>
+            </div>
+
+            <div id="barraOrdenacao" class="ordenacao-panel">
+                <form action="index.php" method="GET" class="ordenacao-form">
+                    <input type="hidden" name="url" value="colecao">
+                    
+                    <?php foreach ($_GET as $key => $val): ?>
+                        <?php if ($key !== 'url' && $key !== 'ordem' && $key !== 'page'): ?>
+                            <input type="hidden" name="<?= htmlspecialchars($key) ?>" value="<?= htmlspecialchars($val) ?>">
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+
+                    <div class="ordenacao-form-group">
+                        <label class="ordenacao-label">Ordenar por</label>
+                        <select name="ordem" id="selectOrdem" class="ordenacao-select">
+                            <option value="padrao" <?= (empty($_GET['ordem']) || $_GET['ordem'] == 'padrao') ? 'selected' : '' ?>>Padrão (ID Mídia)</option>
+                            <option value="titulo_asc" <?= (isset($_GET['ordem']) && $_GET['ordem'] == 'titulo_asc') ? 'selected' : '' ?>>Título do Álbum (A-Z)</option>
+                            <option value="titulo_desc" <?= (isset($_GET['ordem']) && $_GET['ordem'] == 'titulo_desc') ? 'selected' : '' ?>>Título do Álbum (Z-A)</option>
+                            <option value="ano_asc" <?= (isset($_GET['ordem']) && $_GET['ordem'] == 'ano_asc') ? 'selected' : '' ?>>Ano de Lançamento (Mais antigo)</option>
+                            <option value="ano_desc" <?= (isset($_GET['ordem']) && $_GET['ordem'] == 'ano_desc') ? 'selected' : '' ?>>Ano de Lançamento (Mais recente)</option>
+                            <option value="artista_asc" <?= (isset($_GET['ordem']) && $_GET['ordem'] == 'artista_asc') ? 'selected' : '' ?>>Artista (A-Z)</option>
+                            <option value="artista_desc" <?= (isset($_GET['ordem']) && $_GET['ordem'] == 'artista_desc') ? 'selected' : '' ?>>Artista (Z-A)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-sort-submit">
+                            Ordenar
+                        </button>
+                    </div>
+                </form>
+            </div>
 
         </aside>
     </div>
