@@ -106,8 +106,8 @@ class ColecaoRepository {
             'titulo_desc'  => 'ta.titulo DESC',
             'ano_asc'      => 'ta.data_lancamento ASC',
             'ano_desc'     => 'ta.data_lancamento DESC',
-            'artista_asc'  => 'art.nome ASC',
-            'artista_desc' => 'art.nome DESC',
+            'artista_asc'  => 'art.nome ASC, ta.data_lancamento ',
+            'artista_desc' => 'art.nome DESC, ta.data_lancamento',
             'padrao'       => 'tm.midia_id DESC'
         ];
 
