@@ -38,6 +38,16 @@ switch ($route) {
         $controller->index();
         break;
 
+    case 'novo_artista':
+        $controller = new App\Controllers\ArtistaController();
+        $controller->novoArtista();
+        break;
+
+    case 'salvar_inclusao_artista':
+        $controller = new App\Controllers\ArtistaController();
+        $controller->salvarInclusaoArtista();
+        break;
+
     case 'registrar_audicao':
         $controller = new ColecaoController();
         $controller->registrarAudicao();

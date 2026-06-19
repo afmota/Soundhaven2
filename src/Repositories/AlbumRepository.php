@@ -34,7 +34,7 @@ class AlbumRepository {
         } else {
             // Se NÃO escolheu situação, mantemos o padrão da loja:
             // NÃO mostra o que está em situações de "fora da loja" (4 e 5)
-            $where[] = "a.situacao NOT IN (4, 5)";
+            $where[] = "a.situacao NOT IN (2, 4, 5)";
         }
 
         $sql = "SELECT a.album_id, a.titulo, a.capa_url, a.data_lancamento,
@@ -73,7 +73,7 @@ class AlbumRepository {
             $where[] = "a.situacao = :situacao_id";
             $params[':situacao_id'] = (int) $filters['situacao_id'];
         } else {
-            $where[] = "a.situacao NOT IN (4, 5)";
+            $where[] = "a.situacao NOT IN (2, 4, 5)";
         }
     
         // 3. Repetir os outros filtros para o cálculo ser exato

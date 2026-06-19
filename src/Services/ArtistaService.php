@@ -42,4 +42,8 @@ class ArtistaService {
             'generos' => $this->repository->buscarTodosGeneros()
         ];
     }
+
+    public function inserirArtista($dados) {
+        return $this->repository->insertArtista($dados);
+    }
 }

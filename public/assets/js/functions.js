@@ -67,6 +67,34 @@ async function carregarFaixas(midiaId, artistaNome = 'N/D') {
     }
 }
 
+/**
+ * Converte duração do formato hh:mm:ss ou mm:ss para mm:ss
+ * Se começar com 00:, remove o prefixo
+ */
+function formatarDuracaoExibicao(duracao) {
+    if (!duracao) return '--:--';
+
+    const partes = duracao.split(':');
+    if (partes.length === 3) {
+        // Formato hh:mm:ss
+        const horas = parseInt(partes[0], 10);
+        const minutos = parseInt(partes[1], 10);
+        const segundos = partes[2];
+
+        // Se tem horas, mantém o formato completo
+        if (horas > 0) {
+            return duracao;
+        }
+        // Se não tem horas, retorna mm:ss
+        return `${minutos}:${segundos}`;
+    } else if (partes.length === 2) {
+        // Já está em mm:ss
+        return duracao;
+    }
+
+    return duracao;
+}
+
 function renderizarFaixas(faixas, containerId = 'corpoTabelaFaixas', artistaNome = 'N/D', midiaId = 0) {
     const corpoTabela = document.getElementById(containerId);
     if (!corpoTabela) return;
@@ -82,7 +110,8 @@ function renderizarFaixas(faixas, containerId = 'corpoTabelaFaixas', artistaNome
         const tr = document.createElement('tr');
         const pos = f.numero_faixa || f.position || '-';
         const titulo = f.titulo || f.title || 'Sem título';
-        const duracao = f.duracao || f.duration || '--:--';
+        const durationRaw = f.duracao || f.duration || '--:--';
+        const duracao = formatarDuracaoExibicao(durationRaw);
 
         // Injetamos o link com os atributos data- completos para o fluxo purista
         tr.innerHTML = `
@@ -202,7 +231,7 @@ function inicializarComponentesGlobais() {
         });
     }
 
-// Gerenciamento Universal de Cliques (Dropdown e Fechamento de Modais)
+    // Gerenciamento Universal de Cliques (Dropdown e Fechamento de Modais)
     window.addEventListener('click', (e) => {
         // 1. Fecha dropdown do avatar
         if (dropdown && dropdown.classList.contains('show')) {

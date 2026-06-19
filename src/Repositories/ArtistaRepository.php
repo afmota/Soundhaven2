@@ -84,4 +84,38 @@ class ArtistaRepository {
             'artista_id' => $dados['artista_id']
         ]);
     }
+
+    public function insertArtista($dados) {
+        $sql = "INSERT INTO tb_artistas (
+                    nome,
+                    imagem_url,
+                    pais_origem,
+                    genero_principal,
+                    ano_formacao,
+                    ano_encerramento,
+                    biografia,
+                    site_oficial
+                ) VALUES (
+                    :nome,
+                    :imagem_url,
+                    :pais_origem,
+                    :genero_principal,
+                    :ano_formacao,
+                    :ano_encerramento,
+                    :biografia,
+                    :site_oficial
+                )";
+
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([
+            'nome' => $dados['nome'],
+            'imagem_url' => $dados['imagem_url'],
+            'pais_origem' => $dados['pais_origem'],
+            'genero_principal' => $dados['genero_principal'],
+            'ano_formacao' => $dados['ano_formacao'],
+            'ano_encerramento' => $dados['ano_encerramento'],
+            'biografia' => $dados['biografia'],
+            'site_oficial' => $dados['site_oficial']
+        ]);
+    }
 }

@@ -17,6 +17,11 @@
     <div class="spacer-left"></div>
 
     <div class="main-section">
+        <div class="page-actions" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 10px;">
+            <h1 style="color: var(--accent-color);">Artistas</h1>
+            <a href="?url=novo_artista" class="btn btn-primary" style="text-decoration: none;">+ Novo Artista</a>
+        </div>
+
         <main class="store-grid">
             <?php if (empty($artistas)): ?>
                 <p style="grid-column: span 5; text-align: center; color: var(--text-secondary); padding: 50px;">
