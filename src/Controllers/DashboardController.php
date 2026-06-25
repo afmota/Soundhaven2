@@ -25,7 +25,7 @@ class DashboardController {
         }
 
         $stats = $this->repository->buscarDadosGerais();
-        $ultimos = $this->repository->buscarUltimasAquisicoes(5);
+        $ultimos = $this->repository->buscarUltimasAquisicoes(10);
         $aniversariantes = $this->repository->buscarAniversariantesDoDia();
         $topArtistas = $this->repository->buscarTopArtistas(5);
         $top_gravadoras = $this->repository->buscarTopGravadoras(5);

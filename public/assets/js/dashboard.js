@@ -338,6 +338,99 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Slider 3D Últimas Aquisições
+    const recentSlider = document.getElementById('recentAlbumsSlider');
+    const prevBtn = document.querySelector('.recent-albums-nav.prev');
+    const nextBtn = document.querySelector('.recent-albums-nav.next');
+
+    if (recentSlider) {
+        const slides = Array.from(recentSlider.querySelectorAll('.slider-card'));
+        let currentIndex = 0;
+
+        const getRelativeIndex = (index) => {
+            const rawDiff = index - currentIndex;
+            const half = Math.floor(slides.length / 2);
+            if (rawDiff > half) return rawDiff - slides.length;
+            if (rawDiff < -half) return rawDiff + slides.length;
+            return rawDiff;
+        };
+
+        const updateSlider = () => {
+            slides.forEach((slide, index) => {
+                const relIndex = getRelativeIndex(index);
+                let transform = 'translate(-50%, -50%) translateZ(-120px) scale(0.72)';
+                let opacity = 0;
+                let zIndex = 1;
+                let pointerEvents = 'none';
+
+                slide.classList.remove('active', 'visible', 'hidden');
+
+                if (relIndex === 0) {
+                    transform = 'translate(-50%, -50%) translateZ(0px) scale(1)';
+                    opacity = 1;
+                    zIndex = 6;
+                    pointerEvents = 'auto';
+                    slide.classList.add('active');
+                } else if (relIndex === -1) {
+                    transform = 'translate(-50%, -50%) translateX(-240px) translateZ(-20px) rotateY(28deg) scale(0.88)';
+                    opacity = 1;
+                    zIndex = 5;
+                    pointerEvents = 'auto';
+                } else if (relIndex === 1) {
+                    transform = 'translate(-50%, -50%) translateX(240px) translateZ(-20px) rotateY(-28deg) scale(0.88)';
+                    opacity = 1;
+                    zIndex = 5;
+                    pointerEvents = 'auto';
+                } else if (relIndex === -2) {
+                    transform = 'translate(-50%, -50%) translateX(-380px) translateZ(-55px) rotateY(32deg) scale(0.78)';
+                    opacity = 0.55;
+                    zIndex = 4;
+                    pointerEvents = 'auto';
+                } else if (relIndex === 2) {
+                    transform = 'translate(-50%, -50%) translateX(380px) translateZ(-55px) rotateY(-32deg) scale(0.78)';
+                    opacity = 0.55;
+                    zIndex = 4;
+                    pointerEvents = 'auto';
+                }
+
+                if (opacity > 0) {
+                    slide.classList.add('visible');
+                } else {
+                    slide.classList.add('hidden');
+                }
+
+                slide.style.transform = transform;
+                slide.style.opacity = opacity;
+                slide.style.zIndex = zIndex;
+                slide.style.pointerEvents = pointerEvents;
+            });
+        };
+
+        const prevSlide = () => {
+            currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+            updateSlider();
+        };
+
+        const nextSlide = () => {
+            currentIndex = (currentIndex + 1) % slides.length;
+            updateSlider();
+        };
+
+        if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+        if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+
+        slides.forEach((slide, index) => {
+            slide.addEventListener('click', () => {
+                if (index !== currentIndex) {
+                    currentIndex = index;
+                    updateSlider();
+                }
+            });
+        });
+
+        updateSlider();
+    }
+
     if (closeBtn) closeBtn.onclick = () => modalArtistas.style.display = 'none';
 
     if (btnAtualizar) {
