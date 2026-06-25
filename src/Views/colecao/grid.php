@@ -241,6 +241,19 @@
                     </div>
 
                     <div class="form-group" style="flex: 1; min-width: 200px;">
+                        <label style="display: block; color: #aaa; font-size: 0.85rem; margin-bottom: 5px;">Artista</label>
+                        <select name="artista_id" style="width: 100%; padding: 8px; background: #333; border: 1px solid #444; color: white; border-radius: 4px;">
+                            <option value="">Selecione um artista...</option>
+                            <?php foreach ($artistas as $artista): ?>
+                                <option value="<?= htmlspecialchars($artista['artista_id']) ?>" 
+                                    <?= (isset($_GET['artista_id']) && $_GET['artista_id'] == $artista['artista_id']) ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($artista['nome']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="flex: 1; min-width: 200px;">
                         <label style="display: block; color: #aaa; font-size: 0.85rem; margin-bottom: 5px;">Produtor</label>
                         <input type="text" name="produtor" value="<?= htmlspecialchars($_GET['produtor'] ?? '') ?>" placeholder="Ex: George Martin..." style="width: 100%; padding: 8px; background: #333; border: 1px solid #444; color: white; border-radius: 4px;">
                     </div>
@@ -249,7 +262,7 @@
                         <button type="submit" style="background: #338d33; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold;">
                             Filtrar
                         </button>
-                        <?php if (!empty($_GET['busca']) || !empty($_GET['produtor'])): ?>
+                        <?php if (!empty($_GET['busca']) || !empty($_GET['produtor']) || !empty($_GET['artista_id'])): ?>
                             <a href="index.php?url=colecao" style="background: #ff3838; color: white; text-decoration: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; font-size: 0.85rem;">
                                 Limpar
                             </a>
