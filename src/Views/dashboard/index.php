@@ -133,43 +133,38 @@
             </div>
             <?php if (!empty($aniversariantes)): ?>
             <div class="anniversary-section container">
-                <div class="card anniversary-card">
-                    <div class="anniversary-title">
-                        <i class="fas fa-cake-candles"></i> Comemorando Hoje!
-                    </div>
-            
-                    <?php foreach ($aniversariantes as $niver): ?>
-                        <div class="anniversary-album-item abrir-modal-detalhes"
+                <h2 class="recent-albums-title">
+                    <i class="fas fa-cake-candles" style="margin-right: 8px;"></i> Comemorando Hoje
+                </h2>
+                <div class="recent-albums-slider anniversary-slider" data-slider="anniversary">
+                    <button type="button" class="recent-albums-nav prev" aria-label="Anterior">&#8249;</button>
+                    <div class="recent-albums-track" id="anniversarySlider">
+                        <?php foreach ($aniversariantes as $niver): ?>
+                        <div class="card album-card-modern slider-card abrir-modal-detalhes"
                             style="cursor: pointer;"
                             data-album='<?= htmlspecialchars(json_encode($niver), ENT_QUOTES, 'UTF-8') ?>'>
-                            <div class="album-cover-sm">
-                                <?php if ($niver['capa_url']): ?>
-                                    <img src="<?= $niver['capa_url'] ?>" alt="Capa">
-                                <?php else: ?>
-                                    <i class="fas fa-music"></i>
-                                <?php endif; ?>
-                            </div>
-                            <div>
+                            <img src="<?= htmlspecialchars($niver['capa_url'] ?: 'assets/images/placeholder.jpg') ?>" alt="Capa">
+                            <div class="album-card-info">
                                 <h4><?= htmlspecialchars($niver['titulo']) ?></h4>
                                 <p><?= htmlspecialchars($niver['artista_nome']) ?></p>
-            
-                                <div class="anniversary-info-tag">
-                                    <i class="fas fa-star"></i>
+                                <p style="font-size: 0.75rem; color: #facc15; margin-top: 6px;">
                                     <?php if ($niver['eh_aniversario_lancamento']): ?>
-                                        <?= $niver['anos_lancamento'] ?> anos de lançamento!
+                                        <?= $niver['anos_lancamento'] ?> anos de lançamento
                                     <?php else: ?>
-                                        <?= $niver['anos_aquisicao'] ?> anos na sua estante!
+                                        <?= $niver['anos_aquisicao'] ?> anos na sua estante
                                     <?php endif; ?>
-                                </div>
+                                </p>
                             </div>
                         </div>
-                    <?php endforeach; ?>
+                        <?php endforeach; ?>
+                    </div>
+                    <button type="button" class="recent-albums-nav next" aria-label="Próximo">&#8250;</button>
                 </div>
             </div>
             <?php endif; ?>
             <div class="recent-albums-section container">
                 <h2 class="recent-albums-title">Últimas Aquisições</h2>
-                <div class="recent-albums-slider">
+                <div class="recent-albums-slider recent-slider" data-slider="recent">
                     <button type="button" class="recent-albums-nav prev" aria-label="Anterior">&#8249;</button>
                     <div class="recent-albums-track" id="recentAlbumsSlider">
                         <?php foreach ($ultimos_albuns as $album): ?>

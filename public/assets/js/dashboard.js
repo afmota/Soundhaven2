@@ -338,13 +338,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Slider 3D Últimas Aquisições
-    const recentSlider = document.getElementById('recentAlbumsSlider');
-    const prevBtn = document.querySelector('.recent-albums-nav.prev');
-    const nextBtn = document.querySelector('.recent-albums-nav.next');
+    // Slider 3D para múltiplas seções (Últimas Aquisições e Comemorando Hoje)
+    const sliders = document.querySelectorAll('.recent-albums-slider[data-slider]');
 
-    if (recentSlider) {
-        const slides = Array.from(recentSlider.querySelectorAll('.slider-card'));
+    sliders.forEach((sliderWrapper) => {
+        const track = sliderWrapper.querySelector('.recent-albums-track');
+        const prevBtn = sliderWrapper.querySelector('.recent-albums-nav.prev');
+        const nextBtn = sliderWrapper.querySelector('.recent-albums-nav.next');
+
+        if (!track) return;
+
+        const slides = Array.from(track.querySelectorAll('.slider-card'));
+        if (slides.length === 0) return;
+
         let currentIndex = 0;
 
         const getRelativeIndex = (index) => {
@@ -429,7 +435,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         updateSlider();
-    }
+    });
 
     if (closeBtn) closeBtn.onclick = () => modalArtistas.style.display = 'none';
 
