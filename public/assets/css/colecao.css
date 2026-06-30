@@ -776,5 +776,46 @@ body {
     border-radius: 4px;
 }
 
+/* ==========================================================================
+   BOTÕES DE VÍDEO DA PLAYLIST (FONT AWESOME)
+   ========================================================================== */
 
+/* Estilo Base comum para ambos os botões na tabela */
+.btn-video-faixa {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem; /* Tamanho ideal para o ícone */
+    padding: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.25s ease;
+}
 
+/* ESTADO 1: Com vídeo associado (Acesão) */
+.btn-video-faixa.has-video {
+    color: #3c3cff; /* O azul padrão do Soundhaven para ações secundárias/play */
+    opacity: 1;
+}
+
+/* Hover do botão com vídeo (ganha mais brilho ou uma leve escala) */
+.btn-video-faixa.has-video:hover {
+    color: #5c5cff; 
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 6px rgba(60, 60, 255, 0.6));
+}
+
+/* ESTADO 2: Sem vídeo associado (Apagado/Discreto) */
+.btn-video-faixa.no-video {
+    color: var(--text-secondary); /* Usa a cor secundária do seu tema */
+    opacity: 0.35; /* Fica bem apagadinho, sem chamar atenção */
+}
+
+/* Hover do botão sem vídeo (acende sutilmente indicando que é clicável para adicionar) */
+.btn-video-faixa.no-video:hover {
+    opacity: 0.8;
+    color: var(--text-primary);
+    transform: scale(1.1);
+}
