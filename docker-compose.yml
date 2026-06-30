@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: soundhaven-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: soundhaven
+      MYSQL_USER: sh_user
+      MYSQL_PASSWORD: W3azxc*9
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./backups:/docker-entrypoint-initdb.d:ro
+
+  php:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: soundhaven-php
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+
+  nginx:
+    image: nginx:alpine
+    container_name: soundhaven-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d:ro
+    depends_on:
+      - php
+
+volumes:
+  db_data:

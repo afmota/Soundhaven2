@@ -285,13 +285,6 @@
                                 <p>Explorar mídias catalogadas</p>
                             </div>
                         </a>
-                        <a href="?url=configuracao" class="shortcut-button">
-                            <i class="fas fa-tools"></i>
-                            <div class="shortcut-text">
-                                <h4>Manutenção</h4>
-                                <p>Fazer backup e restauração</p>
-                            </div>
-                        </a>
                     </div>
                 </div>
             </main>

@@ -119,21 +119,6 @@ switch ($route) {
         $controller->getTopGravadorasJson();
         break;
 
-    case 'configuracao':
-        $controller = new App\Controllers\ConfiguracaoController();
-        $controller->index();
-        break;
-
-    case 'configuracao/backup':
-        $controller = new App\Controllers\ConfiguracaoController();
-        $controller->backup();
-        break;
-
-    case 'configuracao/restaurar':
-        $controller = new App\Controllers\ConfiguracaoController();
-        $controller->restaurar();
-        break;
-
     case 'perfil':
         $controller = new App\Controllers\PerfilController();
         $controller->index();
