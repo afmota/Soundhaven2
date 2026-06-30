@@ -83,6 +83,23 @@ class ColecaoController {
         exit;
     }
 
+    public function salvarVideoFaixa() {
+        header('Content-Type: application/json');
+
+        $midiaId = filter_input(INPUT_POST, 'midia_id', FILTER_VALIDATE_INT);
+        $numeroFaixa = filter_input(INPUT_POST, 'numero_faixa', FILTER_VALIDATE_INT);
+        $videoUrl = trim((string)filter_input(INPUT_POST, 'video_url'));
+
+        if (!$midiaId || !$numeroFaixa) {
+            echo json_encode(['success' => false, 'error' => 'Dados da faixa inválidos.']);
+            exit;
+        }
+
+        $sucesso = $this->service->salvarVideoDaFaixa($midiaId, $numeroFaixa, $videoUrl);
+        echo json_encode(['success' => $sucesso]);
+        exit;
+    }
+
     public function descartarAlbum() {
         header('Content-Type: application/json');
         $midiaId = filter_input(INPUT_POST, 'midia_id', FILTER_VALIDATE_INT);

@@ -232,7 +232,7 @@ class ColecaoRepository {
     }
 
     public function buscarFaixasPorMidia($midiaId) {
-        $sql = "SELECT numero_faixa, titulo, duracao 
+        $sql = "SELECT numero_faixa, titulo, duracao, video_ulr AS video_url
                 FROM tb_midia_faixas 
                 WHERE midia_id = :midia_id 
                 ORDER BY numero_faixa ASC";
@@ -242,6 +242,19 @@ class ColecaoRepository {
         $stmt->execute();
         
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function atualizarVideoFaixa($midiaId, $numeroFaixa, $videoUrl) {
+        $sql = "UPDATE tb_midia_faixas
+                SET video_ulr = :video_url
+                WHERE midia_id = :midia_id AND numero_faixa = :numero_faixa";
+
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([
+            ':video_url' => $videoUrl,
+            ':midia_id' => (int)$midiaId,
+            ':numero_faixa' => (int)$numeroFaixa,
+        ]);
     }
 
     public function marcarComoInativo($midiaId) {
@@ -424,8 +437,8 @@ class ColecaoRepository {
         $sqlDelete = "DELETE FROM tb_midia_faixas WHERE midia_id = ?";
         $this->db->prepare($sqlDelete)->execute([(int)$midiaId]);
 
-        $sqlInsert = "INSERT INTO tb_midia_faixas (midia_id, numero_faixa, titulo, duracao) 
-                      VALUES (?, ?, ?, ?)";
+        $sqlInsert = "INSERT INTO tb_midia_faixas (midia_id, numero_faixa, titulo, duracao, video_ulr) 
+                      VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($sqlInsert);
 
         foreach ($faixas as $faixa) {
@@ -435,12 +448,14 @@ class ColecaoRepository {
             $numero = $faixa['numero_faixa'] ?? ($faixa['posicao'] ?? 0);
             $duracaoRaw = $faixa['duracao'] ?? '';
             $duracao = !empty($duracaoRaw) ? $this->formatarDuracaoParaBanco($duracaoRaw) : '00:00:00';
+            $videoUrl = trim((string)($faixa['video_url'] ?? ''));
 
             $stmt->execute([
                 (int)$midiaId,
                 (int)$numero,
                 (string)$titulo,
-                (string)$duracao
+                (string)$duracao,
+                $videoUrl
             ]);
         }
     }

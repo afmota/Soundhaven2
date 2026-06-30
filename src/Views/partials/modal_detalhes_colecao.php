@@ -79,6 +79,7 @@
                             <th>#</th>
                             <th>Título</th>
                             <th>Duração</th>
+                            <th>Vídeo</th>
                         </tr>
                     </thead>
                     <tbody id="corpoTabelaFaixas">
@@ -90,6 +91,26 @@
         <div class="modal-actions">
             <button id="btnEditarColecao" class="btn btn-edit">Editar</button>
             <button id="btnDescartarColecao" class="btn btn-delete">Descartar</button>
+        </div>
+    </div>
+</div>
+
+<div id="modalVideoFaixa" class="modal" style="display:none;">
+    <div class="modal-content colecao-theme" style="max-width: 720px;">
+        <span class="modal-close" data-close-video-modal>&times;</span>
+        <div class="modal-body-grid" style="display:block;">
+            <h3 style="margin-bottom:12px;">Vídeo da faixa</h3>
+            <p style="margin-bottom:12px; color:#aaa;">Insira a URL do YouTube ou Vimeo para associar ao vídeo da música.</p>
+            <div id="areaInputVideoFaixa">
+                <input id="inputVideoUrlFaixa" type="url" placeholder="https://www.youtube.com/watch?v=..." style="width:100%; padding:10px; border-radius:6px; border:1px solid #444; margin-bottom:12px;">
+            </div>
+            <div id="conteudoVideoFaixa" style="display:none; margin-bottom:12px;">
+                <iframe id="iframeVideoFaixa" width="100%" height="315" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:10px; align-items:center;">
+                <span id="statusVideoFaixa" style="color:#ffb703; font-size:.9rem; margin-right:auto;"></span>
+                <button id="btnSalvarVideoFaixa" class="btn btn-edit" type="button">Salvar vídeo</button>
+            </div>
         </div>
     </div>
 </div>

@@ -102,7 +102,7 @@ function renderizarFaixas(faixas, containerId = 'corpoTabelaFaixas', artistaNome
     corpoTabela.innerHTML = '';
 
     if (!faixas || faixas.length === 0) {
-        containerTabele.innerHTML = '<tr><td colspan="3" class="text-center">Nenhuma faixa cadastrada.</td></tr>';
+        corpoTabela.innerHTML = '<tr><td colspan="4" class="text-center">Nenhuma faixa cadastrada.</td></tr>';
         return;
     }
 
@@ -112,8 +112,9 @@ function renderizarFaixas(faixas, containerId = 'corpoTabelaFaixas', artistaNome
         const titulo = f.titulo || f.title || 'Sem título';
         const durationRaw = f.duracao || f.duration || '--:--';
         const duracao = formatarDuracaoExibicao(durationRaw);
+        const videoUrl = f.video_url || f.video_ulr || '';
+        const temVideo = Boolean(videoUrl && videoUrl.trim());
 
-        // Injetamos o link com os atributos data- completos para o fluxo purista
         tr.innerHTML = `
             <td class="col-pos text-center">${pos}</td>
             <td class="col-titulo">
@@ -128,6 +129,17 @@ function renderizarFaixas(faixas, containerId = 'corpoTabelaFaixas', artistaNome
                 </span>
             </td>
             <td class="col-duracao text-right">${duracao}</td>
+            <td class="col-video text-center">
+                <button type="button"
+                        class="btn-video-faixa ${temVideo ? 'has-video' : ''}"
+                        data-midia="${midiaId}"
+                        data-faixa="${pos}"
+                        data-video="${encodeURIComponent(videoUrl)}"
+                        title="${temVideo ? 'Abrir vídeo' : 'Adicionar vídeo'}"
+                        aria-label="${temVideo ? 'Abrir vídeo' : 'Adicionar vídeo'}">
+                    <i class="${temVideo ? 'fas fa-play-circle' : 'far fa-play-circle'}"></i>
+                </button>
+            </td>
         `;
         corpoTabela.appendChild(tr);
     });
@@ -261,3 +273,139 @@ function inicializarComponentesGlobais() {
 }
 
 document.addEventListener('DOMContentLoaded', inicializarComponentesGlobais);
+
+function atualizarBotaoVideoFaixa(midiaId, numeroFaixa, videoUrl) {
+    const botao = document.querySelector(`.btn-video-faixa[data-midia="${midiaId}"][data-faixa="${numeroFaixa}"]`);
+    if (!botao) return;
+
+    const temVideo = Boolean(videoUrl && videoUrl.trim());
+    botao.classList.toggle('has-video', temVideo);
+    botao.setAttribute('data-video', encodeURIComponent(videoUrl || ''));
+    botao.setAttribute('title', temVideo ? 'Abrir vídeo' : 'Adicionar vídeo');
+    botao.setAttribute('aria-label', temVideo ? 'Abrir vídeo' : 'Adicionar vídeo');
+
+    const icone = botao.querySelector('i');
+    if (icone) {
+        icone.className = temVideo ? 'fas fa-play-circle' : 'far fa-play-circle';
+    }
+}
+
+function abrirModalVideoFaixa(midiaId, numeroFaixa, videoUrl = '') {
+    const modal = document.getElementById('modalVideoFaixa');
+    if (!modal) return;
+
+    const input = document.getElementById('inputVideoUrlFaixa');
+    const iframe = document.getElementById('iframeVideoFaixa');
+    const conteudo = document.getElementById('conteudoVideoFaixa');
+    const btnSalvar = document.getElementById('btnSalvarVideoFaixa');
+    const status = document.getElementById('statusVideoFaixa');
+    const areaInput = document.getElementById('areaInputVideoFaixa');
+
+    if (input) input.value = videoUrl || '';
+    if (iframe) iframe.src = '';
+    if (conteudo) conteudo.style.display = 'none';
+    if (status) status.textContent = '';
+    if (areaInput) areaInput.style.display = 'block';
+
+    modal.dataset.midiaId = midiaId;
+    modal.dataset.numeroFaixa = numeroFaixa;
+
+    if (videoUrl && videoUrl.trim()) {
+        const embedUrl = converterUrlVideo(videoUrl);
+        if (iframe) {
+            iframe.src = embedUrl;
+            if (conteudo) conteudo.style.display = 'block';
+        }
+        if (areaInput) areaInput.style.display = 'none';
+    }
+
+    modal.style.display = 'block';
+
+    if (btnSalvar) {
+        btnSalvar.onclick = async () => {
+            const url = input ? input.value.trim() : '';
+            if (!url) {
+                if (status) status.textContent = 'Informe uma URL válida.';
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('midia_id', midiaId);
+            formData.append('numero_faixa', numeroFaixa);
+            formData.append('video_url', url);
+
+            try {
+                const response = await fetch('index.php?url=salvar_video_faixa', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                if (data && data.success) {
+                    if (status) status.textContent = 'Vídeo salvo com sucesso.';
+                    atualizarBotaoVideoFaixa(midiaId, numeroFaixa, url);
+                    if (input) input.value = url;
+                    if (areaInput) areaInput.style.display = 'none';
+                    const iframeUrl = converterUrlVideo(url);
+                    if (iframe) {
+                        iframe.src = iframeUrl;
+                        if (conteudo) conteudo.style.display = 'block';
+                    }
+                } else {
+                    if (status) status.textContent = 'Falha ao salvar o vídeo.';
+                }
+            } catch (error) {
+                console.error('Erro ao salvar vídeo:', error);
+                if (status) status.textContent = 'Erro ao salvar o vídeo.';
+            }
+        };
+    }
+}
+
+function converterUrlVideo(url) {
+    if (!url) return '';
+    const valor = url.trim();
+
+    if (valor.includes('youtube.com/watch?v=')) {
+        return valor.replace('watch?v=', 'embed/');
+    }
+
+    if (valor.includes('youtu.be/')) {
+        return valor.replace('https://youtu.be/', 'https://www.youtube.com/embed/');
+    }
+
+    if (valor.includes('vimeo.com/')) {
+        const id = valor.split('vimeo.com/')[1].split(/[?&#]/)[0];
+        return `https://player.vimeo.com/video/${id}`;
+    }
+
+    return valor;
+}
+
+function inicializarVideoFaixa() {
+    document.addEventListener('click', function (event) {
+        const botao = event.target.closest('.btn-video-faixa');
+        if (!botao) return;
+
+        event.stopPropagation();
+        const midiaId = botao.getAttribute('data-midia');
+        const numeroFaixa = botao.getAttribute('data-faixa');
+        const videoUrl = decodeURIComponent(botao.getAttribute('data-video') || '');
+        abrirModalVideoFaixa(midiaId, numeroFaixa, videoUrl);
+    });
+
+    document.addEventListener('click', function (event) {
+        const modal = document.getElementById('modalVideoFaixa');
+        if (!modal || modal.style.display !== 'block') return;
+
+        if (event.target === modal || event.target.closest('[data-close-video-modal]')) {
+            modal.style.display = 'none';
+        }
+    });
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', inicializarVideoFaixa);
+} else {
+    inicializarVideoFaixa();
+}

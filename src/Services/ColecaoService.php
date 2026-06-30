@@ -48,6 +48,10 @@ class ColecaoService {
         return $this->repository->buscarFaixasPorMidia($midiaId);
     }
 
+    public function salvarVideoDaFaixa($midiaId, $numeroFaixa, $videoUrl) {
+        return $this->repository->atualizarVideoFaixa($midiaId, $numeroFaixa, $videoUrl);
+    }
+
     public function desativarMidia($midiaId) {
         return $this->repository->marcarComoInativo($midiaId);
     }

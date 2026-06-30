@@ -66,6 +66,11 @@ switch ($route) {
     case 'salvar_letra':
         ColecaoController::salvarLetraMusica();
         break;
+
+    case 'salvar_video_faixa':
+        $controller = new ColecaoController();
+        $controller->salvarVideoFaixa();
+        break;
     
     case 'descartar_album':
         $controller = new ColecaoController();
