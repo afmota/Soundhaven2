@@ -131,6 +131,26 @@
                     </div>
                 </div>
             </div>
+            <div class="recent-albums-section container">
+                <h2 class="recent-albums-title">Últimas Aquisições</h2>
+                <div class="recent-albums-slider recent-slider" data-slider="recent">
+                    <button type="button" class="recent-albums-nav prev" aria-label="Anterior">&#8249;</button>
+                    <div class="recent-albums-track" id="recentAlbumsSlider">
+                        <?php foreach ($ultimos_albuns as $album): ?>
+                        <div class="card album-card-modern slider-card abrir-modal-detalhes" 
+                            style="cursor: pointer;"
+                            data-album='<?= htmlspecialchars(json_encode($album), ENT_QUOTES, 'UTF-8') ?>'>
+                            <img src="<?= htmlspecialchars($album['capa_url'] ?: 'assets/images/placeholder.jpg') ?>" alt="Capa">
+                            <div class="album-card-info">
+                                <h4><?= htmlspecialchars($album['titulo']) ?></h4>
+                                <p><?= htmlspecialchars($album['artista_nome']) ?></p>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <button type="button" class="recent-albums-nav next" aria-label="Próximo">&#8250;</button>
+                </div>
+            </div>
             <?php if (!empty($aniversariantes)): ?>
             <div class="anniversary-section container">
                 <h2 class="recent-albums-title">
@@ -162,26 +182,6 @@
                 </div>
             </div>
             <?php endif; ?>
-            <div class="recent-albums-section container">
-                <h2 class="recent-albums-title">Últimas Aquisições</h2>
-                <div class="recent-albums-slider recent-slider" data-slider="recent">
-                    <button type="button" class="recent-albums-nav prev" aria-label="Anterior">&#8249;</button>
-                    <div class="recent-albums-track" id="recentAlbumsSlider">
-                        <?php foreach ($ultimos_albuns as $album): ?>
-                        <div class="card album-card-modern slider-card abrir-modal-detalhes" 
-                            style="cursor: pointer;"
-                            data-album='<?= htmlspecialchars(json_encode($album), ENT_QUOTES, 'UTF-8') ?>'>
-                            <img src="<?= htmlspecialchars($album['capa_url'] ?: 'assets/images/placeholder.jpg') ?>" alt="Capa">
-                            <div class="album-card-info">
-                                <h4><?= htmlspecialchars($album['titulo']) ?></h4>
-                                <p><?= htmlspecialchars($album['artista_nome']) ?></p>
-                            </div>
-                        </div>
-                        <?php endforeach; ?>
-                    </div>
-                    <button type="button" class="recent-albums-nav next" aria-label="Próximo">&#8250;</button>
-                </div>
-            </div>
         </main>
         <?php require_once __DIR__ . '/../partials/modal_detalhes_colecao.php'; ?>
         <?php require_once __DIR__ . '/../partials/modal_grafico_artistas.php'; ?>
