@@ -255,6 +255,17 @@ class ColecaoRepository {
         return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function buscarArtistasComAlbunsNaColecao() {
+        $sql = "SELECT DISTINCT art.artista_id, art.nome
+                FROM tb_artistas art
+                INNER JOIN tb_albuns ta ON ta.artista_id = art.artista_id
+                INNER JOIN tb_midias tm ON tm.album_id = ta.album_id
+                WHERE tm.ativo = 1
+                ORDER BY art.nome ASC";
+
+        return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getAllTipos() {
         $sql = "SELECT tipo_id, descricao FROM tb_tipos ORDER BY descricao ASC";
         return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);

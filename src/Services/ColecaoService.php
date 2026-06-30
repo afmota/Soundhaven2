@@ -36,7 +36,7 @@ class ColecaoService {
             'fimPagina' => $fimPagina,
             'totalRegistros' => $totalRegistros,
             'filters' => $filtros,
-            'artistas' => $this->buscarTodosArtistas(),
+            'artistas' => $this->buscarArtistasComAlbunsNaColecao(),
             'gravadoras' => $this->buscarTodasGravadoras(),
             'tipos' => $this->buscarTodosTipos(),
             'situacoes' => $this->repository->getAllSituacoes(),
@@ -62,6 +62,10 @@ class ColecaoService {
 
     public function buscarTodosArtistas() {
         return $this->repository->getAllArtistas();
+    }
+
+    public function buscarArtistasComAlbunsNaColecao() {
+        return $this->repository->buscarArtistasComAlbunsNaColecao();
     }
     
     public function buscarTodosTipos() {
