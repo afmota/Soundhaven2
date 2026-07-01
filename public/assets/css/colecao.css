@@ -241,7 +241,7 @@ body {
     font-size: .7rem;
     font-weight: 800;
     text-transform: uppercase;
-    color: #121212 !important;
+    color: #ffffff !important;
     background: var(--accent-color);
     opacity: 1;
     transform: translateY(-5px);
