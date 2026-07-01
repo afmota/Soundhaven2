@@ -300,23 +300,30 @@ function abrirModalVideoFaixa(midiaId, numeroFaixa, videoUrl = '') {
     const btnSalvar = document.getElementById('btnSalvarVideoFaixa');
     const status = document.getElementById('statusVideoFaixa');
     const areaInput = document.getElementById('areaInputVideoFaixa');
+    const texto = document.getElementById('textoVideoFaixa');
+    const temVideo = Boolean(videoUrl && videoUrl.trim());
 
     if (input) input.value = videoUrl || '';
     if (iframe) iframe.src = '';
     if (conteudo) conteudo.style.display = 'none';
-    if (status) status.textContent = '';
+    if (status) status.textContent = temVideo ? 'Vídeo associado. Você pode alterar a URL abaixo.' : '';
     if (areaInput) areaInput.style.display = 'block';
+    if (btnSalvar) btnSalvar.textContent = temVideo ? 'Atualizar vídeo' : 'Salvar vídeo';
+    if (texto) {
+        texto.textContent = temVideo
+            ? 'Este vídeo já está associado. Você pode alterar a URL abaixo se quiser trocar o link.'
+            : 'Insira a URL do YouTube ou Vimeo para associar ao vídeo da música.';
+    }
 
     modal.dataset.midiaId = midiaId;
     modal.dataset.numeroFaixa = numeroFaixa;
 
-    if (videoUrl && videoUrl.trim()) {
+    if (temVideo) {
         const embedUrl = converterUrlVideo(videoUrl);
         if (iframe) {
             iframe.src = embedUrl;
             if (conteudo) conteudo.style.display = 'block';
         }
-        if (areaInput) areaInput.style.display = 'none';
     }
 
     modal.style.display = 'block';
@@ -342,10 +349,13 @@ function abrirModalVideoFaixa(midiaId, numeroFaixa, videoUrl = '') {
                 const data = await response.json();
 
                 if (data && data.success) {
-                    if (status) status.textContent = 'Vídeo salvo com sucesso.';
+                    if (status) status.textContent = 'Vídeo atualizado com sucesso.';
                     atualizarBotaoVideoFaixa(midiaId, numeroFaixa, url);
                     if (input) input.value = url;
-                    if (areaInput) areaInput.style.display = 'none';
+                    if (btnSalvar) btnSalvar.textContent = 'Atualizar vídeo';
+                    if (texto) {
+                        texto.textContent = 'Este vídeo já está associado. Você pode alterar a URL abaixo se quiser trocar o link.';
+                    }
                     const iframeUrl = converterUrlVideo(url);
                     if (iframe) {
                         iframe.src = iframeUrl;

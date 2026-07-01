@@ -100,7 +100,7 @@
         <span class="modal-close" data-close-video-modal>&times;</span>
         <div class="modal-body-grid" style="display:block;">
             <h3 style="margin-bottom:12px;">Vídeo da faixa</h3>
-            <p style="margin-bottom:12px; color:#aaa;">Insira a URL do YouTube ou Vimeo para associar ao vídeo da música.</p>
+            <p id="textoVideoFaixa" style="margin-bottom:12px; color:#aaa;">Insira a URL do YouTube ou Vimeo para associar ao vídeo da música.</p>
             <div id="areaInputVideoFaixa">
                 <input id="inputVideoUrlFaixa" type="url" placeholder="https://www.youtube.com/watch?v=..." style="width:100%; padding:10px; border-radius:6px; border:1px solid #444; margin-bottom:12px;">
             </div>
