@@ -264,7 +264,7 @@ body {
 /* 4. ANIVERSÁRIOS */
 .anniversary-section {
     margin-bottom: 30px;
-    padding-top: 25px;
+    /* padding-top: 25px;*/
 }
 
 .anniversary-card {
@@ -364,9 +364,9 @@ body {
 .recent-albums-title {
     color: var(--text-primary);
     margin-top: 0px;
-    margin-bottom: 20px;
+    margin-bottom: 0px;
     border-bottom: 1px solid var(--border-color);
-    padding-bottom: 10px;
+    /*padding-bottom: 10px;*/
     font-weight: 600;
     font-size: 1.5em;
 }
@@ -374,7 +374,7 @@ body {
 .recent-albums-slider {
     position: relative;
     perspective: 1200px;
-    padding: 20px 0;
+    /*padding: 20px 0;*/
     display: flex;
     align-items: center;
     justify-content: center;

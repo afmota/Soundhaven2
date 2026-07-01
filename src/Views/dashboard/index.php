@@ -131,7 +131,7 @@
                     </div>
                 </div>
             </div>
-            <div class="recent-albums-section container">
+            <div class="recent-albums-section container" style="margin-bottom: 0;">
                 <h2 class="recent-albums-title">Últimas Aquisições</h2>
                 <div class="recent-albums-slider recent-slider" data-slider="recent">
                     <button type="button" class="recent-albums-nav prev" aria-label="Anterior">&#8249;</button>
@@ -152,7 +152,7 @@
                 </div>
             </div>
             <?php if (!empty($aniversariantes)): ?>
-            <div class="anniversary-section container">
+            <div class="anniversary-section container" style="padding-top: 0;">
                 <h2 class="recent-albums-title">
                     <i class="fas fa-cake-candles" style="margin-right: 8px;"></i> Comemorando Hoje
                 </h2>
