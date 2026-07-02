@@ -378,8 +378,10 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
-    min-height: 360px;
+    overflow-x: hidden;
+    overflow-y: visible;
+    padding-bottom: 60px;
+    min-height: 420px;
 }
 
 .recent-albums-track {
@@ -426,7 +428,7 @@ body {
     min-width: 220px;
     max-width: 220px;
     border-radius: 16px;
-    overflow: hidden;
+    overflow: visible;
     transform-style: preserve-3d;
     transition: transform 0.6s ease, opacity 0.6s ease, filter 0.6s ease;
     opacity: 0;
@@ -480,6 +482,7 @@ body {
     aspect-ratio: 1 / 1;
     object-fit: cover;
     display: block;
+    -webkit-box-reflect: below 12px linear-gradient(transparent, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.25));
 }
 
 .album-card-info {
