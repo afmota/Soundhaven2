@@ -62,7 +62,7 @@
 
             <div class="info-item full-width mt-15">
                 <label>Observações</label>
-                <p id="detalheObservacoes" class="obs-text"></p>
+                <div id="detalheObservacoes" class="obs-text"></div>
             </div>
         </div>
         

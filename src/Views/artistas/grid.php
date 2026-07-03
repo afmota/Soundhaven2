@@ -16,8 +16,8 @@
 <div class="page-wrapper">
     <div class="spacer-left"></div>
 
-    <div class="main-section">
-        <div class="page-actions" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 10px;">
+    <main class="content">
+        <div class="page-actions" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 10px; flex-wrap: wrap;">
             <h1 style="color: var(--accent-color);">Artistas</h1>
             <a href="?url=novo_artista" class="btn btn-primary" style="text-decoration: none;">+ Novo Artista</a>
         </div>
@@ -58,7 +58,45 @@
         </main>
 
         <?php include __DIR__ . '/../partials/paginacao.php';?>
-    </div>
+    </main>
+
+    <aside class="spacer-right">
+        <div class="card metric-card metric-row-card filters-card">
+            <h3 style="margin-bottom: 18px; color: var(--text-primary);">Filtros</h3>
+            <form action="?" method="GET" style="display: flex; flex-direction: column; gap: 16px;">
+                <input type="hidden" name="url" value="artistas">
+
+                <div class="form-group">
+                    <label style="display: block; color: #aaa; font-size: 0.85rem; margin-bottom: 5px;">País</label>
+                    <select name="pais_origem" style="width: 100%; padding: 10px; background: #111827; border: 1px solid #334155; color: white; border-radius: 8px;">
+                        <option value="">Todos os países</option>
+                        <?php foreach ($paises as $pais): ?>
+                            <option value="<?= (int)$pais['pais_id'] ?>" <?= (!empty($filters['pais_origem']) && $filters['pais_origem'] == $pais['pais_id']) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($pais['nome']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label style="display: block; color: #aaa; font-size: 0.85rem; margin-bottom: 5px;">Gênero Principal</label>
+                    <select name="genero_principal" style="width: 100%; padding: 10px; background: #111827; border: 1px solid #334155; color: white; border-radius: 8px;">
+                        <option value="">Todos os gêneros</option>
+                        <?php foreach ($generos as $genero): ?>
+                            <option value="<?= (int)$genero['genero_id'] ?>" <?= (!empty($filters['genero_principal']) && $filters['genero_principal'] == $genero['genero_id']) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($genero['descricao']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1; padding: 10px 18px;">Filtrar</button>
+                    <a href="?url=artistas" class="btn" style="flex: 1; padding: 10px 18px; background: #555; color: #fff; text-decoration: none; text-align: center;">Limpar</a>
+                </div>
+            </form>
+        </div>
+    </aside>
 
     <?php include __DIR__ . '/../partials/modal_detalhes_artista.php'; ?>
     <?php include __DIR__ . '/../partials/modal_edicao_artista.php'; ?>

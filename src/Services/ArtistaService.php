@@ -10,12 +10,12 @@ class ArtistaService {
         $this->repository = new ArtistaRepository();
     }
 
-    public function getGridArtistas($pagina) {
-        $limit = 25; 
+    public function getGridArtistas($pagina, array $filtros = []) {
+        $limit = 25;
         $offset = ($pagina - 1) * $limit;
 
-        $artistas = $this->repository->buscarArtistasComAlbuns($limit, $offset);
-        $totalRegistros = $this->repository->contarTotalArtistasComAlbuns();
+        $artistas = $this->repository->buscarArtistasComAlbuns($limit, $offset, $filtros);
+        $totalRegistros = $this->repository->contarTotalArtistasComAlbuns($filtros);
         $totalPaginas = ceil($totalRegistros / $limit) ?: 1;
 
         return [
@@ -25,7 +25,8 @@ class ArtistaService {
             'totalRegistros' => $totalRegistros,
             'fimPagina' => $totalPaginas,
             'inicioPagina' => 1,
-            'paises' => $this->repository->buscarTodosPaises(), // Buscando países para os selects
+            'filters' => $filtros,
+            'paises' => $this->repository->buscarPaisesComArtistasComAlbuns(), // Países apenas de artistas com álbum na coleção
             'generos' => $this->repository->buscarTodosGeneros()  // Buscando gêneros para os selects
         ];
     }

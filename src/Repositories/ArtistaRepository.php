@@ -11,7 +11,7 @@ class ArtistaRepository {
         $this->db = Database::getConnection();
     }
 
-    public function buscarArtistasComAlbuns($limit = 24, $offset = 0) {
+    public function buscarArtistasComAlbuns($limit = 24, $offset = 0, array $filtros = []) {
         // O DISTINCT garante que o artista não apareça repetido se tiver 10 álbuns
         // O INNER JOIN com tb_albuns e tb_midias garante que só venham artistas "com dono" na coleção
         $sql = "SELECT DISTINCT 
@@ -24,11 +24,27 @@ class ArtistaRepository {
                 INNER JOIN tb_midias mid ON alb.album_id = mid.album_id
                 LEFT JOIN tb_paises p ON art.pais_origem = p.pais_id
                 LEFT JOIN tb_generos g ON art.genero_principal = g.genero_id
-                WHERE mid.ativo = 1
-                ORDER BY art.nome ASC
-                LIMIT :limit OFFSET :offset";
+                WHERE mid.ativo = 1";
+
+        if (!empty($filtros['pais_origem'])) {
+            $sql .= " AND art.pais_origem = :pais_origem";
+        }
+
+        if (!empty($filtros['genero_principal'])) {
+            $sql .= " AND art.genero_principal = :genero_principal";
+        }
+
+        $sql .= " ORDER BY art.nome ASC LIMIT :limit OFFSET :offset";
 
         $stmt = $this->db->prepare($sql);
+        if (!empty($filtros['pais_origem'])) {
+            $stmt->bindValue(':pais_origem', (int)$filtros['pais_origem'], PDO::PARAM_INT);
+        }
+
+        if (!empty($filtros['genero_principal'])) {
+            $stmt->bindValue(':genero_principal', (int)$filtros['genero_principal'], PDO::PARAM_INT);
+        }
+
         $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
         $stmt->execute();
@@ -36,18 +52,45 @@ class ArtistaRepository {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function contarTotalArtistasComAlbuns() {
+    public function contarTotalArtistasComAlbuns(array $filtros = []) {
         $sql = "SELECT COUNT(DISTINCT art.artista_id) 
                 FROM tb_artistas art
                 INNER JOIN tb_albuns alb ON art.artista_id = alb.artista_id
                 INNER JOIN tb_midias mid ON alb.album_id = mid.album_id
                 WHERE mid.ativo = 1";
 
-        return $this->db->query($sql)->fetchColumn();
+        $params = [];
+        if (!empty($filtros['pais_origem'])) {
+            $sql .= " AND art.pais_origem = :pais_origem";
+            $params[':pais_origem'] = (int)$filtros['pais_origem'];
+        }
+
+        if (!empty($filtros['genero_principal'])) {
+            $sql .= " AND art.genero_principal = :genero_principal";
+            $params[':genero_principal'] = (int)$filtros['genero_principal'];
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+
+        return $stmt->fetchColumn();
     }
 
     public function buscarTodosPaises() {
         $sql = "SELECT pais_id, nome FROM tb_paises ORDER BY nome ASC";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function buscarPaisesComArtistasComAlbuns() {
+        $sql = "SELECT DISTINCT p.pais_id, p.nome
+                FROM tb_paises p
+                INNER JOIN tb_artistas art ON art.pais_origem = p.pais_id
+                INNER JOIN tb_albuns alb ON art.artista_id = alb.artista_id
+                INNER JOIN tb_midias mid ON alb.album_id = mid.album_id
+                WHERE mid.ativo = 1
+                ORDER BY p.nome ASC";
+
         $stmt = $this->db->query($sql);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }

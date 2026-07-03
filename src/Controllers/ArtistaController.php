@@ -12,7 +12,12 @@ class ArtistaController {
 
     public function index() {
         $pagina = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
-        $dados = $this->service->getGridArtistas($pagina);
+        $filtros = [
+            'pais_origem'      => filter_input(INPUT_GET, 'pais_origem', FILTER_VALIDATE_INT) ?: null,
+            'genero_principal' => filter_input(INPUT_GET, 'genero_principal', FILTER_VALIDATE_INT) ?: null,
+        ];
+
+        $dados = $this->service->getGridArtistas($pagina, $filtros);
         
         extract($dados);
         include __DIR__ . '/../Views/artistas/grid.php';

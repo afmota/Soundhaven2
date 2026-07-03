@@ -821,6 +821,12 @@ body {
     line-height: 1.4;
     border-left: 3px solid var(--accent-color);
     min-height: 40px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+#detalheObservacoes.obs-text {
+    white-space: pre-wrap !important;
 }
 
 .tracklist-section {

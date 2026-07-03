@@ -627,7 +627,29 @@ function exibirDetalhesNoModal(album) {
 
     document.getElementById('detalheCapa').src = album.capa_url || 'assets/images/placeholder.jpg';
 
-    const setTxt = (id, text) => { if (document.getElementById(id)) document.getElementById(id).textContent = text || 'N/D'; };
+    const escapeHTML = (value) => {
+        if (value === null || value === undefined) return '';
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    };
+
+    const setTxt = (id, text) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (!text) {
+            el.textContent = 'N/D';
+            return;
+        }
+        if (el.classList.contains('obs-text')) {
+            el.innerHTML = escapeHTML(text).replace(/\r\n|\r|\n/g, '<br>');
+        } else {
+            el.textContent = text;
+        }
+    };
 
     setTxt('detalheTitulo', album.titulo);
     setTxt('detalheArtista', album.artista_nome);
