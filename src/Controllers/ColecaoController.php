@@ -208,7 +208,10 @@ class ColecaoController {
                 echo json_encode([
                     'success' => true,
                     'discogs_id' => $resultado['discogs_id'],
-                    'tracklist' => $resultado['tracklist']
+                    'tracklist' => $resultado['tracklist'],
+                    'produtores' => $resultado['produtores'] ?? [],
+                    'generos' => $resultado['generos'] ?? [],
+                    'estilos' => $resultado['estilos'] ?? []
                 ]);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Álbum não encontrado no Service.']);

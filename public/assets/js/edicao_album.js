@@ -3,21 +3,62 @@
 // Inicializa o índice baseado em quantas faixas já vieram do banco de dados
 let faixaIndex = document.querySelectorAll('.faixa-item').length;
 
-document.addEventListener('DOMContentLoaded', function() {
+function popularTagsImportadas(data) {
+    const tipos = [
+        { chave: 'generos', containerId: 'containerGeneros' },
+        { chave: 'estilos', containerId: 'containerEstilos' },
+        { chave: 'produtores', containerId: 'containerProdutores' }
+    ];
+
+    tipos.forEach(({ chave, containerId }) => {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        const valores = Array.isArray(data[chave]) ? data[chave] : [];
+        if (valores.length === 0) return;
+
+        container.innerHTML = '';
+
+        valores.forEach((valor) => {
+            const nome = String(valor || '').trim();
+            if (!nome) return;
+
+            const span = document.createElement('span');
+            span.className = 'tag-item';
+
+            const texto = document.createTextNode(nome);
+            span.appendChild(texto);
+
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = `${chave}[]`;
+            input.value = nome;
+            span.appendChild(input);
+
+            const icon = document.createElement('i');
+            icon.className = 'fas fa-times remove-tag';
+            span.appendChild(icon);
+
+            container.appendChild(span);
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
     const inputCapa = document.getElementById('edicaoCapaUrl');
     const imgPreview = document.getElementById('edicaoImg');
     const corpoTabela = document.getElementById('corpoListaFaixas');
 
     // 1. Prévia da Capa
     if (inputCapa && imgPreview) {
-        const atualizarPrevia = function() {
+        const atualizarPrevia = function () {
             const novaUrl = inputCapa.value.trim();
             imgPreview.src = novaUrl ? novaUrl : 'assets/img/default-cover.png';
         };
 
         inputCapa.addEventListener('input', atualizarPrevia);
         inputCapa.addEventListener('change', atualizarPrevia);
-        inputCapa.addEventListener('paste', function() {
+        inputCapa.addEventListener('paste', function () {
             setTimeout(atualizarPrevia, 100); // Pequeno delay para o browser processar o texto colado
         });
     }
@@ -28,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const container = document.getElementById(id);
         if (!container) return;
 
-        container.addEventListener('click', function(e) {
+        container.addEventListener('click', function (e) {
             if (e.target.classList.contains('remove-tag')) {
                 const tag = e.target.closest('.tag-item');
                 tag.style.opacity = '0';
@@ -40,9 +81,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Abrir/Fechar caixas de busca de tags
     document.querySelectorAll('.btn-add-tag').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const target = this.getAttribute('data-target'); 
-            if (!target) return; 
+        btn.addEventListener('click', function () {
+            const target = this.getAttribute('data-target');
+            if (!target) return;
 
             const searchBox = document.getElementById('searchContainer' + target);
             if (searchBox) {
@@ -55,13 +96,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Input de busca de tags
     document.querySelectorAll('.input-search-tag').forEach(input => {
-        input.addEventListener('keypress', function(e) {
+        input.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 adicionarTag(this);
             }
         });
-        input.addEventListener('change', function() {
+        input.addEventListener('change', function () {
             if (this.value.trim() !== '') adicionarTag(this);
         });
     });
@@ -99,7 +140,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     faixaIndex = 0; // Reseta para a nova lista importada
 
                     const inputDiscogsId = document.getElementById('inputDiscogsId');
-                    if(inputDiscogsId) inputDiscogsId.value = data.discogs_id;
+                    if (inputDiscogsId) inputDiscogsId.value = data.discogs_id;
+
+                    popularTagsImportadas(data);
 
                     data.tracklist.forEach(track => {
                         // CHAMA A FUNÇÃO GLOBAL DO functions.js
@@ -122,14 +165,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // 4. Botão Manual e Remoção de Faixas
     const btnAddManual = document.getElementById('btnAdicionarFaixa');
     if (btnAddManual) {
-        btnAddManual.addEventListener('click', function() {
+        btnAddManual.addEventListener('click', function () {
             const proximaPos = corpoTabela.querySelectorAll('.faixa-item').length + 1;
             inserirLinhaNaTabela(proximaPos, '', '');
             corpoTabela.lastElementChild.querySelector('.input-titulo').focus();
         });
     }
 
-    corpoTabela.addEventListener('click', function(e) {
+    corpoTabela.addEventListener('click', function (e) {
         if (e.target.closest('.btn-remove-faixa')) {
             const linha = e.target.closest('.faixa-item');
             if (confirm('Deseja remover esta faixa da lista?')) {
@@ -140,9 +183,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // 5. Máscara de Duração (Input Delegation)
-    corpoTabela.addEventListener('input', function(e) {
+    corpoTabela.addEventListener('input', function (e) {
         if (e.target.classList.contains('input-duracao')) {
-            let v = e.target.value.replace(/\D/g, ''); 
+            let v = e.target.value.replace(/\D/g, '');
             if (v.length >= 3 && v.length <= 4) {
                 v = v.substring(0, v.length - 2) + ':' + v.substring(v.length - 2);
             } else if (v.length > 4) {

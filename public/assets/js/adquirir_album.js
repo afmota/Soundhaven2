@@ -3,6 +3,47 @@
 // Variável global para controlar o índice das faixas
 let faixaIndex = 0;
 
+function popularTagsImportadas(data) {
+    const tipos = [
+        { chave: 'generos', containerId: 'containerGeneros' },
+        { chave: 'estilos', containerId: 'containerEstilos' },
+        { chave: 'produtores', containerId: 'containerProdutores' }
+    ];
+
+    tipos.forEach(({ chave, containerId }) => {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        const valores = Array.isArray(data[chave]) ? data[chave] : [];
+        if (valores.length === 0) return;
+
+        container.innerHTML = '';
+
+        valores.forEach((valor) => {
+            const nome = String(valor || '').trim();
+            if (!nome) return;
+
+            const span = document.createElement('span');
+            span.className = 'tag-item';
+
+            const texto = document.createTextNode(nome);
+            span.appendChild(texto);
+
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = `${chave}[]`;
+            input.value = nome;
+            span.appendChild(input);
+
+            const icon = document.createElement('i');
+            icon.className = 'fas fa-times remove-tag';
+            span.appendChild(icon);
+
+            container.appendChild(span);
+        });
+    });
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
     // --- 1. ATIVAÇÃO DOS COMPORTAMENTOS COMUNS ---
     if (typeof inicializarComportamentosFormulario === 'function') {
@@ -36,7 +77,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 document.getElementById('edicaoTitulo').value = album.titulo || '';
                 document.getElementById('edicaoCapaUrl').value = album.capa_url || '';
                 document.getElementById('edicaoImg').src = album.capa_url || 'assets/images/placeholder.jpg';
-                
+
                 // Artista (Select)
                 const campoArtista = document.getElementById('edicaoArtista');
                 if (campoArtista) campoArtista.value = album.artista_id || '';
@@ -100,6 +141,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                     const inputDiscogsId = document.getElementById('inputDiscogsId');
                     if (inputDiscogsId) inputDiscogsId.value = data.discogs_id;
 
+                    popularTagsImportadas(data);
+
                     data.tracklist.forEach(track => {
                         inserirLinhaNaTabela(track.numero, track.titulo, track.duracao);
                     });
@@ -145,7 +188,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         btnAddManual.addEventListener('click', () => {
             const proximaPos = corpoTabela.querySelectorAll('.faixa-item').length + 1;
             inserirLinhaNaTabela(proximaPos, '', '');
-            
+
             const ultimaFaixa = corpoTabela.lastElementChild;
             if (ultimaFaixa) {
                 const inputTitulo = ultimaFaixa.querySelector('.input-titulo');
@@ -167,7 +210,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     corpoTabela.addEventListener('input', (e) => {
         if (e.target.classList.contains('input-duracao')) {
-            let v = e.target.value.replace(/\D/g, ''); 
+            let v = e.target.value.replace(/\D/g, '');
             if (v.length >= 3 && v.length <= 4) {
                 v = v.substring(0, v.length - 2) + ':' + v.substring(v.length - 2);
             } else if (v.length > 4) {

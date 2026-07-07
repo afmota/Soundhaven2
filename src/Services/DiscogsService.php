@@ -23,6 +23,9 @@ class DiscogsService {
 
         $faixas = [];
         $seq = 1;
+        $produtores = [];
+        $generos = [];
+        $estilos = [];
 
         foreach ($data['tracklist'] as $t) {
             // Filtra para pegar apenas faixas reais (ignora labels de Lado A/B ou vídeos)
@@ -35,9 +38,44 @@ class DiscogsService {
             }
         }
 
+        if (!empty($data['extraartists'])) {
+            foreach ($data['extraartists'] as $artista) {
+                $papel = trim((string)($artista['role'] ?? ''));
+                if ($papel === '' || stripos($papel, 'producer') === false) {
+                    continue;
+                }
+
+                $nome = trim(strip_tags((string)($artista['name'] ?? '')));
+                if ($nome !== '') {
+                    $produtores[] = $nome;
+                }
+            }
+        }
+
+        if (!empty($data['genres'])) {
+            foreach ($data['genres'] as $genero) {
+                $valor = trim(strip_tags((string)$genero));
+                if ($valor !== '') {
+                    $generos[] = $valor;
+                }
+            }
+        }
+
+        if (!empty($data['styles'])) {
+            foreach ($data['styles'] as $estilo) {
+                $valor = trim(strip_tags((string)$estilo));
+                if ($valor !== '') {
+                    $estilos[] = $valor;
+                }
+            }
+        }
+
         return [
             'discogs_id' => $id,
-            'tracklist' => $faixas
+            'tracklist' => $faixas,
+            'produtores' => array_values(array_unique($produtores)),
+            'generos' => array_values(array_unique($generos)),
+            'estilos' => array_values(array_unique($estilos))
         ];
     }
 
