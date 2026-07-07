@@ -10,6 +10,58 @@ class DiscogsService {
     private $token = 'XquypjKpERmGKjMRfgUbbVonxtGjHTggIeFgHxvo';
     private $userAgent = 'SoundHavenApp/2.0 (contato@seusite.com)';
 
+    private function normalizarLista($valor) {
+        $itens = [];
+
+        if (is_array($valor)) {
+            foreach ($valor as $item) {
+                $texto = trim(strip_tags((string)$item));
+                if ($texto !== '') {
+                    $itens[] = $texto;
+                }
+            }
+            return $itens;
+        }
+
+        if (is_string($valor)) {
+            $valor = trim($valor);
+            if ($valor === '') {
+                return [];
+            }
+
+            $partes = preg_split('/[;,\/]+/', $valor);
+            foreach ($partes as $parte) {
+                $texto = trim(strip_tags($parte));
+                if ($texto !== '') {
+                    $itens[] = $texto;
+                }
+            }
+            return $itens;
+        }
+
+        return $itens;
+    }
+
+    private function extrairProdutores($data) {
+        $produtores = [];
+
+        if (!empty($data['extraartists'])) {
+            foreach ($data['extraartists'] as $artista) {
+                $papel = trim((string)($artista['role'] ?? ''));
+                if ($papel === '' || preg_match('/producer/i', $papel) !== 1) {
+                    continue;
+                }
+
+                $nome = trim(strip_tags((string)($artista['name'] ?? '')));
+                if ($nome !== '') {
+                    $produtores[] = $nome;
+                }
+            }
+        }
+
+        return array_values(array_unique($produtores));
+    }
+
     /**
      * Recupera os detalhes específicos de um Release (especialmente a tracklist)
      */
@@ -23,9 +75,9 @@ class DiscogsService {
 
         $faixas = [];
         $seq = 1;
-        $produtores = [];
-        $generos = [];
-        $estilos = [];
+        $produtores = $this->extrairProdutores($data);
+        $generos = $this->normalizarLista($data['genres'] ?? []);
+        $estilos = $this->normalizarLista($data['styles'] ?? []);
 
         foreach ($data['tracklist'] as $t) {
             // Filtra para pegar apenas faixas reais (ignora labels de Lado A/B ou vídeos)
@@ -35,38 +87,6 @@ class DiscogsService {
                     'titulo' => strip_tags($t['title']),
                     'duracao' => $this->formatarDuracao($t['duration'] ?? '')
                 ];
-            }
-        }
-
-        if (!empty($data['extraartists'])) {
-            foreach ($data['extraartists'] as $artista) {
-                $papel = trim((string)($artista['role'] ?? ''));
-                if ($papel === '' || stripos($papel, 'producer') === false) {
-                    continue;
-                }
-
-                $nome = trim(strip_tags((string)($artista['name'] ?? '')));
-                if ($nome !== '') {
-                    $produtores[] = $nome;
-                }
-            }
-        }
-
-        if (!empty($data['genres'])) {
-            foreach ($data['genres'] as $genero) {
-                $valor = trim(strip_tags((string)$genero));
-                if ($valor !== '') {
-                    $generos[] = $valor;
-                }
-            }
-        }
-
-        if (!empty($data['styles'])) {
-            foreach ($data['styles'] as $estilo) {
-                $valor = trim(strip_tags((string)$estilo));
-                if ($valor !== '') {
-                    $estilos[] = $valor;
-                }
             }
         }
 
@@ -119,6 +139,22 @@ public function buscarFaixas($catalogo, $titulo = '') {
                     
                     // Só aceitamos se o release tiver faixas!
                     if ($details && !empty($details['tracklist'])) {
+                        $details['produtores'] = array_values(array_unique(array_merge(
+                            $details['produtores'] ?? [],
+                            $this->normalizarLista($result['genre'] ?? []),
+                            $this->normalizarLista($result['style'] ?? [])
+                        )));
+
+                        $details['generos'] = array_values(array_unique(array_merge(
+                            $details['generos'] ?? [],
+                            $this->normalizarLista($result['genre'] ?? [])
+                        )));
+
+                        $details['estilos'] = array_values(array_unique(array_merge(
+                            $details['estilos'] ?? [],
+                            $this->normalizarLista($result['style'] ?? [])
+                        )));
+
                         return $details; // Vitória! Encontramos um release completo.
                     }
                 }

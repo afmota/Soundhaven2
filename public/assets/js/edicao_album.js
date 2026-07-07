@@ -4,41 +4,35 @@
 let faixaIndex = document.querySelectorAll('.faixa-item').length;
 
 function popularTagsImportadas(data) {
-    const tipos = [
-        { chave: 'generos', containerId: 'containerGeneros' },
-        { chave: 'estilos', containerId: 'containerEstilos' },
-        { chave: 'produtores', containerId: 'containerProdutores' }
-    ];
+    const mapa = {
+        generos: ['generos', 'genres', 'genre'],
+        estilos: ['estilos', 'styles', 'style'],
+        produtores: ['produtores', 'producers', 'producer']
+    };
 
-    tipos.forEach(({ chave, containerId }) => {
-        const container = document.getElementById(containerId);
+    Object.entries(mapa).forEach(([chave, aliases]) => {
+        const container = document.getElementById(chave === 'generos' ? 'containerGeneros' : chave === 'estilos' ? 'containerEstilos' : 'containerProdutores');
         if (!container) return;
 
-        const valores = Array.isArray(data[chave]) ? data[chave] : [];
-        if (valores.length === 0) return;
+        const valores = aliases
+            .map((alias) => data?.[alias])
+            .find((valor) => Array.isArray(valor) ? valor.length > 0 : Boolean(valor));
+
+        const lista = Array.isArray(valores)
+            ? valores
+            : (typeof valores === 'string' && valores.trim() !== '' ? [valores] : []);
+
+        if (lista.length === 0) return;
 
         container.innerHTML = '';
 
-        valores.forEach((valor) => {
+        lista.forEach((valor) => {
             const nome = String(valor || '').trim();
             if (!nome) return;
 
             const span = document.createElement('span');
             span.className = 'tag-item';
-
-            const texto = document.createTextNode(nome);
-            span.appendChild(texto);
-
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = `${chave}[]`;
-            input.value = nome;
-            span.appendChild(input);
-
-            const icon = document.createElement('i');
-            icon.className = 'fas fa-times remove-tag';
-            span.appendChild(icon);
-
+            span.innerHTML = `${nome}<input type="hidden" name="${chave}[]" value="${nome}"><i class="fas fa-times remove-tag"></i>`;
             container.appendChild(span);
         });
     });
