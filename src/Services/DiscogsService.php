@@ -139,12 +139,6 @@ public function buscarFaixas($catalogo, $titulo = '') {
                     
                     // Só aceitamos se o release tiver faixas!
                     if ($details && !empty($details['tracklist'])) {
-                        $details['produtores'] = array_values(array_unique(array_merge(
-                            $details['produtores'] ?? [],
-                            $this->normalizarLista($result['genre'] ?? []),
-                            $this->normalizarLista($result['style'] ?? [])
-                        )));
-
                         $details['generos'] = array_values(array_unique(array_merge(
                             $details['generos'] ?? [],
                             $this->normalizarLista($result['genre'] ?? [])
