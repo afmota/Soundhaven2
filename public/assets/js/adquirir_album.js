@@ -38,11 +38,65 @@ function popularTagsImportadas(data) {
     });
 }
 
+function aplicarErroCampo(campo, mostrar) {
+    if (!campo) return;
+    campo.classList.toggle('field-error', mostrar);
+    campo.setAttribute('aria-invalid', mostrar ? 'true' : 'false');
+}
+
+function validarFormularioInclusao(event) {
+    const form = document.getElementById('formAdicionarColecao');
+    if (!form) return true;
+
+    const camposObrigatorios = [
+        document.getElementById('edicaoTitulo'),
+        document.getElementById('edicaoArtista'),
+        document.getElementById('edicaoFormato')
+    ];
+
+    let primeiroInvalido = null;
+
+    camposObrigatorios.forEach((campo) => {
+        const valor = campo ? String(campo.value || '').trim() : '';
+        const invalido = !valor;
+        aplicarErroCampo(campo, invalido);
+
+        if (invalido && !primeiroInvalido) {
+            primeiroInvalido = campo;
+        }
+    });
+
+    if (primeiroInvalido) {
+        event.preventDefault();
+        primeiroInvalido.focus();
+        const resumo = document.querySelector('[data-validation-summary]');
+        if (resumo) {
+            resumo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        return false;
+    }
+
+    return true;
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
     // --- 1. ATIVAÇÃO DOS COMPORTAMENTOS COMUNS ---
     if (typeof inicializarComportamentosFormulario === 'function') {
         inicializarComportamentosFormulario();
     }
+
+    const formAdicionarColecao = document.getElementById('formAdicionarColecao');
+    if (formAdicionarColecao) {
+        formAdicionarColecao.addEventListener('submit', validarFormularioInclusao);
+    }
+
+    ['edicaoTitulo', 'edicaoArtista', 'edicaoFormato'].forEach((id) => {
+        const campo = document.getElementById(id);
+        if (!campo) return;
+
+        campo.addEventListener('input', () => aplicarErroCampo(campo, false));
+        campo.addEventListener('change', () => aplicarErroCampo(campo, false));
+    });
 
     // === PREVIEW DA CAPA ===
     const inputCapa = document.getElementById('edicaoCapaUrl');

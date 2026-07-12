@@ -16,7 +16,18 @@
             Adicionar à Coleção: <?= htmlspecialchars($album['titulo'] ?? 'Novo Item') ?>
         </h2>
 
-        <form method="POST" action="index.php?url=salvar_inclusao">
+        <?php if (!empty($erroValidacao)): ?>
+            <div class="validation-summary" data-validation-summary role="alert">
+                <strong>Corrija os campos obrigatórios antes de continuar.</strong>
+                <ul>
+                    <?php foreach ($erroValidacao as $erro): ?>
+                        <li><?= htmlspecialchars($erro) ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endif; ?>
+
+        <form method="POST" action="index.php?url=salvar_inclusao" id="formAdicionarColecao">
             
             <input type="hidden" name="album_id" value="<?= $album['album_id'] ?? '' ?>">
 
@@ -33,13 +44,13 @@
 
                 <div class="edit-field-group">
                     <label>TÍTULO DO ÁLBUM</label>
-                    <input type="text" name="titulo" id="edicaoTitulo" value="<?= htmlspecialchars($album['titulo'] ?? '') ?>">
+                    <input type="text" name="titulo" id="edicaoTitulo" value="<?= htmlspecialchars($album['titulo'] ?? '') ?>" class="<?= !empty($erroValidacao['titulo']) ? 'field-error' : '' ?>" required>
                 </div>
 
                 <div class="edit-modal-row">
                     <div class="edit-field-group">
                         <label>ARTISTA</label>
-                        <select name="artista_id" id="edicaoArtista">
+                        <select name="artista_id" id="edicaoArtista" class="<?= !empty($erroValidacao['artista_id']) ? 'field-error' : '' ?>" required>
                             <option value="">Selecione...</option>
                             <?php foreach ($artistas as $art): ?>
                             <option value="<?= $art['artista_id'] ?>" <?= (isset($album['artista_id']) && $art['artista_id'] == $album['artista_id']) ? 'selected' : '' ?>>
@@ -80,7 +91,7 @@
                         <input type="date" name="data_aquisicao" value="<?= date('Y-m-d') ?>">
                     </div>
                     <div class="edit-field-group">
-                        <label>FORMATO</label> <select name="formato_id">
+                        <label>FORMATO</label> <select name="formato_id" id="edicaoFormato" class="<?= !empty($erroValidacao['formato_id']) ? 'field-error' : '' ?>" required>
                             <option value="">Selecione...</option>
                             <?php foreach ($formatos as $f): ?>
                                 <option value="<?= $f['formato_id'] ?>">
@@ -237,6 +248,24 @@
             <option value="<?= htmlspecialchars($p) ?>">
         <?php endforeach; ?>
     </datalist>
+
+    <style>
+        .validation-summary {
+            background: rgba(255, 95, 95, 0.16);
+            border: 1px solid rgba(255, 95, 95, 0.45);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            color: #ffd0d0;
+        }
+        .validation-summary ul {
+            margin: 8px 0 0 18px;
+        }
+        .field-error {
+            border: 2px solid #ff5f5f !important;
+            box-shadow: 0 0 0 2px rgba(255, 95, 95, 0.25) !important;
+        }
+    </style>
 
     <script src="assets/js/functions.js"></script>
     <script src="assets/js/adquirir_album.js"></script>

@@ -148,6 +148,7 @@ class ColecaoController {
         $gravadoras = $this->service->buscarTodasGravadoras();
         $formatos = $this->service->buscarTodosFormatos();
         $sugestoes = $this->service->listarTodasSugestoes(); 
+        $erroValidacao = [];
 
         if ($album_id) {
             $album = $this->service->buscarPorId($album_id);
@@ -251,6 +252,36 @@ class ColecaoController {
         if (isset($dados['preco'])) {
             $precoLimpo = str_replace(',', '.', $dados['preco']);
             $dados['preco'] = filter_var($precoLimpo, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+        }
+
+        $errosValidacao = [];
+
+        if (empty(trim((string)($dados['titulo'] ?? '')))) {
+            $errosValidacao['titulo'] = 'O título do álbum é obrigatório.';
+        }
+
+        if (empty($dados['album_id']) || !filter_var($dados['album_id'], FILTER_VALIDATE_INT)) {
+            $errosValidacao['album_id'] = 'O álbum não foi identificado.';
+        }
+
+        if (empty($dados['artista_id']) || !filter_var($dados['artista_id'], FILTER_VALIDATE_INT)) {
+            $errosValidacao['artista_id'] = 'Selecione um artista.';
+        }
+
+        if (empty($dados['formato_id']) || !filter_var($dados['formato_id'], FILTER_VALIDATE_INT)) {
+            $errosValidacao['formato_id'] = 'Selecione um formato.';
+        }
+
+        if (!empty($errosValidacao)) {
+            $artistas = $this->service->buscarTodosArtistas();
+            $gravadoras = $this->service->buscarTodasGravadoras();
+            $formatos = $this->service->buscarTodosFormatos();
+            $sugestoes = $this->service->listarTodasSugestoes();
+            $album = $dados;
+            $faixas = [];
+            $erroValidacao = $errosValidacao;
+            require_once __DIR__ . '/../Views/colecao/adquirir_album.php';
+            exit;
         }
     
         $sucesso = $this->service->inserirNovoAlbumNaColecao($dados);
