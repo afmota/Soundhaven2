@@ -256,7 +256,7 @@ class ColecaoController {
         $sucesso = $this->service->inserirNovoAlbumNaColecao($dados);
     
         if ($sucesso) {
-            header("Location: index.php?url=colecao&status=success&msg=Album+adquirido!");
+            header("Location: index.php?url=dashboard&status=success&msg=Album+adquirido!");
         } else {
             header("Location: index.php?url=adquirir_album&status=error");
         }
