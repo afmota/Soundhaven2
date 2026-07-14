@@ -364,51 +364,29 @@ document.addEventListener('DOMContentLoaded', () => {
         const updateSlider = () => {
             slides.forEach((slide, index) => {
                 const relIndex = getRelativeIndex(index);
-                let transform = 'translate(-50%, -50%) translateZ(-120px) scale(0.72)';
-                let opacity = 0;
-                let zIndex = 1;
-                let pointerEvents = 'none';
 
-                slide.classList.remove('active', 'visible', 'hidden');
+                // Clear inline style overrides to let CSS handle layout, perspective, and transitions
+                slide.style.transform = '';
+                slide.style.opacity = '';
+                slide.style.zIndex = '';
+                slide.style.pointerEvents = '';
+
+                // Clean up previous positioning and state classes
+                slide.classList.remove('active', 'visible', 'hidden', 'left', 'right', 'far-left', 'far-right');
 
                 if (relIndex === 0) {
-                    transform = 'translate(-50%, -50%) translateZ(0px) scale(1)';
-                    opacity = 1;
-                    zIndex = 6;
-                    pointerEvents = 'auto';
-                    slide.classList.add('active');
+                    slide.classList.add('active', 'visible');
                 } else if (relIndex === -1) {
-                    transform = 'translate(-50%, -50%) translateX(-240px) translateZ(-20px) rotateY(28deg) scale(0.88)';
-                    opacity = 1;
-                    zIndex = 5;
-                    pointerEvents = 'auto';
+                    slide.classList.add('left', 'visible');
                 } else if (relIndex === 1) {
-                    transform = 'translate(-50%, -50%) translateX(240px) translateZ(-20px) rotateY(-28deg) scale(0.88)';
-                    opacity = 1;
-                    zIndex = 5;
-                    pointerEvents = 'auto';
+                    slide.classList.add('right', 'visible');
                 } else if (relIndex === -2) {
-                    transform = 'translate(-50%, -50%) translateX(-380px) translateZ(-55px) rotateY(32deg) scale(0.78)';
-                    opacity = 0.55;
-                    zIndex = 4;
-                    pointerEvents = 'auto';
+                    slide.classList.add('far-left', 'visible');
                 } else if (relIndex === 2) {
-                    transform = 'translate(-50%, -50%) translateX(380px) translateZ(-55px) rotateY(-32deg) scale(0.78)';
-                    opacity = 0.55;
-                    zIndex = 4;
-                    pointerEvents = 'auto';
-                }
-
-                if (opacity > 0) {
-                    slide.classList.add('visible');
+                    slide.classList.add('far-right', 'visible');
                 } else {
                     slide.classList.add('hidden');
                 }
-
-                slide.style.transform = transform;
-                slide.style.opacity = opacity;
-                slide.style.zIndex = zIndex;
-                slide.style.pointerEvents = pointerEvents;
             });
         };
 
