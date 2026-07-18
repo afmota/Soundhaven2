@@ -124,6 +124,11 @@ switch ($route) {
         $controller->getTopGravadorasJson();
         break;
 
+    case 'buscar_video_youtube':
+        $controller = new App\Controllers\DashboardController($pdo);
+        $controller->buscarVideoYoutube();
+        break;
+
     case 'perfil':
         $controller = new App\Controllers\PerfilController();
         $controller->index();

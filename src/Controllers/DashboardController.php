@@ -85,4 +85,51 @@ class DashboardController {
         }
         exit;
     }
+
+    public function buscarVideoYoutube() {
+        if (ob_get_length()) ob_clean(); 
+        
+        $artista = $_GET['artista'] ?? '';
+        $album = $_GET['album'] ?? '';
+        
+        if (empty($artista) || empty($album)) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'error' => 'Parâmetros inválidos.']);
+            exit;
+        }
+        
+        $query = "{$artista} {$album}";
+        $videoId = $this->searchYouTube($query);
+        
+        header('Content-Type: application/json');
+        if ($videoId) {
+            echo json_encode(['success' => true, 'videoId' => $videoId]);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Álbum não encontrado no YouTube.']);
+        }
+        exit;
+    }
+
+    private function searchYouTube($query) {
+        $url = "https://www.youtube.com/results?search_query=" . urlencode($query);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36');
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        
+        $html = curl_exec($ch);
+        curl_close($ch);
+        
+        if (preg_match('/"videoRenderer":.*?{"videoId":"([^"]+)"/s', $html, $match)) {
+            return $match[1];
+        }
+        
+        if (preg_match('/"videoId"\s*:\s*"([^"]+)"/', $html, $match)) {
+            return $match[1];
+        }
+        
+        return null;
+    }
 }
