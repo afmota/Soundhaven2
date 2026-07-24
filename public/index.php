@@ -134,6 +134,16 @@ switch ($route) {
         $controller->index();
         break;
 
+    case 'relatorios':
+        $controller = new App\Controllers\RelatorioController();
+        $controller->index();
+        break;
+
+    case 'gerar_relatorio':
+        $controller = new App\Controllers\RelatorioController();
+        $controller->gerar();
+        break;
+
     case 'logout':
         // Simulação de logout limpando cookies e redirecionando de volta ao dashboard
         if (isset($_COOKIE['soundhaven_sugestao_diaria'])) {
