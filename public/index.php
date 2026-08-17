@@ -1,5 +1,7 @@
 <?php
 ob_start();
+session_start();
+
 require_once __DIR__ . '/../autoload.php';
 require_once __DIR__ . '/../src/Config/Database.php'; 
 
@@ -8,6 +10,18 @@ use App\Controllers\ColecaoController;
 use App\Controllers\ArtistaController; // Importante para o switch
 
 $route = $_GET['url'] ?? 'dashboard';
+
+// Guardião de rotas autenticadas (Multiusuário)
+$publicRoutes = ['login', 'processar_login', 'cadastro', 'processar_cadastro'];
+if (!isset($_SESSION['usuario_id']) && !in_array($route, $publicRoutes)) {
+    header("Location: index.php?url=login");
+    exit;
+}
+if (isset($_SESSION['usuario_id']) && in_array($route, $publicRoutes)) {
+    header("Location: index.php?url=dashboard");
+    exit;
+}
+
 $db = new \App\Config\Database(); 
 $pdo = $db->getConnection();
 
@@ -134,6 +148,16 @@ switch ($route) {
         $controller->index();
         break;
 
+    case 'usuarios':
+        $controller = new App\Controllers\UserController();
+        $controller->index();
+        break;
+
+    case 'promover_usuario':
+        $controller = new App\Controllers\UserController();
+        $controller->promover();
+        break;
+
     case 'relatorios':
         $controller = new App\Controllers\RelatorioController();
         $controller->index();
@@ -144,13 +168,30 @@ switch ($route) {
         $controller->gerar();
         break;
 
+    case 'login':
+        $controller = new App\Controllers\AuthController();
+        $controller->exibirLogin();
+        break;
+
+    case 'processar_login':
+        $controller = new App\Controllers\AuthController();
+        $controller->processarLogin();
+        break;
+
+    case 'cadastro':
+        $controller = new App\Controllers\AuthController();
+        $controller->exibirCadastro();
+        break;
+
+    case 'processar_cadastro':
+        $controller = new App\Controllers\AuthController();
+        $controller->processarCadastro();
+        break;
+
     case 'logout':
-        // Simulação de logout limpando cookies e redirecionando de volta ao dashboard
-        if (isset($_COOKIE['soundhaven_sugestao_diaria'])) {
-            setcookie('soundhaven_sugestao_diaria', '', time() - 3600, '/');
-        }
-        header("Location: index.php?url=dashboard&msg=logout_sucesso");
-        exit;
+        $controller = new App\Controllers\AuthController();
+        $controller->logout();
+        break;
 
     default:
         http_response_code(404);

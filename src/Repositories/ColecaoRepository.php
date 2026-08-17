@@ -6,9 +6,11 @@ use PDO;
 
 class ColecaoRepository {
     private $db;
+    private $usuarioId;
 
     public function __construct() {
         $this->db = Database::getConnection();
+        $this->usuarioId = $_SESSION['usuario_id'] ?? null;
     }
 
     public function buscarParaGrid($limit = 25, $offset = 0, $filtros = []) {
@@ -34,10 +36,10 @@ class ColecaoRepository {
                 INNER JOIN tb_artistas art ON ta.artista_id = art.artista_id
                 INNER JOIN tb_gravadoras tg ON tm.gravadora_id = tg.gravadora_id
                 INNER JOIN tb_formatos tf ON tm.formato_id = tf.formato_id
-                WHERE tm.ativo = 1";
+                WHERE tm.ativo = 1 AND tm.usuario_id = :usuario_id";
 
         // 2. Montamos o WHERE dinâmico
-        $params = [];
+        $params = [':usuario_id' => $this->usuarioId];
         if (!empty($filtros['artista_id'])) {
             $sql .= " AND ta.artista_id = :artista_id";
             $params[':artista_id'] = (int)$filtros['artista_id'];
@@ -136,9 +138,9 @@ class ColecaoRepository {
         $sql = "SELECT COUNT(*) 
                 FROM tb_midias tm
                 INNER JOIN tb_albuns ta ON tm.album_id = ta.album_id
-                WHERE tm.ativo = 1";
+                WHERE tm.ativo = 1 AND tm.usuario_id = :usuario_id";
 
-        $params = [];
+        $params = [':usuario_id' => $this->usuarioId];
         if (!empty($filtros['artista_id'])) {
             $sql .= " AND ta.artista_id = :artista_id";
             $params[':artista_id'] = (int)$filtros['artista_id'];
@@ -223,44 +225,49 @@ class ColecaoRepository {
                 INNER JOIN tb_formatos tf ON tm.formato_id = tf.formato_id
                 INNER JOIN tb_artistas art ON ta.artista_id = art.artista_id
                 INNER JOIN tb_tipos tt ON ta.tipo_id = tt.tipo_id
-                WHERE tm.midia_id = :id";
+                WHERE tm.midia_id = :id AND tm.usuario_id = :usuario_id";
 
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':id', $midiaId, PDO::PARAM_INT);
+        $stmt->bindValue(':usuario_id', $this->usuarioId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function buscarFaixasPorMidia($midiaId) {
-        $sql = "SELECT numero_faixa, titulo, duracao, video_ulr AS video_url
-                FROM tb_midia_faixas 
-                WHERE midia_id = :midia_id 
-                ORDER BY numero_faixa ASC";
+        $sql = "SELECT f.numero_faixa, f.titulo, f.duracao, f.video_ulr AS video_url
+                FROM tb_midia_faixas f
+                INNER JOIN tb_midias m ON f.midia_id = m.midia_id
+                WHERE f.midia_id = :midia_id AND m.usuario_id = :usuario_id
+                ORDER BY f.numero_faixa ASC";
         
         $stmt = $this->db->prepare($sql); 
         $stmt->bindValue(':midia_id', $midiaId, PDO::PARAM_INT);
+        $stmt->bindValue(':usuario_id', $this->usuarioId, PDO::PARAM_INT);
         $stmt->execute();
         
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function atualizarVideoFaixa($midiaId, $numeroFaixa, $videoUrl) {
-        $sql = "UPDATE tb_midia_faixas
-                SET video_ulr = :video_url
-                WHERE midia_id = :midia_id AND numero_faixa = :numero_faixa";
+        $sql = "UPDATE tb_midia_faixas f
+                INNER JOIN tb_midias m ON f.midia_id = m.midia_id
+                SET f.video_ulr = :video_url
+                WHERE f.midia_id = :midia_id AND f.numero_faixa = :numero_faixa AND m.usuario_id = :usuario_id";
 
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
             ':video_url' => $videoUrl,
             ':midia_id' => (int)$midiaId,
             ':numero_faixa' => (int)$numeroFaixa,
+            ':usuario_id' => $this->usuarioId,
         ]);
     }
 
     public function marcarComoInativo($midiaId) {
-        $sql = "UPDATE tb_midias SET ativo = 0 WHERE midia_id = :id";
+        $sql = "UPDATE tb_midias SET ativo = 0 WHERE midia_id = :id AND usuario_id = :usuario_id";
         $stmt = $this->db->prepare($sql); 
-        return $stmt->execute([':id' => $midiaId]);
+        return $stmt->execute([':id' => $midiaId, ':usuario_id' => $this->usuarioId]);
     }
 
     public function getAllArtistas() {
@@ -273,10 +280,12 @@ class ColecaoRepository {
                 FROM tb_artistas art
                 INNER JOIN tb_albuns ta ON ta.artista_id = art.artista_id
                 INNER JOIN tb_midias tm ON tm.album_id = ta.album_id
-                WHERE tm.ativo = 1
+                WHERE tm.ativo = 1 AND tm.usuario_id = :usuario_id
                 ORDER BY art.nome ASC";
 
-        return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':usuario_id' => $this->usuarioId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getAllTipos() {
@@ -411,6 +420,10 @@ class ColecaoRepository {
             ':album_id'    => $albumId
         ]);
 
+        if (!$this->pertenceAoUsuario($midiaId)) {
+            return false;
+        }
+
         $sqlM = "UPDATE tb_midias SET 
                     gravadora_id = :gravadora_id,
                     data_aquisicao = :data_aq,
@@ -419,9 +432,10 @@ class ColecaoRepository {
                     discogs_id = :d_id,
                     condicao = :cond,
                     observacoes = :obs
-                 WHERE midia_id = :midia_id";
+                 WHERE midia_id = :midia_id AND usuario_id = :usuario_id";
 
-        $this->db->prepare($sqlM)->execute([
+        $stmt = $this->db->prepare($sqlM);
+        $stmt->execute([
             ':gravadora_id'    => $dados['gravadora_id'],
             ':data_aq'         => !empty($dados['data_aquisicao']) ? $dados['data_aquisicao'] : null,
             ':preco'           => $dados['preco'],
@@ -429,11 +443,20 @@ class ColecaoRepository {
             ':d_id'            => (!empty($dados['discogs_id'])) ? (int)$dados['discogs_id'] : null,
             ':cond'            => $dados['condicao'] ?? null,
             ':obs'             => $dados['observacoes'] ?? null,
-            ':midia_id'        => (int)$midiaId
+            ':midia_id'        => (int)$midiaId,
+            ':usuario_id'      => $this->usuarioId
         ]);
+
+        if ($stmt->rowCount() === 0) {
+            return false;
+        }
     }
 
     public function salvarFaixas($midiaId, array $faixas) {
+        if (!$this->pertenceAoUsuario($midiaId)) {
+            return false;
+        }
+
         $sqlDelete = "DELETE FROM tb_midia_faixas WHERE midia_id = ?";
         $this->db->prepare($sqlDelete)->execute([(int)$midiaId]);
 
@@ -458,6 +481,8 @@ class ColecaoRepository {
                 $videoUrl
             ]);
         }
+
+        return true;
     }
 
     private function formatarDuracaoParaBanco($tempo) {
@@ -492,6 +517,16 @@ class ColecaoRepository {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    private function pertenceAoUsuario($midiaId) {
+        $sql = "SELECT 1 FROM tb_midias WHERE midia_id = :midia_id AND usuario_id = :usuario_id LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            ':midia_id' => (int)$midiaId,
+            ':usuario_id' => $this->usuarioId
+        ]);
+        return (bool)$stmt->fetchColumn();
+    }
+
     public function inserirNovaMidia(array $dados) {
         // === SALVA A NOVA URL DA CAPA NA TABELA DE ÁLBUNS ===
         // Pegamos o name correto que está vindo do formulário (capa_url)
@@ -505,8 +540,8 @@ class ColecaoRepository {
         }
 
         // Seu código original do INSERT continua exatamente igual abaixo...
-        $sql = "INSERT INTO tb_midias (album_id, formato_id, gravadora_id, data_aquisicao, preco, numero_catalogo, discogs_id, condicao, observacoes, ativo) 
-                VALUES (:album_id, :formato_id, :gravadora_id, :data_aq, :preco, :cat, :d_id, :cond, :obs, 1)";
+        $sql = "INSERT INTO tb_midias (album_id, formato_id, gravadora_id, data_aquisicao, preco, numero_catalogo, discogs_id, condicao, observacoes, ativo, usuario_id) 
+                VALUES (:album_id, :formato_id, :gravadora_id, :data_aq, :preco, :cat, :d_id, :cond, :obs, 1, :usuario_id)";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
@@ -518,7 +553,8 @@ class ColecaoRepository {
             ':cat'          => $dados['numero_catalogo'] ?? null,
             ':d_id'         => !empty($dados['discogs_id']) ? (int)$dados['discogs_id'] : null,
             ':cond'         => $dados['condicao'] ?? null,
-            ':obs'          => $dados['observacoes'] ?? null
+            ':obs'          => $dados['observacoes'] ?? null,
+            ':usuario_id'   => $this->usuarioId
         ]);
 
         return $this->db->lastInsertId();
@@ -552,15 +588,19 @@ class ColecaoRepository {
     public function registrarExecucao($midiaId) {
         $sql = "UPDATE tb_midias 
                 SET data_ultima_execucao = NOW() 
-                WHERE midia_id = :id";
+                WHERE midia_id = :id AND usuario_id = :usuario_id";
                 
         $stmt = $this->db->prepare($sql);
-        return $stmt->execute([':id' => (int)$midiaId]);
+        return $stmt->execute([
+            ':id' => (int)$midiaId,
+            ':usuario_id' => $this->usuarioId
+        ]);
     }
 
     public function getValorTotalColecao() {
-        $sql = "SELECT SUM(preco) as total FROM tb_midias WHERE ativo = 1";
-        $stmt = $this->db->query($sql);
+        $sql = "SELECT SUM(preco) as total FROM tb_midias WHERE ativo = 1 AND usuario_id = :usuario_id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':usuario_id' => $this->usuarioId]);
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $result['total'] ?? 0;
     }
@@ -569,9 +609,10 @@ class ColecaoRepository {
         $sql = "SELECT SUM(TIME_TO_SEC(f.duracao)) as total_segundos 
                 FROM tb_midia_faixas f
                 JOIN tb_midias m ON f.midia_id = m.midia_id
-                WHERE m.ativo = 1";
+                WHERE m.ativo = 1 AND m.usuario_id = :usuario_id";
         
-        $stmt = $this->db->query($sql);
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':usuario_id' => $this->usuarioId]);
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         
         return (int)($result['total_segundos'] ?? 0);
@@ -581,9 +622,10 @@ class ColecaoRepository {
         $sql = "SELECT COUNT(*) as total_faixas 
                 FROM tb_midia_faixas f
                 JOIN tb_midias m ON f.midia_id = m.midia_id
-                WHERE m.ativo = 1";
+                WHERE m.ativo = 1 AND m.usuario_id = :usuario_id";
         
-        $stmt = $this->db->query($sql);
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':usuario_id' => $this->usuarioId]);
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         
         return (int)($result['total_faixas'] ?? 0);
@@ -593,9 +635,10 @@ class ColecaoRepository {
         $sql = "SELECT AVG(TIME_TO_SEC(f.duracao)) as media_segundos 
                 FROM tb_midia_faixas f
                 JOIN tb_midias m ON f.midia_id = m.midia_id
-                WHERE m.ativo = 1 AND f.duracao IS NOT NULL";
+                WHERE m.ativo = 1 AND f.duracao IS NOT NULL AND m.usuario_id = :usuario_id";
         
-        $stmt = $this->db->query($sql);
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':usuario_id' => $this->usuarioId]);
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         
         return (float)($result['media_segundos'] ?? 0);
@@ -605,11 +648,12 @@ class ColecaoRepository {
         $sql = "SELECT a.titulo, m.preco 
                 FROM tb_midias m
                 JOIN tb_albuns a ON m.album_id = a.album_id
-                WHERE m.ativo = 1
+                WHERE m.ativo = 1 AND m.usuario_id = :usuario_id
                 ORDER BY m.preco DESC
                 LIMIT 1";
         
-        $stmt = $this->db->query($sql);
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':usuario_id' => $this->usuarioId]);
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
@@ -620,12 +664,13 @@ class ColecaoRepository {
                 FROM tb_midia_faixas f
                 JOIN tb_midias m ON f.midia_id = m.midia_id
                 JOIN tb_albuns a ON m.album_id = a.album_id
-                WHERE m.ativo = 1
+                WHERE m.ativo = 1 AND m.usuario_id = :usuario_id
                 GROUP BY m.midia_id, a.titulo
                 ORDER BY tempo_total_segundos DESC
                 LIMIT 1";
         
-        $stmt = $this->db->query($sql);
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':usuario_id' => $this->usuarioId]);
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
@@ -636,36 +681,44 @@ class ColecaoRepository {
                 FROM tb_midia_faixas f
                 JOIN tb_midias m ON f.midia_id = m.midia_id
                 JOIN tb_albuns a ON m.album_id = a.album_id
-                WHERE m.ativo = 1
+                WHERE m.ativo = 1 AND m.usuario_id = :usuario_id
                 GROUP BY a.album_id, a.titulo
                 HAVING tempo_total_segundos > 0
                 ORDER BY tempo_total_segundos ASC
                 LIMIT 1";
         
-        $stmt = $this->db->query($sql);
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':usuario_id' => $this->usuarioId]);
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
     public function getMaiorMusica() {
-        return $this->db->query("SELECT f.titulo as musica, a.titulo as album, f.duracao 
-                                FROM tb_midia_faixas f 
-                                JOIN tb_midias m ON f.midia_id = m.midia_id
-                                JOIN tb_albuns a ON m.album_id = a.album_id
-                                WHERE f.titulo NOT IN ('U2 And 3 Songs (Video)', 'Come on')
-                                ORDER BY f.duracao DESC LIMIT 1")->fetch(\PDO::FETCH_ASSOC);
+        $sql = "SELECT f.titulo as musica, a.titulo as album, f.duracao 
+                FROM tb_midia_faixas f 
+                JOIN tb_midias m ON f.midia_id = m.midia_id
+                JOIN tb_albuns a ON m.album_id = a.album_id
+                WHERE f.titulo NOT IN ('U2 And 3 Songs (Video)', 'Come on')
+                AND m.usuario_id = :usuario_id
+                ORDER BY f.duracao DESC LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':usuario_id' => $this->usuarioId]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
     public function getMenorMusica() {
-        return $this->db->query("SELECT f.titulo as musica, a.titulo as album, f.duracao 
-                                FROM tb_midia_faixas f 
-                                JOIN tb_midias m ON f.midia_id = m.midia_id
-                                JOIN tb_albuns a ON m.album_id = a.album_id
-                                WHERE f.duracao > '00:00:05'
-                                ORDER BY f.duracao ASC LIMIT 1")->fetch(\PDO::FETCH_ASSOC);
+        $sql = "SELECT f.titulo as musica, a.titulo as album, f.duracao 
+                FROM tb_midia_faixas f 
+                JOIN tb_midias m ON f.midia_id = m.midia_id
+                JOIN tb_albuns a ON m.album_id = a.album_id
+                WHERE f.duracao > '00:00:05'
+                AND m.usuario_id = :usuario_id
+                ORDER BY f.duracao ASC LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':usuario_id' => $this->usuarioId]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
     public function getDistribuicaoDecadas() {
-        // Agora filtrando apenas o que está na tb_midias (sua coleção real)
         $sql = "SELECT 
                     FLOOR(YEAR(a.data_lancamento) / 10) * 10 as decada, 
                     COUNT(m.midia_id) as total 
@@ -674,10 +727,13 @@ class ColecaoRepository {
                 WHERE a.deletado = 0 
                 AND a.data_lancamento IS NOT NULL 
                 AND a.data_lancamento > '1900-01-01'
+                AND m.usuario_id = :usuario_id
                 GROUP BY decada 
                 ORDER BY decada ASC";
         
-        return $this->db->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':usuario_id' => $this->usuarioId]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public function getAquisicoesPorAno() {
@@ -688,10 +744,13 @@ class ColecaoRepository {
                 WHERE ativo = 1 
                 AND data_aquisicao IS NOT NULL 
                 AND data_aquisicao > '1900-01-01'
+                AND usuario_id = :usuario_id
                 GROUP BY ano 
                 ORDER BY ano ASC";
         
-        return $this->db->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':usuario_id' => $this->usuarioId]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
 }

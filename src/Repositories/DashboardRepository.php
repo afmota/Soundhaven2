@@ -3,22 +3,28 @@ namespace App\Repositories;
 
 class DashboardRepository {
     private $db;
+    private $usuarioId;
 
     public function __construct(\PDO $pdo) {
         $this->db = $pdo;
+        $this->usuarioId = $_SESSION['usuario_id'] ?? null;
     }
 
     public function buscarDadosGerais() {
         // Centralizamos as queries de contagem aqui
         $sql = "SELECT 
-                (SELECT COUNT(*) FROM tb_midias tm INNER JOIN tb_albuns ta ON tm.album_id = ta.album_id) as total_albuns,
-                (SELECT COUNT(DISTINCT(art.nome)) FROM tb_midias tm INNER JOIN tb_albuns ta ON tm.album_id = ta.album_id INNER JOIN tb_artistas art ON ta.artista_id = art.artista_id) as total_artistas,
-                (SELECT COUNT(DISTINCT(tg.nome)) FROM tb_midias tm INNER JOIN tb_albuns ta ON tm.album_id = ta.album_id INNER JOIN tb_gravadoras tg ON tm.gravadora_id = tg.gravadora_id) as total_gravadoras,
-                (SELECT COUNT(*) FROM tb_midias WHERE formato_id = 1) as total_lps,
-                (SELECT COUNT(*) FROM tb_midias WHERE formato_id = 2) as total_cds,
-                (SELECT (MAX(YEAR(ta.data_lancamento)) - MIN(YEAR(ta.data_lancamento))) FROM tb_midias tm INNER JOIN tb_albuns ta ON tm.album_id = ta.album_id) as total_anos";
-        
-        return $this->db->query($sql)->fetch(\PDO::FETCH_ASSOC);
+            (SELECT COUNT(*) FROM tb_midias tm INNER JOIN tb_albuns ta ON tm.album_id = ta.album_id WHERE tm.ativo = 1 AND tm.usuario_id = ?) as total_albuns,
+            (SELECT COUNT(DISTINCT(art.nome)) FROM tb_midias tm INNER JOIN tb_albuns ta ON tm.album_id = ta.album_id INNER JOIN tb_artistas art ON ta.artista_id = art.artista_id WHERE tm.ativo = 1 AND tm.usuario_id = ?) as total_artistas,
+            (SELECT COUNT(DISTINCT(tg.nome)) FROM tb_midias tm INNER JOIN tb_albuns ta ON tm.album_id = ta.album_id INNER JOIN tb_gravadoras tg ON tm.gravadora_id = tg.gravadora_id WHERE tm.ativo = 1 AND tm.usuario_id = ?) as total_gravadoras,
+            (SELECT COUNT(*) FROM tb_midias WHERE formato_id = 1 AND ativo = 1 AND usuario_id = ?) as total_lps,
+            (SELECT COUNT(*) FROM tb_midias WHERE formato_id = 2 AND ativo = 1 AND usuario_id = ?) as total_cds,
+            (SELECT (MAX(YEAR(ta.data_lancamento)) - MIN(YEAR(ta.data_lancamento))) FROM tb_midias tm INNER JOIN tb_albuns ta ON tm.album_id = ta.album_id WHERE tm.ativo = 1 AND tm.usuario_id = ?) as total_anos";
+
+        $stmt = $this->db->prepare($sql);
+        // driver nativo pode requerer binding por posição quando o mesmo placeholder se repete
+        $params = array_fill(0, 6, $this->usuarioId);
+        $stmt->execute($params);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
     public function buscarUltimasAquisicoes($limit = 5) {
@@ -46,10 +52,12 @@ class DashboardRepository {
                 JOIN tb_midias m ON a.album_id = m.album_id
                 JOIN tb_gravadoras g ON m.gravadora_id = g.gravadora_id
                 JOIN tb_formatos f ON m.formato_id = f.formato_id
+                WHERE m.ativo = 1 AND m.usuario_id = :usuario_id
                 ORDER BY m.midia_id DESC LIMIT :limit";
 
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
+        $stmt->bindValue(':usuario_id', $this->usuarioId, \PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -82,10 +90,14 @@ class DashboardRepository {
                 JOIN tb_midias m ON a.album_id = m.album_id
                 JOIN tb_gravadoras g ON m.gravadora_id = g.gravadora_id
                 JOIN tb_formatos f ON m.formato_id = f.formato_id
-                WHERE (DAY(a.data_lancamento) = DAY(CURDATE()) AND MONTH(a.data_lancamento) = MONTH(CURDATE()))
-                   OR (DAY(m.data_aquisicao) = DAY(CURDATE()) AND MONTH(m.data_aquisicao) = MONTH(CURDATE()))";
+                WHERE m.ativo = 1 AND m.usuario_id = :usuario_id AND (
+                   (DAY(a.data_lancamento) = DAY(CURDATE()) AND MONTH(a.data_lancamento) = MONTH(CURDATE()))
+                   OR (DAY(m.data_aquisicao) = DAY(CURDATE()) AND MONTH(m.data_aquisicao) = MONTH(CURDATE()))
+                )";
         
-        return $this->db->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':usuario_id' => $this->usuarioId]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public function buscarTopArtistas($limit = 5) {
@@ -96,13 +108,14 @@ class DashboardRepository {
                 FROM tb_midias m
                 INNER JOIN tb_albuns a ON m.album_id = a.album_id
                 INNER JOIN tb_artistas art ON a.artista_id = art.artista_id
-                WHERE art.nome <> 'Vários Artistas'
+                WHERE m.ativo = 1 AND m.usuario_id = :usuario_id AND art.nome <> 'Vários Artistas'
                 GROUP BY art.artista_id, art.nome
                 ORDER BY total DESC 
                 LIMIT :limit";
     
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
+        $stmt->bindValue(':usuario_id', $this->usuarioId, \PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -114,12 +127,14 @@ class DashboardRepository {
                     COUNT(tm.gravadora_id) AS total
                 FROM tb_midias AS tm
                 INNER JOIN tb_gravadoras AS tg ON tm.gravadora_id = tg.gravadora_id
+                WHERE tm.ativo = 1 AND tm.usuario_id = :usuario_id
                 GROUP BY tg.gravadora_id, tg.nome
                 ORDER BY total DESC
                 LIMIT :limit";
     
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
+        $stmt->bindValue(':usuario_id', $this->usuarioId, \PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -135,12 +150,14 @@ class DashboardRepository {
                 INNER JOIN tb_midias m ON a.album_id = m.album_id
                 WHERE a.deletado = 0 
                 AND m.ativo = 1
+                AND m.usuario_id = :usuario_id
                 GROUP BY tg.genero_id, tg.descricao
                 ORDER BY total DESC
                 LIMIT :limit";
 
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
+        $stmt->bindValue(':usuario_id', $this->usuarioId, \PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -151,11 +168,12 @@ class DashboardRepository {
                     COUNT(tm.midia_id) AS total
                 FROM tb_midias tm
                 INNER JOIN tb_formatos tf ON tm.formato_id = tf.formato_id
+                WHERE tm.ativo = 1 AND tm.usuario_id = :usuario_id
                 GROUP BY tf.formato_id, tf.descricao
                 ORDER BY total DESC";
 
         $stmt = $this->db->prepare($sql);
-        $stmt->execute();
+        $stmt->execute([':usuario_id' => $this->usuarioId]);
         
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -166,12 +184,12 @@ class DashboardRepository {
                     COUNT(*) as total 
                 FROM tb_midias tm
                 INNER JOIN tb_albuns ta ON tm.album_id = ta.album_id
-                WHERE tm.ativo = 1 AND ta.data_lancamento IS NOT NULL
+                WHERE tm.ativo = 1 AND ta.data_lancamento IS NOT NULL AND tm.usuario_id = :usuario_id
                 GROUP BY ano 
                 ORDER BY ano ASC";
                 
         $stmt = $this->db->prepare($sql);
-        $stmt->execute();
+        $stmt->execute([':usuario_id' => $this->usuarioId]);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 

@@ -49,9 +49,9 @@ class RelatorioController {
                 INNER JOIN tb_artistas art ON ta.artista_id = art.artista_id
                 INNER JOIN tb_gravadoras tg ON tm.gravadora_id = tg.gravadora_id
                 INNER JOIN tb_formatos tf ON tm.formato_id = tf.formato_id
-                WHERE tm.ativo = 1";
+                WHERE tm.ativo = 1 AND tm.usuario_id = :usuario_id";
 
-        $params = [];
+        $params = [':usuario_id' => $_SESSION['usuario_id']];
         
         // 1. Filtro de Artistas
         $artistas_tipo = $_POST['artistas_tipo'] ?? $_GET['artistas_tipo'] ?? 'todos';

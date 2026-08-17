@@ -16,11 +16,18 @@
                     </div>
 
                     <nav class="dropdown-menu" id="myDropdown">
+                        <div class="dropdown-user-info" style="padding: 12px 16px; border-bottom: 1px solid var(--border-color); text-align: left; background-color: rgba(0, 0, 0, 0.1);">
+                            <span style="display: block; font-weight: 600; color: #fff; font-size: 0.85rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?= htmlspecialchars($_SESSION['usuario_nome'] ?? 'Usuário') ?></span>
+                            <span style="display: block; font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?= htmlspecialchars($_SESSION['usuario_email'] ?? '') ?></span>
+                        </div>
                         <ul>
                             <li><a href="?url=dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
                             <li><a href="?url=colecao"><i class="fas fa-list-alt"></i> Minha Coleção</a></li>
                             <li><a href="?url=artistas"><i class="fas fa-microphone-lines"></i> Artistas</a></li>
                             <li><a href="?url=loja"><i class="fas fa-store"></i> Loja</a></li>
+                            <?php if (isset($_SESSION['usuario_role']) && $_SESSION['usuario_role'] === 'curador'): ?>
+                                <li><a href="?url=usuarios"><i class="fas fa-users"></i> Gerenciar Usuários</a></li>
+                            <?php endif; ?>
                             <li class="separator"></li>
                             <li><a href="?url=perfil"><i class="fas fa-user-circle"></i> Meu Perfil</a></li>
                             <li><a href="?url=relatorios"><i class="fas fa-file-pdf"></i> Relatórios</a></li>

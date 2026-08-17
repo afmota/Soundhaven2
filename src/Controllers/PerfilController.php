@@ -17,9 +17,9 @@ class PerfilController {
         $topGeneros = $this->repository->buscarTopGeneros(3);
 
         $viewData = [
-            'nome' => 'Administrador do Acervo',
+            'nome' => $_SESSION['usuario_nome'] ?? 'Administrador do Acervo',
             'cargo' => 'Curador de Acervo Musical',
-            'email' => 'curador@soundhaven.com',
+            'email' => $_SESSION['usuario_email'] ?? 'curador@soundhaven.com',
             'bio' => 'Gestor e apaixonado por colecionar música em formatos físicos. Curador oficial da coleção SoundHaven.',
             'total_albuns' => $stats['total_albuns'] ?? 0,
             'total_artistas' => $stats['total_artistas'] ?? 0,

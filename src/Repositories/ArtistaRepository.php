@@ -6,9 +6,11 @@ use PDO;
 
 class ArtistaRepository {
     private $db;
+    private $usuarioId;
 
     public function __construct() {
         $this->db = Database::getConnection();
+        $this->usuarioId = $_SESSION['usuario_id'] ?? null;
     }
 
     public function buscarArtistasComAlbuns($limit = 24, $offset = 0, array $filtros = []) {
@@ -24,7 +26,7 @@ class ArtistaRepository {
                 INNER JOIN tb_midias mid ON alb.album_id = mid.album_id
                 LEFT JOIN tb_paises p ON art.pais_origem = p.pais_id
                 LEFT JOIN tb_generos g ON art.genero_principal = g.genero_id
-                WHERE mid.ativo = 1";
+                WHERE mid.ativo = 1 AND mid.usuario_id = :usuario_id";
 
         if (!empty($filtros['pais_origem'])) {
             $sql .= " AND art.pais_origem = :pais_origem";
@@ -37,6 +39,8 @@ class ArtistaRepository {
         $sql .= " ORDER BY art.nome ASC LIMIT :limit OFFSET :offset";
 
         $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':usuario_id', $this->usuarioId, PDO::PARAM_INT);
+
         if (!empty($filtros['pais_origem'])) {
             $stmt->bindValue(':pais_origem', (int)$filtros['pais_origem'], PDO::PARAM_INT);
         }
@@ -57,9 +61,9 @@ class ArtistaRepository {
                 FROM tb_artistas art
                 INNER JOIN tb_albuns alb ON art.artista_id = alb.artista_id
                 INNER JOIN tb_midias mid ON alb.album_id = mid.album_id
-                WHERE mid.ativo = 1";
+                WHERE mid.ativo = 1 AND mid.usuario_id = :usuario_id";
 
-        $params = [];
+        $params = [':usuario_id' => $this->usuarioId];
         if (!empty($filtros['pais_origem'])) {
             $sql .= " AND art.pais_origem = :pais_origem";
             $params[':pais_origem'] = (int)$filtros['pais_origem'];
@@ -88,10 +92,11 @@ class ArtistaRepository {
                 INNER JOIN tb_artistas art ON art.pais_origem = p.pais_id
                 INNER JOIN tb_albuns alb ON art.artista_id = alb.artista_id
                 INNER JOIN tb_midias mid ON alb.album_id = mid.album_id
-                WHERE mid.ativo = 1
+                WHERE mid.ativo = 1 AND mid.usuario_id = :usuario_id
                 ORDER BY p.nome ASC";
 
-        $stmt = $this->db->query($sql);
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':usuario_id' => $this->usuarioId]);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
