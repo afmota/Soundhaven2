@@ -9,7 +9,16 @@ use App\Controllers\LojaController;
 use App\Controllers\ColecaoController;
 use App\Controllers\ArtistaController; // Importante para o switch
 
-$route = $_GET['url'] ?? 'dashboard';
+$hasRequestedRoute = isset($_GET['url']) && trim((string)$_GET['url']) !== '';
+
+// A entrada no sistema sempre começa pelo login, sem reutilizar uma rota antiga.
+if (!$hasRequestedRoute) {
+    $_SESSION = [];
+    session_regenerate_id(true);
+    $route = 'login';
+} else {
+    $route = trim((string)$_GET['url']);
+}
 
 // Guardião de rotas autenticadas (Multiusuário)
 $publicRoutes = ['login', 'processar_login', 'cadastro', 'processar_cadastro'];
