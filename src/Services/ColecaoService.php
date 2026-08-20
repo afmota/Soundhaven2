@@ -39,7 +39,6 @@ class ColecaoService {
             'artistas' => $this->buscarArtistasComAlbunsNaColecao(),
             'gravadoras' => $this->buscarTodasGravadoras(),
             'tipos' => $this->buscarTodosTipos(),
-            'situacoes' => $this->repository->getAllSituacoes(),
             'formatos' => $this->buscarTodosFormatos()
         ];
     }
@@ -163,12 +162,10 @@ public function atualizarAlbum($midiaId, $dados) {
             // 2. Insere a Mídia
             $midiaId = $this->repository->inserirNovaMidia($dados);
 
-            // 3. Faixas e Status
+            // 3. Faixas
             if (!empty($dados['faixas'])) {
                 $this->repository->salvarFaixas($midiaId, $dados['faixas']);
             }
-            $this->repository->atualizarStatusAlbum($albumId, 4);
-
             $this->repository->confirmarTransacao();
             return true;
 

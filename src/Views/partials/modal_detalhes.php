@@ -15,7 +15,6 @@
                     <p><label>GRAVADORA</label><span id="modalLabel"></span></p>
                     <p><label>LANÇAMENTO</label><span id="modalDate"></span></p>
                     <p><label>TIPO</label><span id="modalType"></span></p>
-                    <p><label>SITUAÇÃO</label><span id="modalStatus"></span></p>
                 </div>
                 
                 <div class="modal-actions">

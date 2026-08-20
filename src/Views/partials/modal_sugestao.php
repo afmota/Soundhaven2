@@ -20,7 +20,6 @@
                     <p><label>GRAVADORA</label><span><?= htmlspecialchars($sugestaoDoDia['gravadora_nome'] ?: 'N/D') ?></span></p>
                     <p><label>LANÇAMENTO</label><span><?= $sugestaoDoDia['data_lancamento'] ? date('d/m/Y', strtotime($sugestaoDoDia['data_lancamento'])) : 'N/D' ?></span></p>
                     <p><label>TIPO</label><span><?= htmlspecialchars($sugestaoDoDia['tipo_descricao'] ?: 'N/D') ?></span></p>
-                    <p><label>SITUAÇÃO</label><span><?= htmlspecialchars($sugestaoDoDia['situacao_descricao'] ?: 'N/D') ?></span></p>
                 </div>
                 
                 <div class="modal-actions" style="margin-top: 30px;">

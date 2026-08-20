@@ -52,10 +52,6 @@ class ColecaoRepository {
             $sql .= " AND ta.tipo_id = :tipo_id";
             $params[':tipo_id'] = (int)$filtros['tipo_id'];
         }
-        if (!empty($filtros['situacao_id'])) {
-            $sql .= " AND ta.situacao = :situacao_id";
-            $params[':situacao_id'] = (int)$filtros['situacao_id'];
-        }
         if (!empty($filtros['titulo'])) {
             $sql .= " AND ta.titulo LIKE :titulo";
             $params[':titulo'] = '%' . $filtros['titulo'] . '%';
@@ -152,10 +148,6 @@ class ColecaoRepository {
         if (!empty($filtros['tipo_id'])) {
             $sql .= " AND ta.tipo_id = :tipo_id";
             $params[':tipo_id'] = (int)$filtros['tipo_id'];
-        }
-        if (!empty($filtros['situacao_id'])) {
-            $sql .= " AND ta.situacao = :situacao_id";
-            $params[':situacao_id'] = (int)$filtros['situacao_id'];
         }
         if (!empty($filtros['titulo'])) {
             $sql .= " AND ta.titulo LIKE :titulo";
@@ -309,11 +301,6 @@ class ColecaoRepository {
     
     public function getAllProdutores() {
         return $this->db->query("SELECT nome FROM tb_produtores ORDER BY nome ASC")->fetchAll(\PDO::FETCH_COLUMN);
-    }
-
-    public function getAllSituacoes() {
-        $sql = "SELECT situacao_id, descricao FROM tb_situacoes ORDER BY situacao_id ASC";
-        return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function iniciarTransacao() {
@@ -558,14 +545,6 @@ class ColecaoRepository {
         ]);
 
         return $this->db->lastInsertId();
-    }
-
-    public function atualizarStatusAlbum($albumId, $statusId) {
-        $sql = "UPDATE tb_albuns SET situacao = :status WHERE album_id = :id";
-        return $this->db->prepare($sql)->execute([
-            ':status' => (int)$statusId,
-            ':id'     => (int)$albumId
-        ]);
     }
 
     public function buscarOuCriarGravadora($nome) {

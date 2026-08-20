@@ -27,27 +27,15 @@ class AlbumRepository {
             $where[] = "a.tipo_id = :tipo_id";
             $params[':tipo_id'] = (int) $filters['tipo_id'];
         }
-        if (!empty($filters['situacao_id'])) {
-            // Se o usuário escolheu uma situação no select, filtramos exatamente por ela
-            $where[] = "a.situacao = :situacao_id";
-            $params[':situacao_id'] = (int) $filters['situacao_id'];
-        } else {
-            // Se NÃO escolheu situação, mantemos o padrão da loja:
-            // NÃO mostra o que está em situações de "fora da loja" (4 e 5)
-            $where[] = "a.situacao NOT IN (2, 4, 5)";
-        }
 
         $sql = "SELECT a.album_id, a.titulo, a.capa_url, a.data_lancamento,
                        a.artista_id, a.gravadora_id, a.tipo_id, 
-                       a.situacao AS situacao_id, 
                        art.nome AS artista_nome, 
-                       g.nome AS gravadora_nome, t.descricao AS tipo_desc, 
-                       s.descricao AS situacao_desc
+                       g.nome AS gravadora_nome, t.descricao AS tipo_desc
                 FROM tb_albuns a
                 INNER JOIN tb_artistas art ON a.artista_id = art.artista_id
                 LEFT JOIN tb_gravadoras g ON a.gravadora_id = g.gravadora_id
                 LEFT JOIN tb_tipos t ON a.tipo_id = t.tipo_id
-                LEFT JOIN tb_situacoes s ON a.situacao = s.situacao_id
                 WHERE " . implode(" AND ", $where) . "
                 ORDER BY a.data_lancamento DESC, a.titulo ASC
                 LIMIT :limit OFFSET :offset";
@@ -64,19 +52,9 @@ class AlbumRepository {
     }
 
     public function getTotalCount(array $filters = []) {
-        // 1. Base idêntica ao findPaginated
         $where = ["a.deletado = 0"];
         $params = [];
     
-        // 2. Lógica de Situação (O segredo do nosso resgate!)
-        if (!empty($filters['situacao_id'])) {
-            $where[] = "a.situacao = :situacao_id";
-            $params[':situacao_id'] = (int) $filters['situacao_id'];
-        } else {
-            $where[] = "a.situacao NOT IN (2, 4, 5)";
-        }
-    
-        // 3. Repetir os outros filtros para o cálculo ser exato
         if (!empty($filters['titulo'])) {
             $where[] = "a.titulo LIKE :titulo";
             $params[':titulo'] = "%" . $filters['titulo'] . "%";
@@ -93,7 +71,6 @@ class AlbumRepository {
         $sql = "SELECT COUNT(*) FROM tb_albuns a WHERE " . implode(" AND ", $where);
         $stmt = $this->db->prepare($sql);
     
-        // 4. Não esqueça de bindar os parâmetros aqui também!
         foreach ($params as $key => $val) {
             $stmt->bindValue($key, $val);
         }
@@ -110,7 +87,6 @@ class AlbumRepository {
                 gravadora_id = :gravadora_id, 
                 data_lancamento = :data_lancamento, 
                 tipo_id = :tipo_id, 
-                situacao = :situacao, 
                 atualizado_em = CURRENT_TIMESTAMP
                 WHERE album_id = :id";
 
@@ -128,7 +104,6 @@ class AlbumRepository {
 
         $stmt->bindValue(':data_lancamento', $data['data_lancamento'] ?: null);
         $stmt->bindValue(':tipo_id', (int) $data['tipo_id'], PDO::PARAM_INT);
-        $stmt->bindValue(':situacao', (int) $data['situacao'], PDO::PARAM_INT);
 
         return $stmt->execute();
     }
@@ -141,8 +116,8 @@ class AlbumRepository {
     }
 
     public function create(array $data) {
-        $sql = "INSERT INTO tb_albuns (titulo, capa_url, artista_id, gravadora_id, data_lancamento, tipo_id, situacao)
-                VALUES (:titulo, :capa_url, :artista_id, :gravadora_id, :data_lancamento, :tipo_id, :situacao)";
+        $sql = "INSERT INTO tb_albuns (titulo, capa_url, artista_id, gravadora_id, data_lancamento, tipo_id)
+                VALUES (:titulo, :capa_url, :artista_id, :gravadora_id, :data_lancamento, :tipo_id)";
         
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':titulo', $data['titulo']);
@@ -151,7 +126,6 @@ class AlbumRepository {
         $stmt->bindValue(':gravadora_id', $data['gravadora_id'] ? (int)$data['gravadora_id'] : null);
         $stmt->bindValue(':data_lancamento', $data['data_lancamento'] ?: null);
         $stmt->bindValue(':tipo_id', (int)$data['tipo_id']);
-        $stmt->bindValue(':situacao', (int)$data['situacao']);
         
         return $stmt->execute();
     }
@@ -174,14 +148,5 @@ class AlbumRepository {
         $stmt->execute([':nome' => $nome]);
         
         return (int)$this->db->lastInsertId();
-    }
-
-    public function atualizarSituacao($albumId, $situacaoId) {
-        $sql = "UPDATE tb_albuns SET situacao = :situacao WHERE album_id = :album_id";
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute([
-            ':situacao' => (int) $situacaoId,
-            ':album_id' => (int) $albumId
-        ]);
     }
 }

@@ -32,18 +32,6 @@
             </select>
         </div>
 
-        <div class="filter-group">
-            <label>Situação</label>
-            <select name="situacao_id">
-                <option value="">Todas as Situações</option>
-                <?php foreach ($situacoes as $s): ?>
-                    <option value="<?= $s['situacao_id'] ?>" <?= ($filters['situacao_id'] ?? '') == $s['situacao_id'] ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($s['descricao']) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-
         <button type="submit" class="btn btn-search">
             <i class="fa-solid fa-magnifying-glass"></i> Filtrar
         </button>

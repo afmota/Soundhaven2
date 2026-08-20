@@ -11,7 +11,7 @@
             </div>
             
             <p style="font-size: 0.8em; color: #888; margin-top: 10px;">
-                Formato esperado: titulo, capa_url, artista_id, gravadora_id, data_lancamento, tipo_id, situacao
+                Formato esperado: titulo, capa_url, artista_id, gravadora_id, data_lancamento, tipo_id
             </p>
 
             <button type="submit" class="btn" style="background-color: #338d33; width: 100%; margin-top: 20px;">

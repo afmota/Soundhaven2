@@ -5,7 +5,6 @@ use App\Services\AlbumService;
 use App\Models\Artist;
 use App\Models\Label;
 use App\Models\Type;
-use App\Models\Situation;
 
 class LojaController {
     public function index() {
@@ -67,7 +66,6 @@ class LojaController {
             'titulo'      => $_GET['titulo'] ?? '',
             'artista_id'  => $_GET['artista_id'] ?? '',
             'tipo_id'     => $_GET['tipo_id'] ?? '',
-            'situacao_id' => $_GET['situacao_id'] ?? '',
         ];
 
         // Paginação e busca de itens via Service
@@ -86,25 +84,8 @@ class LojaController {
         $artistas   = Artist::all();
         $gravadoras = Label::all();
         $tipos      = Type::all();
-        $situacoes  = Situation::all(true);
-
         // --- 3. RENDERIZAÇÃO ---
         include __DIR__ . '/../Views/loja/grid.php';
     }
 
-    public function moverParaWishlist() {
-        header('Content-Type: application/json');
-        $albumId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-
-        if (!$albumId) {
-            echo json_encode(['success' => false, 'error' => 'ID de álbum inválido']);
-            exit;
-        }
-
-        $service = new AlbumService();
-        $sucesso = $service->marcarComoDesejado($albumId);
-        
-        echo json_encode(['success' => $sucesso]);
-        exit;
-    }
 }

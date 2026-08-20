@@ -6,11 +6,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('albumModal');
     const editModal = document.getElementById('editModal');
     const createModal = document.getElementById('createModal'); // Novo modal
-    
+
     let currentAlbumData = null;
 
     // --- 1. PREVIEWS DE CAPA (LIVE UPDATE) ---
-    
+
     // Preview na Edição
     const inputCapaEdit = document.getElementById('editModalCapaUrl');
     const imgPreviewEdit = document.getElementById('editModalImg');
@@ -30,46 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- 2. EVENTOS DE CLIQUE ---
-    document.addEventListener('click', async (e) => {
-        const btnWish = e.target.closest('.btn-wishlist-direto');
-        
-        // 1º CASO: Clicou no botão do coração
-        if (btnWish) {
-            e.preventDefault();
-            e.stopPropagation();
-
-            const albumId = btnWish.getAttribute('data-id');
-            const card = btnWish.closest('.album-card');
-
-            btnWish.style.transform = 'scale(1.3)';
-            btnWish.style.backgroundColor = '#ff3838'; 
-
-            try {
-                const response = await fetch(`index.php?url=loja_desejar_album&id=${albumId}`);
-                const data = await response.json();
-
-                if (data.success) {
-                    if (card) {
-                        card.style.transition = 'all 0.3s ease';
-                        card.style.opacity = '0';
-                        card.style.transform = 'scale(0.7)';
-                        setTimeout(() => card.remove(), 300);
-                    }
-                } else {
-                    btnWish.style.transform = 'scale(1)';
-                    btnWish.style.backgroundColor = '#3c3cff';
-                    alert('Erro ao mover para a WishList: ' + (data.error || 'Erro desconhecido'));
-                }
-            } catch (error) {
-                console.error('Erro na requisição:', error);
-                btnWish.style.transform = 'scale(1)';
-                btnWish.style.backgroundColor = '#3c3cff';
-                alert('Erro de comunicação com o servidor.');
-            }
-            return; // Mata a execução aqui para não abrir os detalhes abaixo
-        }
-
-        // 2º CASO: Clicou no card normal (Abrir Detalhes)
+    document.addEventListener('click', (e) => {
         const card = e.target.closest('.album-card');
         if (card) {
             currentAlbumData = JSON.parse(card.getAttribute('data-album'));
@@ -104,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === modal) closeModal();
         if (e.target === editModal) closeEditModal();
         if (e.target === createModal) closeCreateModal(); // Fecha inclusão
-        
+
         if (dropdown && !dropdown.contains(e.target) && !avatarTrigger.contains(e.target)) {
             dropdown.classList.remove('show');
         }
@@ -123,9 +84,8 @@ function openModal(album) {
     document.getElementById('modalLabel').innerText = album.gravadora_nome || 'N/D';
     document.getElementById('modalDate').innerText = formatDate(album.data_lancamento);
     document.getElementById('modalImg').src = album.capa_url || 'assets/images/placeholder.jpg';
-    document.getElementById('modalStatus').innerText = album.situacao_desc || 'N/D';
     document.getElementById('modalType').innerText = album.tipo_desc || 'N/D';
-    
+
     // 2. Prepara o ID de descarte (que você disse que funciona)
     const deleteIdField = document.getElementById('deleteId');
     if (deleteIdField) deleteIdField.value = album.album_id;
@@ -134,14 +94,14 @@ function openModal(album) {
     const btn = document.getElementById('btnAdquirirDireto');
     if (btn) {
         // Removemos qualquer comportamento antigo
-        btn.onclick = null; 
-        
+        btn.onclick = null;
+
         // Definimos o novo comportamento NA HORA
-        btn.onclick = function(e) {
+        btn.onclick = function (e) {
             // Impede que o clique "vaze" para o resto da página (mata a propagação)
             e.preventDefault();
             e.stopPropagation();
-            
+
             // Vai direto para o alvo
             window.location.href = `index.php?url=adquirir_album&id=${album.album_id}`;
         };
@@ -164,7 +124,7 @@ function openEditModal(album) {
 
     const headerTitle = document.getElementById('editModalHeaderTitle');
     if (headerTitle) headerTitle.innerText = `Editar ${album.titulo}`;
-    
+
     const imgPreview = document.getElementById('editModalImg');
     if (imgPreview) imgPreview.src = album.capa_url || 'assets/images/placeholder.jpg';
 
@@ -175,9 +135,8 @@ function openEditModal(album) {
     //setVal('editModalGravadora', album.gravadora_id);
     setVal('editModalGravadora', album.gravadora_nome || '');
     setVal('editModalTipo', album.tipo_id);
-    setVal('editModalSituacao', album.situacao_id || album.situacao);
     setVal('editModalData', album.data_lancamento || '');
-    
+
     document.getElementById('editModal').style.display = "block";
 }
 

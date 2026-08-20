@@ -56,15 +56,6 @@
                     </select>
                 </div>
                 <div class="edit-field-group">
-                    <label>SITUAÇÃO</label>
-                    <select name="situacao" required>
-                        <option value="">Selecione...</option>
-                        <?php foreach ($situacoes as $s): ?>
-                            <option value="<?= $s['situacao_id'] ?>"><?= htmlspecialchars($s['descricao']) ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div class="edit-field-group">
                     <label>DATA DE LANÇAMENTO</label>
                     <input type="date" name="data_lancamento">
                 </div>

@@ -56,17 +56,6 @@
                         </select>
                     </div>
 
-                    <div class="edit-field-group">
-                        <label>SITUAÇÃO</label>
-                        <select name="situacao" id="editModalSituacao">
-                            <option value="">Selecione...</option>
-                            <?php foreach ($situacoes as $s): ?>
-                                <option value="<?php echo (int)$s['situacao_id']; ?>">
-                                    <?php echo htmlspecialchars($s['descricao']); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
                 </div>
 
                 <div class="edit-field-group" style="margin-top: 15px;">
