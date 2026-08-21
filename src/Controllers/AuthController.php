@@ -54,6 +54,7 @@ class AuthController {
             $_SESSION['usuario_id'] = (int)$usuario['usuario_id'];
             $_SESSION['usuario_nome'] = $usuario['nome'];
             $_SESSION['usuario_email'] = $usuario['email'];
+            $_SESSION['last_activity'] = time();
 
             // Tenta obter papel/role do usuário se a coluna existir
             $role = 'user';
@@ -147,6 +148,7 @@ class AuthController {
             $_SESSION['usuario_id'] = (int)$novoId;
             $_SESSION['usuario_nome'] = $nome;
             $_SESSION['usuario_email'] = $email;
+            $_SESSION['last_activity'] = time();
             
             header('Location: index.php?url=dashboard');
             exit;

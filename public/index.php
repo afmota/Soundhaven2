@@ -1,6 +1,41 @@
 <?php
 ob_start();
+$sessionTimeout = 30 * 60;
+
+ini_set('session.gc_maxlifetime', (string)$sessionTimeout);
+session_set_cookie_params([
+    'lifetime' => $sessionTimeout,
+    'path' => '/',
+    'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+    'httponly' => true,
+    'samesite' => 'Lax'
+]);
 session_start();
+
+$sessionExpired = isset($_SESSION['usuario_id'])
+    && isset($_SESSION['last_activity'])
+    && (time() - (int)$_SESSION['last_activity']) >= $sessionTimeout;
+
+if ($sessionExpired) {
+    $_SESSION = [];
+    if (ini_get('session.use_cookies')) {
+        $cookieParams = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 42000, $cookieParams['path'], $cookieParams['domain'], $cookieParams['secure'], $cookieParams['httponly']);
+    }
+    session_destroy();
+    session_start();
+}
+
+if (isset($_SESSION['usuario_id'])) {
+    $_SESSION['last_activity'] = time();
+    setcookie(session_name(), session_id(), [
+        'expires' => time() + $sessionTimeout,
+        'path' => '/',
+        'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
+}
 
 require_once __DIR__ . '/../autoload.php';
 require_once __DIR__ . '/../src/Config/Database.php'; 
@@ -9,15 +44,11 @@ use App\Controllers\LojaController;
 use App\Controllers\ColecaoController;
 use App\Controllers\ArtistaController; // Importante para o switch
 
-$hasRequestedRoute = isset($_GET['url']) && trim((string)$_GET['url']) !== '';
+$route = trim((string)($_GET['url'] ?? ''));
 
-// A entrada no sistema sempre começa pelo login, sem reutilizar uma rota antiga.
-if (!$hasRequestedRoute) {
-    $_SESSION = [];
-    session_regenerate_id(true);
-    $route = 'login';
-} else {
-    $route = trim((string)$_GET['url']);
+// Sem uma rota explícita, preserve a sessão e escolha a página inicial adequada.
+if ($route === '') {
+    $route = isset($_SESSION['usuario_id']) ? 'dashboard' : 'login';
 }
 
 // Guardião de rotas autenticadas (Multiusuário)
