@@ -14,7 +14,7 @@
 
     <div class="page-wrapper">
         <div class="spacer-left">
-            <button type="button" class="btn btn-add" onclick="document.getElementById('createModal').style.display='block'">
+            <button type="button" class="btn btn-add" onclick="window.location.href='index.php?url=novo_album_loja'">
                 <i class="fas fa-compact-disc" style="font-size: 1.2em; margin-left: -5px; vertical-align: top;"></i>
                 ADICIONAR ÁLBUM
             </button>
@@ -51,7 +51,6 @@
 
     <?php include __DIR__ . '/../partials/modal_detalhes.php'; ?>
     <?php include __DIR__ . '/../partials/modal_edicao.php'; ?>
-    <?php include __DIR__ . '/../partials/modal_inclusao.php'; ?>
     <?php include __DIR__ . '/../partials/modal_importacao.php'; ?>
 
     <script src="assets/js/loja.js"></script>

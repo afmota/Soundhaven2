@@ -76,6 +76,11 @@ switch ($route) {
         $controller->index();
         break;
 
+    case 'novo_album_loja':
+        $controller = new LojaController();
+        $controller->novoAlbum();
+        break;
+
     case 'colecao':
         $controller = new ColecaoController();
         $controller->index();

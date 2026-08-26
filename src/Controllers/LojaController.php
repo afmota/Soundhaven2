@@ -7,6 +7,21 @@ use App\Models\Label;
 use App\Models\Type;
 
 class LojaController {
+    public function novoAlbum() {
+        $service = new \App\Services\ColecaoService();
+        $artistas = \App\Models\Artist::all();
+        $gravadoras = \App\Models\Label::all();
+        $tipos = \App\Models\Type::all();
+        $formatos = $service->buscarTodosFormatos();
+        $condicoes = ['Nova', 'Excelente', 'Boa', 'Regular', 'Ruim'];
+        $sugestoes = $service->listarTodasSugestoes();
+        $album = [];
+        $erroValidacao = [];
+        $faixas = [];
+
+        require_once __DIR__ . '/../Views/loja/novo_album.php';
+    }
+
     public function index() {
         $service = new AlbumService();
         $erro = null;
