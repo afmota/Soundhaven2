@@ -125,9 +125,13 @@ class AlbumRepository {
         $stmt->bindValue(':artista_id', (int)$data['artista_id']);
         $stmt->bindValue(':gravadora_id', $data['gravadora_id'] ? (int)$data['gravadora_id'] : null);
         $stmt->bindValue(':data_lancamento', $data['data_lancamento'] ?: null);
-        $stmt->bindValue(':tipo_id', (int)$data['tipo_id']);
-        
-        return $stmt->execute();
+        $stmt->bindValue(':tipo_id', !empty($data['tipo_id']) ? (int)$data['tipo_id'] : null);
+
+        if ($stmt->execute()) {
+            return (int)$this->db->lastInsertId();
+        }
+
+        return false;
     }
 
     public function buscarOuCriarGravadora($nome) {

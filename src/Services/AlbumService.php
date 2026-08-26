@@ -67,19 +67,51 @@ class AlbumService {
     }
 
     public function criarNovoAlbum(array $dados) {
-        // Validação de segurança
         if (empty($dados['titulo']) || empty($dados['artista_id'])) {
             throw new \Exception("Dados obrigatórios faltando.");
         }
 
-        // --- TRATAMENTO DA GRAVADORA DINÂMICA ---
         if (!empty($dados['gravadora_nome'])) {
             $dados['gravadora_id'] = $this->repository->buscarOuCriarGravadora($dados['gravadora_nome']);
         } else {
             $dados['gravadora_id'] = null;
         }
 
-        return $this->repository->create($dados);
+        $albumId = $this->repository->create($dados);
+        if (!$albumId) {
+            return false;
+        }
+
+        try {
+            $colecaoRepository = new \App\Repositories\ColecaoRepository();
+
+            $colecaoRepository->salvarGeneros($albumId, $dados['generos'] ?? []);
+            $colecaoRepository->salvarEstilos($albumId, $dados['estilos'] ?? []);
+            $colecaoRepository->salvarProdutores($albumId, $dados['produtores'] ?? []);
+
+            $temDadosMidia = !empty($dados['formato_id'])
+                || !empty($dados['data_aquisicao'])
+                || isset($dados['preco'])
+                || !empty($dados['numero_catalogo'])
+                || !empty($dados['observacoes'])
+                || !empty($dados['condicao'])
+                || !empty($dados['faixas']);
+
+            if ($temDadosMidia) {
+                $midiaData = $dados;
+                $midiaData['album_id'] = $albumId;
+                $midiaId = $colecaoRepository->inserirNovaMidia($midiaData);
+
+                if (!empty($dados['faixas']) && $midiaId) {
+                    $colecaoRepository->salvarFaixas($midiaId, $dados['faixas']);
+                }
+            }
+
+            return true;
+        } catch (\Throwable $e) {
+            error_log('Erro ao criar álbum completo na loja: ' . $e->getMessage());
+            return false;
+        }
     }
 
     public function importarCsv($caminhoArquivo) {
