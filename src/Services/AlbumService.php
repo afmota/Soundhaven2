@@ -73,8 +73,8 @@ class AlbumService {
             throw new \Exception("Dados obrigatórios faltando.");
         }
 
-        if (empty($dados['artista_id']) && !empty($artistasSelecionados)) {
-            $dados['artista_id'] = $artistasSelecionados[0];
+        if (!empty($artistasSelecionados)) {
+            $dados['artista_id'] = $this->repository->buscarOuCriarArtista($artistasSelecionados[0]);
         }
 
         if (!empty($dados['gravadora_nome'])) {

@@ -168,7 +168,7 @@ function inserirLinhaNaTabela(numero, titulo, duracao, containerId = 'corpoLista
 }
 
 function inicializarComportamentosFormulario() {
-    const containersTags = ['containerGeneros', 'containerEstilos', 'containerProdutores'];
+    const containersTags = ['containerArtistas', 'containerGeneros', 'containerEstilos', 'containerProdutores'];
     containersTags.forEach(id => {
         const container = document.getElementById(id);
         if (container) {

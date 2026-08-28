@@ -193,4 +193,22 @@ class AlbumRepository {
         
         return (int)$this->db->lastInsertId();
     }
+
+    public function buscarOuCriarArtista($nome) {
+        $nome = trim($nome);
+        if (empty($nome)) return null;
+
+        $stmt = $this->db->prepare("SELECT artista_id FROM tb_artistas WHERE nome = :nome LIMIT 1");
+        $stmt->execute([':nome' => $nome]);
+        $id = $stmt->fetchColumn();
+
+        if ($id) {
+            return (int)$id;
+        }
+
+        $stmt = $this->db->prepare("INSERT INTO tb_artistas (nome) VALUES (:nome)");
+        $stmt->execute([':nome' => $nome]);
+
+        return (int)$this->db->lastInsertId();
+    }
 }

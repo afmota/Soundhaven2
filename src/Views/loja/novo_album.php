@@ -254,6 +254,7 @@
         <?php endforeach; ?>
     </datalist>
 
+    <script src="assets/js/functions.js"></script>
     <script src="assets/js/adquirir_album.js"></script>
 </body>
 </html>
