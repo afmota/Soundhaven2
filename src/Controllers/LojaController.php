@@ -13,7 +13,6 @@ class LojaController {
         $gravadoras = \App\Models\Label::all();
         $tipos = \App\Models\Type::all();
         $formatos = $service->buscarTodosFormatos();
-        $condicoes = ['Nova', 'Excelente', 'Boa', 'Regular', 'Ruim'];
         $sugestoes = $service->listarTodasSugestoes();
         $album = [];
         $erroValidacao = [];

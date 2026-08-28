@@ -90,10 +90,6 @@
                         <input type="date" name="data_lancamento" value="<?= htmlspecialchars($album['data_lancamento'] ?? '') ?>">
                     </div>
                     <div class="edit-field-group">
-                        <label>DATA DE AQUISIÇÃO</label>
-                        <input type="date" name="data_aquisicao" value="<?= date('Y-m-d') ?>">
-                    </div>
-                    <div class="edit-field-group">
                         <label>TIPO</label>
                         <select name="tipo_id" id="edicaoTipo" class="<?= !empty($erroValidacao['tipo_id']) ? 'field-error' : '' ?>" required>
                             <option value="">Selecione...</option>
@@ -123,15 +119,6 @@
                         <input type="text" name="preco" value="" class="input-edicao" placeholder="0,00">
                         <small style="color: rgba(255,255,255,0.5)">Quanto você pagou por este item?</small>
                     </div>
-                    <div class="edit-field-group">
-                        <label>CONDIÇÃO</label>
-                        <select name="condicao" id="edicaoCondicao">
-                            <option value="">Selecione...</option>
-                            <?php foreach ($condicoes as $condicao): ?>
-                                <option value="<?= htmlspecialchars($condicao) ?>"><?= htmlspecialchars($condicao) ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
                 </div>
 
                 <div class="edit-field-group">
@@ -145,13 +132,6 @@
                            class="input-edicao" value="<?= htmlspecialchars($album['numero_catalogo'] ?? '') ?>"
                            placeholder="Ex: 88875120972">
                     <input type="hidden" name="discogs_id" id="inputDiscogsId" value="<?= $album['discogs_id'] ?? '' ?>">
-                </div>
-
-                <div class="edit-field-group" style="margin-top: 20px;">
-                    <label>OBSERVAÇÕES / HISTÓRIA DO ITEM</label>
-                    <textarea name="observacoes" class="input-edicao" rows="4"
-                              style="width: 100%; background-color: rgba(0,0,0,0.2); color: #eee; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 10px; resize: vertical;"
-                              placeholder="Onde comprou? É uma edição especial?"></textarea>
                 </div>
 
                 <hr class="edit-modal-separator">
