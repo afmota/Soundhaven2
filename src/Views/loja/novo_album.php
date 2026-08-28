@@ -100,17 +100,6 @@
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <div class="edit-field-group">
-                        <label>FORMATO</label>
-                        <select name="formato_id" id="edicaoFormato" class="<?= !empty($erroValidacao['formato_id']) ? 'field-error' : '' ?>" required>
-                            <option value="">Selecione...</option>
-                            <?php foreach ($formatos as $f): ?>
-                                <option value="<?= (int)$f['formato_id'] ?>" <?= ((isset($album['formato_id']) && (int)$album['formato_id'] === (int)$f['formato_id']) ? 'selected' : '') ?>>
-                                    <?= htmlspecialchars($f['descricao']) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
                 </div>
 
                 <div class="edit-modal-row">

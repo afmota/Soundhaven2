@@ -95,8 +95,7 @@ class AlbumService {
             $colecaoRepository->salvarEstilos($albumId, $dados['estilos'] ?? []);
             $colecaoRepository->salvarProdutores($albumId, $dados['produtores'] ?? []);
 
-            $temDadosMidia = !empty($dados['formato_id'])
-                || !empty($dados['data_aquisicao'])
+            $temDadosMidia = !empty($dados['data_aquisicao'])
                 || isset($dados['preco'])
                 || !empty($dados['numero_catalogo'])
                 || !empty($dados['observacoes'])

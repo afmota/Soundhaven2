@@ -12,7 +12,6 @@ class LojaController {
         $artistas = \App\Models\Artist::all();
         $gravadoras = \App\Models\Label::all();
         $tipos = \App\Models\Type::all();
-        $formatos = $service->buscarTodosFormatos();
         $sugestoes = $service->listarTodasSugestoes();
         $album = [];
         $erroValidacao = [];

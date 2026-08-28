@@ -58,7 +58,7 @@ function sincronizarArtistaPrincipal() {
     const datalist = document.getElementById('listaSugestoesArtistas');
 
     if (!datalist) {
-        campoHidden.value = ''; 
+        campoHidden.value = '';
         return;
     }
 
@@ -74,8 +74,7 @@ function validarFormularioInclusao(event) {
     if (!form) return true;
 
     const camposObrigatorios = [
-        document.getElementById('edicaoTitulo'),
-        document.getElementById('edicaoFormato')
+        document.getElementById('edicaoTitulo')
     ];
 
     const temArtista = document.querySelectorAll('#containerArtistas input[name="artistas[]"]').length > 0;
