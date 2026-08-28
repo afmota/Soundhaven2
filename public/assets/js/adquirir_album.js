@@ -44,15 +44,41 @@ function aplicarErroCampo(campo, mostrar) {
     campo.setAttribute('aria-invalid', mostrar ? 'true' : 'false');
 }
 
+function sincronizarArtistaPrincipal() {
+    const campoHidden = document.getElementById('edicaoArtista');
+    if (!campoHidden) return;
+
+    const tags = document.querySelectorAll('#containerArtistas input[name="artistas[]"]');
+    if (!tags.length) {
+        campoHidden.value = '';
+        return;
+    }
+
+    const primeiroNome = tags[0].value.trim();
+    const datalist = document.getElementById('listaSugestoesArtistas');
+
+    if (!datalist) {
+        campoHidden.value = ''; 
+        return;
+    }
+
+    const opcao = Array.from(datalist.options).find((opt) =>
+        (opt.value || '').trim().toLowerCase() === primeiroNome.toLowerCase()
+    );
+
+    campoHidden.value = opcao ? opcao.getAttribute('data-id') || '' : '';
+}
+
 function validarFormularioInclusao(event) {
     const form = document.getElementById('formAdicionarColecao');
     if (!form) return true;
 
     const camposObrigatorios = [
         document.getElementById('edicaoTitulo'),
-        document.getElementById('edicaoArtista'),
         document.getElementById('edicaoFormato')
     ];
+
+    const temArtista = document.querySelectorAll('#containerArtistas input[name="artistas[]"]').length > 0;
 
     let primeiroInvalido = null;
 
@@ -66,6 +92,18 @@ function validarFormularioInclusao(event) {
         }
     });
 
+    if (!temArtista) {
+        const containerArtistas = document.getElementById('containerArtistas');
+        if (containerArtistas) {
+            containerArtistas.classList.add('field-error');
+            setTimeout(() => containerArtistas.classList.remove('field-error'), 1800);
+        }
+        event.preventDefault();
+        const resumo = document.querySelector('[data-validation-summary]');
+        if (resumo) resumo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return false;
+    }
+
     if (primeiroInvalido) {
         event.preventDefault();
         primeiroInvalido.focus();
@@ -76,6 +114,7 @@ function validarFormularioInclusao(event) {
         return false;
     }
 
+    sincronizarArtistaPrincipal();
     return true;
 }
 
@@ -90,13 +129,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         formAdicionarColecao.addEventListener('submit', validarFormularioInclusao);
     }
 
-    ['edicaoTitulo', 'edicaoArtista', 'edicaoFormato'].forEach((id) => {
+    ['edicaoTitulo', 'edicaoFormato'].forEach((id) => {
         const campo = document.getElementById(id);
         if (!campo) return;
 
         campo.addEventListener('input', () => aplicarErroCampo(campo, false));
         campo.addEventListener('change', () => aplicarErroCampo(campo, false));
     });
+
+    const containerArtistas = document.getElementById('containerArtistas');
+    if (containerArtistas) {
+        const observer = new MutationObserver(() => sincronizarArtistaPrincipal());
+        observer.observe(containerArtistas, { childList: true, subtree: true });
+    }
 
     // === PREVIEW DA CAPA ===
     const inputCapa = document.getElementById('edicaoCapaUrl');

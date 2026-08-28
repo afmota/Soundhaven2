@@ -46,15 +46,25 @@
 
                 <div class="edit-modal-row">
                     <div class="edit-field-group">
-                        <label>ARTISTA</label>
-                        <select name="artista_id" id="edicaoArtista" class="<?= !empty($erroValidacao['artista_id']) ? 'field-error' : '' ?>" required>
-                            <option value="">Selecione...</option>
-                            <?php foreach ($artistas as $art): ?>
-                                <option value="<?= (int)$art['artista_id'] ?>" <?= ((isset($album['artista_id']) && (int)$album['artista_id'] === (int)$art['artista_id']) ? 'selected' : '') ?>>
-                                    <?= htmlspecialchars($art['nome']) ?>
-                                </option>
+                        <div class="label-with-action">
+                            <label>ARTISTAS</label>
+                            <button type="button" class="btn-add-tag" data-target="Artistas">
+                                <i class="fas fa-plus-circle"></i>
+                            </button>
+                        </div>
+                        <div class="search-tag-container" id="searchContainerArtistas" style="display: none;">
+                            <input type="text" class="input-search-tag" placeholder="Buscar ou novo..." data-tipo="artistas" list="listaSugestoesArtistas">
+                        </div>
+                        <div class="tags-container" id="containerArtistas">
+                            <?php foreach (explode('|', $album['artistas'] ?? '') as $artista): if (empty(trim($artista))) continue; ?>
+                                <span class="tag-item">
+                                    <?= htmlspecialchars($artista) ?>
+                                    <input type="hidden" name="artistas[]" value="<?= htmlspecialchars($artista) ?>">
+                                    <i class="fas fa-times remove-tag"></i>
+                                </span>
                             <?php endforeach; ?>
-                        </select>
+                        </div>
+                        <input type="hidden" name="artista_id" id="edicaoArtista" value="<?= htmlspecialchars($album['artista_id'] ?? '') ?>">
                     </div>
                     <div class="edit-field-group">
                         <label>GRAVADORA</label>
@@ -239,6 +249,12 @@
             </div>
         </form>
     </div>
+
+    <datalist id="listaSugestoesArtistas">
+        <?php foreach ($artistas as $art): ?>
+            <option value="<?= htmlspecialchars($art['nome']) ?>" data-id="<?= (int)$art['artista_id'] ?>">
+        <?php endforeach; ?>
+    </datalist>
 
     <datalist id="listaSugestoesGeneros">
         <?php foreach ($sugestoes['generos'] as $g): ?>

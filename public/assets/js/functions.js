@@ -219,11 +219,22 @@ function processarAdicaoTag(input) {
 
     if (!container) return;
 
+    const jaExiste = Array.from(container.querySelectorAll('input[type="hidden"][name="' + tipo + '[]"]')).some(item => item.value.trim().toLowerCase() === valor.toLowerCase());
+    if (jaExiste) {
+        input.value = '';
+        const parent = input.closest('.search-tag-container');
+        if (parent) parent.style.display = 'none';
+        return;
+    }
+
     const span = document.createElement('span');
     span.className = 'tag-item';
     span.innerHTML = `${valor} <input type="hidden" name="${tipo}[]" value="${valor}"> <i class="fas fa-times remove-tag"></i>`;
 
     container.appendChild(span);
+    if (tipo === 'artistas') {
+        sincronizarArtistaPrincipal();
+    }
     input.value = '';
     const parent = input.closest('.search-tag-container');
     if (parent) parent.style.display = 'none';

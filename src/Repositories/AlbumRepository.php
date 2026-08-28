@@ -122,16 +122,56 @@ class AlbumRepository {
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':titulo', $data['titulo']);
         $stmt->bindValue(':capa_url', $data['capa_url'] ?: null);
-        $stmt->bindValue(':artista_id', (int)$data['artista_id']);
-        $stmt->bindValue(':gravadora_id', $data['gravadora_id'] ? (int)$data['gravadora_id'] : null);
+        $stmt->bindValue(':artista_id', !empty($data['artista_id']) ? (int)$data['artista_id'] : null, PDO::PARAM_INT);
+        $stmt->bindValue(':gravadora_id', $data['gravadora_id'] ? (int)$data['gravadora_id'] : null, $data['gravadora_id'] ? PDO::PARAM_INT : PDO::PARAM_NULL);
         $stmt->bindValue(':data_lancamento', $data['data_lancamento'] ?: null);
-        $stmt->bindValue(':tipo_id', !empty($data['tipo_id']) ? (int)$data['tipo_id'] : null);
+        $stmt->bindValue(':tipo_id', !empty($data['tipo_id']) ? (int)$data['tipo_id'] : null, !empty($data['tipo_id']) ? PDO::PARAM_INT : PDO::PARAM_NULL);
 
         if ($stmt->execute()) {
             return (int)$this->db->lastInsertId();
         }
 
         return false;
+    }
+
+    public function salvarArtistasDoAlbum($albumId, array $artistas) {
+        $this->db->prepare("CREATE TABLE IF NOT EXISTS tb_album_artistas (
+            album_id INT NOT NULL,
+            artista_id INT NOT NULL,
+            principal TINYINT(1) NOT NULL DEFAULT 0,
+            PRIMARY KEY (album_id, artista_id),
+            KEY fk_album_artista_rel_album_idx (album_id),
+            KEY fk_album_artista_rel_artista_idx (artista_id),
+            CONSTRAINT fk_album_artista_rel_album FOREIGN KEY (album_id) REFERENCES tb_albuns (album_id) ON DELETE CASCADE,
+            CONSTRAINT fk_album_artista_rel_artista FOREIGN KEY (artista_id) REFERENCES tb_artistas (artista_id) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci")->execute();
+
+        $this->db->prepare("DELETE FROM tb_album_artistas WHERE album_id = :album_id")->execute([':album_id' => $albumId]);
+
+        foreach ($artistas as $indice => $nome) {
+            $nome = trim((string)$nome);
+            if ($nome === '') {
+                continue;
+            }
+
+            $stmt = $this->db->prepare("SELECT artista_id FROM tb_artistas WHERE nome = :nome LIMIT 1");
+            $stmt->execute([':nome' => $nome]);
+            $artistaId = (int)$stmt->fetchColumn();
+
+            if (!$artistaId) {
+                $insert = $this->db->prepare("INSERT INTO tb_artistas (nome) VALUES (:nome)");
+                $insert->execute([':nome' => $nome]);
+                $artistaId = (int)$this->db->lastInsertId();
+            }
+
+            $principal = $indice === 0 ? 1 : 0;
+            $this->db->prepare("INSERT INTO tb_album_artistas (album_id, artista_id, principal) VALUES (:album_id, :artista_id, :principal)")
+                ->execute([
+                    ':album_id' => (int)$albumId,
+                    ':artista_id' => $artistaId,
+                    ':principal' => $principal,
+                ]);
+        }
     }
 
     public function buscarOuCriarGravadora($nome) {

@@ -67,8 +67,14 @@ class AlbumService {
     }
 
     public function criarNovoAlbum(array $dados) {
-        if (empty($dados['titulo']) || empty($dados['artista_id'])) {
+        $artistasSelecionados = array_values(array_filter(array_map('trim', (array)($dados['artistas'] ?? []))));
+
+        if (empty($dados['titulo']) || (empty($dados['artista_id']) && empty($artistasSelecionados))) {
             throw new \Exception("Dados obrigatórios faltando.");
+        }
+
+        if (empty($dados['artista_id']) && !empty($artistasSelecionados)) {
+            $dados['artista_id'] = $artistasSelecionados[0];
         }
 
         if (!empty($dados['gravadora_nome'])) {
@@ -84,7 +90,7 @@ class AlbumService {
 
         try {
             $colecaoRepository = new \App\Repositories\ColecaoRepository();
-
+            $colecaoRepository->salvarArtistasDoAlbum($albumId, $artistasSelecionados ?: [$dados['artista_id']]);
             $colecaoRepository->salvarGeneros($albumId, $dados['generos'] ?? []);
             $colecaoRepository->salvarEstilos($albumId, $dados['estilos'] ?? []);
             $colecaoRepository->salvarProdutores($albumId, $dados['produtores'] ?? []);
