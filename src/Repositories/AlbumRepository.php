@@ -116,8 +116,13 @@ class AlbumRepository {
     }
 
     public function create(array $data) {
-        $sql = "INSERT INTO tb_albuns (titulo, capa_url, artista_id, gravadora_id, data_lancamento, tipo_id)
-                VALUES (:titulo, :capa_url, :artista_id, :gravadora_id, :data_lancamento, :tipo_id)";
+        $usuarioId = $_SESSION['usuario_id'] ?? null;
+        if (empty($usuarioId)) {
+            throw new \RuntimeException('Usuário não autenticado para criar álbum.');
+        }
+
+        $sql = "INSERT INTO tb_albuns (titulo, capa_url, artista_id, gravadora_id, data_lancamento, tipo_id, usuario_id)
+                VALUES (:titulo, :capa_url, :artista_id, :gravadora_id, :data_lancamento, :tipo_id, :usuario_id)";
         
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':titulo', $data['titulo']);
@@ -126,6 +131,7 @@ class AlbumRepository {
         $stmt->bindValue(':gravadora_id', $data['gravadora_id'] ? (int)$data['gravadora_id'] : null, $data['gravadora_id'] ? PDO::PARAM_INT : PDO::PARAM_NULL);
         $stmt->bindValue(':data_lancamento', $data['data_lancamento'] ?: null);
         $stmt->bindValue(':tipo_id', !empty($data['tipo_id']) ? (int)$data['tipo_id'] : null, !empty($data['tipo_id']) ? PDO::PARAM_INT : PDO::PARAM_NULL);
+        $stmt->bindValue(':usuario_id', (int)$usuarioId, PDO::PARAM_INT);
 
         if ($stmt->execute()) {
             return (int)$this->db->lastInsertId();
