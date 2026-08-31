@@ -87,6 +87,7 @@ class AlbumRepository {
                 gravadora_id = :gravadora_id, 
                 data_lancamento = :data_lancamento, 
                 tipo_id = :tipo_id, 
+                preco_sugerido = :preco_sugerido,
                 atualizado_em = CURRENT_TIMESTAMP
                 WHERE album_id = :id";
 
@@ -105,6 +106,9 @@ class AlbumRepository {
         $stmt->bindValue(':data_lancamento', $data['data_lancamento'] ?: null);
         $stmt->bindValue(':tipo_id', (int) $data['tipo_id'], PDO::PARAM_INT);
 
+        $precoSugerido = isset($data['preco']) ? str_replace(',', '.', (string)$data['preco']) : null;
+        $stmt->bindValue(':preco_sugerido', $precoSugerido !== null && $precoSugerido !== '' ? (float)$precoSugerido : null, $precoSugerido !== null && $precoSugerido !== '' ? PDO::PARAM_STR : PDO::PARAM_NULL);
+
         return $stmt->execute();
     }
 
@@ -121,8 +125,8 @@ class AlbumRepository {
             throw new \RuntimeException('Usuário não autenticado para criar álbum.');
         }
 
-        $sql = "INSERT INTO tb_albuns (titulo, capa_url, artista_id, gravadora_id, data_lancamento, tipo_id, usuario_id)
-                VALUES (:titulo, :capa_url, :artista_id, :gravadora_id, :data_lancamento, :tipo_id, :usuario_id)";
+        $sql = "INSERT INTO tb_albuns (titulo, capa_url, artista_id, gravadora_id, data_lancamento, tipo_id, usuario_id, preco_sugerido)
+                VALUES (:titulo, :capa_url, :artista_id, :gravadora_id, :data_lancamento, :tipo_id, :usuario_id, :preco_sugerido)";
         
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':titulo', $data['titulo']);
@@ -132,6 +136,9 @@ class AlbumRepository {
         $stmt->bindValue(':data_lancamento', $data['data_lancamento'] ?: null);
         $stmt->bindValue(':tipo_id', !empty($data['tipo_id']) ? (int)$data['tipo_id'] : null, !empty($data['tipo_id']) ? PDO::PARAM_INT : PDO::PARAM_NULL);
         $stmt->bindValue(':usuario_id', (int)$usuarioId, PDO::PARAM_INT);
+
+        $precoSugerido = isset($data['preco']) ? str_replace(',', '.', (string)$data['preco']) : null;
+        $stmt->bindValue(':preco_sugerido', $precoSugerido !== null && $precoSugerido !== '' ? (float)$precoSugerido : null, $precoSugerido !== null && $precoSugerido !== '' ? PDO::PARAM_STR : PDO::PARAM_NULL);
 
         if ($stmt->execute()) {
             return (int)$this->db->lastInsertId();
